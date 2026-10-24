@@ -1,4 +1,3 @@
-
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -10,6 +9,7 @@ export default async function Footer() {
     }),
     listCategories().catch((error) => {
       console.error("Unable to load footer categories:", error)
+      
       return []
     }),
   ])
@@ -19,11 +19,11 @@ export default async function Footer() {
     .slice(0, 6)
 
   return (
-    <footer className="mt-16 w-full border-t border-violet-100 bg-white text-sm">
+    <footer className="mt-16 w-full border-t border-violet-100 bg-white text-sm text-slate-700">
       {/* Back to top */}
       <a
         href="#top"
-        className="flex items-center justify-center gap-2 bg-violet-50 px-4 py-4 font-semibold text-violet-700 transition hover:bg-violet-100"
+        className="flex items-center justify-center gap-2 border-b border-violet-100 bg-violet-50 px-4 py-4 font-semibold text-violet-700 transition-colors hover:bg-violet-100"
       >
         <svg
           viewBox="0 0 24 24"
@@ -43,7 +43,7 @@ export default async function Footer() {
       </a>
 
       {/* Main footer */}
-      <div className="bg-[#17132b] text-white">
+      <div className="bg-white">
         <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-10 px-5 py-12 sm:grid-cols-2 sm:px-8 md:grid-cols-4 md:gap-8 lg:px-12 lg:py-16">
           {/* Brand */}
           <div className="sm:col-span-2 md:col-span-1">
@@ -51,38 +51,40 @@ export default async function Footer() {
               href="/"
               className="inline-flex items-center gap-3"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-xl font-black text-white">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-xl font-black text-white shadow-md shadow-violet-200">
                 M
               </span>
-              <span className="text-2xl font-extrabold tracking-tight">
-                MEDUSA<span className="text-violet-400">.</span>
+
+              <span className="text-2xl font-extrabold tracking-tight text-slate-900">
+                MEDUSA<span className="text-violet-600">.</span>
               </span>
             </LocalizedClientLink>
 
-            <p className="mt-5 max-w-xs text-sm leading-7 text-violet-100/70">
+            <p className="mt-5 max-w-xs text-sm leading-7 text-slate-600">
               Discover products you love with a simple and enjoyable
               online shopping experience.
             </p>
 
             <LocalizedClientLink
               href="/store"
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-violet-500"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-violet-700 hover:shadow-md"
             >
               Explore Store
               <span aria-hidden="true">→</span>
             </LocalizedClientLink>
           </div>
 
-          {/* About */}
+          {/* Explore */}
           <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-white">
+            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
               Explore
             </h3>
-            <ul className="space-y-4 text-violet-100/70">
+
+            <ul className="space-y-4 text-slate-600">
               <li>
                 <LocalizedClientLink
                   href="/"
-                  className="transition hover:text-white"
+                  className="transition-colors hover:text-violet-700"
                 >
                   Home
                 </LocalizedClientLink>
@@ -90,7 +92,7 @@ export default async function Footer() {
               <li>
                 <LocalizedClientLink
                   href="/store"
-                  className="transition hover:text-white"
+                  className="transition-colors hover:text-violet-700"
                 >
                   All Products
                 </LocalizedClientLink>
@@ -98,7 +100,7 @@ export default async function Footer() {
               <li>
                 <LocalizedClientLink
                   href="/collections"
-                  className="transition hover:text-white"
+                  className="transition-colors hover:text-violet-700"
                 >
                   Collections
                 </LocalizedClientLink>
@@ -108,7 +110,7 @@ export default async function Footer() {
                   href="https://github.com/medusajs"
                   target="_blank"
                   rel="noreferrer"
-                  className="transition hover:text-white"
+                  className="transition-colors hover:text-violet-700"
                 >
                   Medusa on GitHub
                 </a>
@@ -118,16 +120,17 @@ export default async function Footer() {
 
           {/* Categories */}
           <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-white">
+            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
               Shop Categories
             </h3>
+
             {rootCategories.length > 0 ? (
-              <ul className="space-y-4 text-violet-100/70">
+              <ul className="space-y-4 text-slate-600">
                 {rootCategories.map((category) => (
                   <li key={category.id}>
                     <LocalizedClientLink
                       href={`/categories/${category.handle}`}
-                      className="transition hover:text-white"
+                      className="transition-colors hover:text-violet-700"
                     >
                       {category.name}
                     </LocalizedClientLink>
@@ -135,7 +138,7 @@ export default async function Footer() {
                 ))}
               </ul>
             ) : (
-              <p className="text-violet-100/70">
+              <p className="text-slate-500">
                 No categories available.
               </p>
             )}
@@ -143,14 +146,15 @@ export default async function Footer() {
 
           {/* Help and collections */}
           <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-white">
-              Help & Discover
+            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
+              Help &amp; Discover
             </h3>
-            <ul className="space-y-4 text-violet-100/70">
+
+            <ul className="space-y-4 text-slate-600">
               <li>
                 <LocalizedClientLink
                   href="/account"
-                  className="transition hover:text-white"
+                  className="transition-colors hover:text-violet-700"
                 >
                   My Account
                 </LocalizedClientLink>
@@ -158,7 +162,7 @@ export default async function Footer() {
               <li>
                 <LocalizedClientLink
                   href="/account/orders"
-                  className="transition hover:text-white"
+                  className="transition-colors hover:text-violet-700"
                 >
                   My Orders
                 </LocalizedClientLink>
@@ -166,27 +170,29 @@ export default async function Footer() {
               <li>
                 <LocalizedClientLink
                   href="/cart"
-                  className="transition hover:text-white"
+                  className="transition-colors hover:text-violet-700"
                 >
                   Shopping Cart
                 </LocalizedClientLink>
               </li>
+
               {collections?.slice(0, 3).map((collection) => (
                 <li key={collection.id}>
                   <LocalizedClientLink
                     href={`/collections/${collection.handle}`}
-                    className="transition hover:text-white"
+                    className="transition-colors hover:text-violet-700"
                   >
                     {collection.title}
                   </LocalizedClientLink>
                 </li>
               ))}
+
               <li>
                 <a
                   href="https://docs.medusajs.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="transition hover:text-white"
+                  className="transition-colors hover:text-violet-700"
                 >
                   Documentation
                 </a>
@@ -195,25 +201,26 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* Brand promise */}
-        <div className="border-t border-white/10">
+        {/* Bottom information */}
+        <div className="border-t border-violet-100 bg-violet-50/60">
           <div className="mx-auto flex max-w-[1500px] flex-col gap-3 px-5 py-6 text-center sm:px-8 md:flex-row md:items-center md:justify-between md:text-left lg:px-12">
-            <p className="text-sm font-semibold text-white">
-              MEDUSA<span className="text-violet-400">.</span>
-              <span className="ml-2 font-normal text-violet-100/60">
+            <p className="text-sm font-semibold text-slate-900">
+              MEDUSA<span className="text-violet-600">.</span>
+              <span className="ml-2 font-normal text-slate-500">
                 Your destination for online shopping
               </span>
             </p>
-            <p className="text-xs text-violet-100/60">
+
+            <p className="text-xs text-slate-500">
               © {new Date().getFullYear()} Medusa Store. All rights reserved.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Bottom strip */}
-      <div className="bg-[#100d20] px-4 py-3 text-center text-xs text-violet-100/60">
-        Powered by Medusa
+      {/* Powered by */}
+      <div className="border-t border-violet-100 bg-white px-4 py-4 text-center text-xs text-slate-500">
+        Powered by <span className="font-semibold text-violet-700">Medusa</span>
       </div>
     </footer>
   )
