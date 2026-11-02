@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next"
 import { listCollections } from "@lib/data/collections"
 import { listProducts } from "@lib/data/products"
@@ -65,17 +64,35 @@ export default async function Home(props: {
 
   const collections = collectionData?.collections ?? []
 
+  // Fetch products with calculated prices and variant price data.
   const {
     response: { products: fetchedProducts },
   } = await listProducts({
     regionId: region.id,
     queryParams: {
       limit: 8,
-      fields: "*variants.calculated_price",
+      fields:
+        "*variants.calculated_price,+variants.prices,*variants.images,*variants.options,+variants.inventory_quantity",
     },
   })
 
   const products = fetchedProducts ?? []
+  console.log(
+  "HOMEPAGE PRODUCT PRICE DEBUG:",
+  JSON.stringify(
+    products.map((product) => ({
+      title: product.title,
+      id: product.id,
+      variants: product.variants?.map((variant) => ({
+        id: variant.id,
+        title: variant.title,
+        calculated_price: variant.calculated_price,
+      })),
+    })),
+    null,
+    2
+  )
+)
   const featuredCollections = collections.slice(0, 6)
 
   const heroProduct = products[0]

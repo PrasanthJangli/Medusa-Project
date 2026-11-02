@@ -89,7 +89,7 @@ const StoreRefinements = ({
 
       {/* Sale filter */}
       <section className="border-b border-gray-200 py-5">
-        <OnSaleToggle currencyCode={currencyCode} />
+        <OnSaleToggle />
       </section>
 
       {/* Categories */}

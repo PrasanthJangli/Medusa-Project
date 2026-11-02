@@ -1,3 +1,4 @@
+
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -9,7 +10,6 @@ export default async function Footer() {
     }),
     listCategories().catch((error) => {
       console.error("Unable to load footer categories:", error)
-      
       return []
     }),
   ])
@@ -19,181 +19,99 @@ export default async function Footer() {
     .slice(0, 6)
 
   return (
-    <footer className="mt-16 w-full border-t border-violet-100 bg-white text-sm text-slate-700">
-      {/* Back to top */}
+    <footer className="theme-footer mt-0 w-full text-sm">
       <a
         href="#top"
-        className="flex items-center justify-center gap-2 border-b border-violet-100 bg-violet-50 px-4 py-4 font-semibold text-violet-700 transition-colors hover:bg-violet-100"
+        className="theme-footer-top flex items-center justify-center gap-2 px-4 py-5 text-sm font-bold uppercase tracking-[.16em] transition"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          className="h-4 w-4"
-          aria-hidden="true"
-        >
-          <path
-            d="m6 14 6-6 6 6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <span aria-hidden="true">↑</span>
         Back to top
       </a>
 
-      {/* Main footer */}
-      <div className="bg-white">
-        <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-10 px-5 py-12 sm:grid-cols-2 sm:px-8 md:grid-cols-4 md:gap-8 lg:px-12 lg:py-16">
-          {/* Brand */}
+      <div className="theme-footer-main">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-12 px-6 py-14 sm:grid-cols-2 md:grid-cols-4 lg:px-12 lg:py-20">
+
+          {/* BRAND */}
           <div className="sm:col-span-2 md:col-span-1">
-            <LocalizedClientLink
-              href="/"
-              className="inline-flex items-center gap-3"
-            >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-xl font-black text-white shadow-md shadow-violet-200">
+            <LocalizedClientLink href="/" className="inline-flex items-center gap-3">
+              <span className="theme-footer-brand-mark flex h-14 w-14 items-center justify-center rounded-2xl text-2xl font-black shadow-lg">
                 M
               </span>
-
-              <span className="text-2xl font-extrabold tracking-tight text-slate-900">
-                MEDUSA<span className="text-violet-600">.</span>
+              <span className="theme-footer-brand-name text-2xl font-extrabold tracking-[.12em]">
+                MEDUSA<span className="theme-nav-accent">.</span>
               </span>
             </LocalizedClientLink>
 
-            <p className="mt-5 max-w-xs text-sm leading-7 text-slate-600">
-              Discover products you love with a simple and enjoyable
+            <p className="theme-footer-muted mt-6 max-w-xs text-sm leading-8">
+              Discover products you love with a simple, beautiful and enjoyable
               online shopping experience.
             </p>
 
             <LocalizedClientLink
               href="/store"
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-violet-700 hover:shadow-md"
+              className="theme-footer-button mt-7 inline-flex items-center gap-3 px-6 py-3.5 text-sm font-bold transition hover:-translate-y-1"
             >
-              Explore Store
-              <span aria-hidden="true">→</span>
+              Explore Store <span>→</span>
             </LocalizedClientLink>
           </div>
 
-          {/* Explore */}
+          {/* EXPLORE */}
           <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
+            <h3 className="theme-footer-heading mb-6 text-sm font-bold uppercase tracking-[.18em]">
               Explore
             </h3>
-
-            <ul className="space-y-4 text-slate-600">
+            <ul className="theme-footer-links space-y-5">
+              <li><LocalizedClientLink href="/">Home</LocalizedClientLink></li>
+              <li><LocalizedClientLink href="/store">All Products</LocalizedClientLink></li>
+              <li><LocalizedClientLink href="/collections">Collections</LocalizedClientLink></li>
               <li>
-                <LocalizedClientLink
-                  href="/"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  Home
-                </LocalizedClientLink>
-              </li>
-              <li>
-                <LocalizedClientLink
-                  href="/store"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  All Products
-                </LocalizedClientLink>
-              </li>
-              <li>
-                <LocalizedClientLink
-                  href="/collections"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  Collections
-                </LocalizedClientLink>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/medusajs"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transition-colors hover:text-violet-700"
-                >
+                <a href="https://github.com/medusajs" target="_blank" rel="noreferrer">
                   Medusa on GitHub
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Categories */}
+          {/* CATEGORIES */}
           <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
+            <h3 className="theme-footer-heading mb-6 text-sm font-bold uppercase tracking-[.18em]">
               Shop Categories
             </h3>
-
             {rootCategories.length > 0 ? (
-              <ul className="space-y-4 text-slate-600">
+              <ul className="theme-footer-links space-y-5">
                 {rootCategories.map((category) => (
                   <li key={category.id}>
-                    <LocalizedClientLink
-                      href={`/categories/${category.handle}`}
-                      className="transition-colors hover:text-violet-700"
-                    >
+                    <LocalizedClientLink href={`/categories/${category.handle}`}>
                       {category.name}
                     </LocalizedClientLink>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-slate-500">
-                No categories available.
-              </p>
+              <p className="theme-footer-muted">No categories available.</p>
             )}
           </div>
 
-          {/* Help and collections */}
+          {/* HELP */}
           <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
-              Help &amp; Discover
+            <h3 className="theme-footer-heading mb-6 text-sm font-bold uppercase tracking-[.18em]">
+              Help & Discover
             </h3>
-
-            <ul className="space-y-4 text-slate-600">
-              <li>
-                <LocalizedClientLink
-                  href="/account"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  My Account
-                </LocalizedClientLink>
-              </li>
-              <li>
-                <LocalizedClientLink
-                  href="/account/orders"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  My Orders
-                </LocalizedClientLink>
-              </li>
-              <li>
-                <LocalizedClientLink
-                  href="/cart"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  Shopping Cart
-                </LocalizedClientLink>
-              </li>
+            <ul className="theme-footer-links space-y-5">
+              <li><LocalizedClientLink href="/account">My Account</LocalizedClientLink></li>
+              <li><LocalizedClientLink href="/account/orders">My Orders</LocalizedClientLink></li>
+              <li><LocalizedClientLink href="/cart">Shopping Cart</LocalizedClientLink></li>
 
               {collections?.slice(0, 3).map((collection) => (
                 <li key={collection.id}>
-                  <LocalizedClientLink
-                    href={`/collections/${collection.handle}`}
-                    className="transition-colors hover:text-violet-700"
-                  >
+                  <LocalizedClientLink href={`/collections/${collection.handle}`}>
                     {collection.title}
                   </LocalizedClientLink>
                 </li>
               ))}
 
               <li>
-                <a
-                  href="https://docs.medusajs.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transition-colors hover:text-violet-700"
-                >
+                <a href="https://docs.medusajs.com" target="_blank" rel="noreferrer">
                   Documentation
                 </a>
               </li>
@@ -201,26 +119,25 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* Bottom information */}
-        <div className="border-t border-violet-100 bg-violet-50/60">
-          <div className="mx-auto flex max-w-[1500px] flex-col gap-3 px-5 py-6 text-center sm:px-8 md:flex-row md:items-center md:justify-between md:text-left lg:px-12">
-            <p className="text-sm font-semibold text-slate-900">
-              MEDUSA<span className="text-violet-600">.</span>
-              <span className="ml-2 font-normal text-slate-500">
+        {/* BOTTOM */}
+        <div className="theme-footer-bottom">
+          <div className="mx-auto flex max-w-[1500px] flex-col gap-4 px-6 py-7 text-center sm:px-8 md:flex-row md:items-center md:justify-between md:text-left lg:px-12">
+            <p className="theme-footer-heading text-sm font-semibold tracking-wider">
+              MEDUSA<span className="theme-nav-accent">.</span>
+              <span className="theme-footer-muted ml-2 font-normal tracking-normal">
                 Your destination for online shopping
               </span>
             </p>
-
-            <p className="text-xs text-slate-500">
+            <p className="theme-footer-muted text-xs">
               © {new Date().getFullYear()} Medusa Store. All rights reserved.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Powered by */}
-      <div className="border-t border-violet-100 bg-white px-4 py-4 text-center text-xs text-slate-500">
-        Powered by <span className="font-semibold text-violet-700">Medusa</span>
+      {/* POWERED BY */}
+      <div className="theme-footer-powered px-4 py-5 text-center text-xs tracking-wider">
+        Powered by <span className="theme-footer-brand-name font-bold">Medusa</span>
       </div>
     </footer>
   )

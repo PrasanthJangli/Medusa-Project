@@ -9,15 +9,13 @@ import PreviewPrice from "./price"
 export default async function ProductPreview({
   product,
   isFeatured,
-  region: _region,
+  region,
 }: {
   product: HttpTypes.StoreProduct
   isFeatured?: boolean
   region: HttpTypes.StoreRegion
 }) {
-  const { cheapestPrice } = getProductPrice({
-    product,
-  })
+  const { cheapestPrice } = getProductPrice({ product })
 
   return (
     <LocalizedClientLink
@@ -26,9 +24,10 @@ export default async function ProductPreview({
     >
       <div
         data-testid="product-wrapper"
-        className="h-full overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-200 hover:border-gray-300 hover:shadow-md"
+        className="theme-card h-full overflow-hidden"
       >
-        <div className="overflow-hidden bg-gray-50">
+        {/* Product Image */}
+        <div className="overflow-hidden theme-surface">
           <Thumbnail
             thumbnail={product.thumbnail}
             images={product.images}
@@ -37,20 +36,33 @@ export default async function ProductPreview({
           />
         </div>
 
+        {/* Product Information */}
         <div className="flex flex-col gap-2 p-3 small:p-4">
           <Text
-            className="line-clamp-2 min-h-10 text-sm font-medium leading-5 text-gray-800 transition-colors group-hover:text-blue-700"
+            className="line-clamp-2 min-h-10 text-sm font-semibold leading-5 theme-text transition-colors group-hover:theme-primary-text"
             data-testid="product-title"
           >
             {product.title}
           </Text>
 
+          {/* Product Price */}
           <div className="flex items-center">
-            {cheapestPrice && (
-              <div className="text-base font-semibold text-gray-950">
+            {cheapestPrice ? (
+              <div className="text-base font-semibold theme-primary-text">
                 <PreviewPrice price={cheapestPrice} />
               </div>
+            ) : (
+              <span className="text-sm theme-muted">
+                Price unavailable
+              </span>
             )}
+          </div>
+
+          {/* View Product Indicator */}
+          <div className="mt-2">
+            <span className="inline-flex items-center text-xs font-semibold theme-primary-text transition-all duration-300 group-hover:translate-x-1">
+              View Product →
+            </span>
           </div>
         </div>
       </div>

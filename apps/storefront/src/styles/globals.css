@@ -1,9 +1,691 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+
+/* Google Fonts - must be before all CSS rules */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+/* Tailwind CSS v3 directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+   MAISON MEDUSA - COMPLETE THEME DESIGN SYSTEM
+===================================================== */
+
+:root {
+  color-scheme: light;
+
+  --theme-primary: #171717;
+  --theme-primary-dark: #090909;
+  --theme-secondary: #d4af37;
+  --theme-accent: #d4af37;
+
+  --theme-background: #f7f3ea;
+  --theme-surface: #fffefa;
+  --theme-surface-alt: #eee8dc;
+
+  --theme-text: #211d17;
+  --theme-muted: #81796e;
+  --theme-border: #e4dac6;
+
+  --theme-font-heading: "Playfair Display", Georgia, serif;
+  --theme-font-body: "Inter", Arial, sans-serif;
+
+  --theme-button-radius: 3px;
+  --theme-card-radius: 5px;
+
+  --theme-shadow: 0 12px 32px rgba(57, 43, 20, .10);
+  --theme-shadow-hover: 0 20px 42px rgba(57, 43, 20, .17);
+
+  --theme-gradient: linear-gradient(135deg, #101010, #40331c, #80662c);
+  --theme-hero-gradient: linear-gradient(120deg, #171717, #51452e);
+
+  --theme-nav-background: #171717;
+  --theme-nav-secondary: #292319;
+  --theme-footer-background: #111111;
+  --theme-button-text: #ffffff;
+
+  --theme-heading-size: 1;
+  --theme-body-size: 1;
+  --theme-letter-spacing: 0;
+}
+
+/* =====================================================
+   STOREFRONT THEME WRAPPER
+===================================================== */
+
+.storefront-theme {
+  min-height: 100vh;
+  background: var(--theme-background);
+  color: var(--theme-text);
+  font-family: var(--theme-font-body);
+  font-size: calc(16px * var(--theme-body-size));
+  letter-spacing: var(--theme-letter-spacing);
+  transition: background .35s ease, color .35s ease;
+}
+
+.storefront-theme button,
+.storefront-theme a,
+.storefront-theme input,
+.storefront-theme textarea,
+.storefront-theme select {
+  font-family: var(--theme-font-body);
+}
+
+/* =====================================================
+   FASHION - BLACK & GOLD LUXURY
+===================================================== */
+
+.storefront-theme[data-theme="fashion"] {
+  --theme-primary: #171717;
+  --theme-primary-dark: #090909;
+  --theme-secondary: #d4af37;
+  --theme-accent: #d4af37;
+
+  --theme-background: #f7f3ea;
+  --theme-surface: #fffefa;
+  --theme-surface-alt: #eee8dc;
+
+  --theme-text: #211d17;
+  --theme-muted: #81796e;
+  --theme-border: #e4dac6;
+
+  --theme-font-heading: "Playfair Display", Georgia, serif;
+  --theme-font-body: "Inter", Arial, sans-serif;
+
+  --theme-button-radius: 2px;
+  --theme-card-radius: 3px;
+
+  --theme-shadow: 0 12px 32px rgba(57,43,20,.10);
+  --theme-shadow-hover: 0 20px 42px rgba(57,43,20,.18);
+
+  --theme-gradient: linear-gradient(135deg, #090909, #292319, #80662c);
+  --theme-hero-gradient: linear-gradient(120deg, #090909, #40331c);
+
+  --theme-nav-background: #090909;
+  --theme-nav-secondary: #292319;
+  --theme-footer-background: #090909;
+  --theme-button-text: #ffffff;
+
+  --theme-heading-size: 1.08;
+  --theme-body-size: 1;
+  --theme-letter-spacing: .04em;
+}
+
+/* =====================================================
+   ELECTRONICS - NAVY & ELECTRIC BLUE
+===================================================== */
+
+.storefront-theme[data-theme="electronics"] {
+  --theme-primary: #155eef;
+  --theme-primary-dark: #092b68;
+  --theme-secondary: #00d9ff;
+  --theme-accent: #00c6e8;
+
+  --theme-background: #eaf2ff;
+  --theme-surface: #ffffff;
+  --theme-surface-alt: #dceaff;
+
+  --theme-text: #10213d;
+  --theme-muted: #647895;
+  --theme-border: #cbdcf4;
+
+  --theme-font-heading: "Space Grotesk", Arial, sans-serif;
+  --theme-font-body: "Space Grotesk", Arial, sans-serif;
+
+  --theme-button-radius: 9px;
+  --theme-card-radius: 15px;
+
+  --theme-shadow: 0 12px 32px rgba(21,94,239,.12);
+  --theme-shadow-hover: 0 20px 42px rgba(21,94,239,.22);
+
+  --theme-gradient: linear-gradient(135deg, #092b68, #155eef, #00c6e8);
+  --theme-hero-gradient: linear-gradient(120deg, #092b68, #155eef, #00c6e8);
+
+  --theme-nav-background: #071d42;
+  --theme-nav-secondary: #123c70;
+  --theme-footer-background: #071d42;
+  --theme-button-text: #ffffff;
+
+  --theme-heading-size: 1;
+  --theme-body-size: .96;
+  --theme-letter-spacing: -.02em;
+}
+
+/* =====================================================
+   FURNITURE - BEIGE & WALNUT
+===================================================== */
+
+.storefront-theme[data-theme="furniture"] {
+  --theme-primary: #795438;
+  --theme-primary-dark: #51351f;
+  --theme-secondary: #c69b6d;
+  --theme-accent: #b18457;
+
+  --theme-background: #f3ebdf;
+  --theme-surface: #fffdf8;
+  --theme-surface-alt: #eae0d1;
+
+  --theme-text: #39291d;
+  --theme-muted: #887563;
+  --theme-border: #dfcfba;
+
+  --theme-font-heading: "Lora", Georgia, serif;
+  --theme-font-body: "Nunito Sans", Arial, sans-serif;
+
+  --theme-button-radius: 5px;
+  --theme-card-radius: 9px;
+
+  --theme-shadow: 0 12px 32px rgba(91,60,35,.12);
+  --theme-shadow-hover: 0 20px 42px rgba(91,60,35,.20);
+
+  --theme-gradient: linear-gradient(135deg, #49301e, #98704c, #c69b6d);
+  --theme-hero-gradient: linear-gradient(120deg, #49301e, #98704c);
+
+  --theme-nav-background: #49301e;
+  --theme-nav-secondary: #65432b;
+  --theme-footer-background: #392719;
+  --theme-button-text: #ffffff;
+
+  --theme-heading-size: 1.04;
+  --theme-body-size: 1.02;
+  --theme-letter-spacing: .01em;
+}
+
+/* =====================================================
+   BEAUTY - BLUSH PINK & ROSE
+===================================================== */
+
+.storefront-theme[data-theme="beauty"] {
+  --theme-primary: #c04475;
+  --theme-primary-dark: #922653;
+  --theme-secondary: #e8a7c1;
+  --theme-accent: #dc77a0;
+
+  --theme-background: #fff0f5;
+  --theme-surface: #fffafd;
+  --theme-surface-alt: #fce4ed;
+
+  --theme-text: #492337;
+  --theme-muted: #a17a8d;
+  --theme-border: #f0d0df;
+
+  --theme-font-heading: "Cormorant Garamond", Georgia, serif;
+  --theme-font-body: "DM Sans", Arial, sans-serif;
+
+  --theme-button-radius: 30px;
+  --theme-card-radius: 20px;
+
+  --theme-shadow: 0 12px 32px rgba(192,68,117,.13);
+  --theme-shadow-hover: 0 20px 42px rgba(192,68,117,.22);
+
+  --theme-gradient: linear-gradient(135deg, #a72e69, #dc77a0, #f2b9cf);
+  --theme-hero-gradient: linear-gradient(120deg, #a72e69, #dc77a0);
+
+  --theme-nav-background: #a72e69;
+  --theme-nav-secondary: #922653;
+  --theme-footer-background: #492337;
+  --theme-button-text: #ffffff;
+
+  --theme-heading-size: 1.12;
+  --theme-body-size: 1;
+  --theme-letter-spacing: .015em;
+}
+
+/* =====================================================
+   CUSTOM THEME
+===================================================== */
+
+.storefront-theme[data-theme="custom"] {
+  --theme-font-heading: "Inter", Arial, sans-serif;
+  --theme-font-body: "Inter", Arial, sans-serif;
+}
+
+/* =====================================================
+   STOREFRONT TYPOGRAPHY
+===================================================== */
+
+.storefront-theme h1,
+.storefront-theme h2,
+.storefront-theme h3,
+.storefront-theme h4,
+.storefront-theme h5,
+.storefront-theme h6 {
+  font-family: var(--theme-font-heading);
+  color: var(--theme-text);
+}
+
+.storefront-theme h1 {
+  font-size: calc(2.5rem * var(--theme-heading-size));
+}
+
+.storefront-theme h2 {
+  font-size: calc(2rem * var(--theme-heading-size));
+}
+
+.storefront-theme h3 {
+  font-size: calc(1.5rem * var(--theme-heading-size));
+}
+
+/* =====================================================
+   GLOBAL PAGE DESIGN
+===================================================== */
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: #ffffff;
+  color: #171717;
+}
+
+::selection {
+  background: var(--theme-secondary);
+  color: var(--theme-text);
+}
+
+/* =====================================================
+   COMMON THEME CLASSES
+===================================================== */
+
+.theme-background {
+  background: var(--theme-background) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-surface {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-surface-alt {
+  background: var(--theme-surface-alt) !important;
+}
+
+.theme-text {
+  color: var(--theme-text) !important;
+}
+
+.theme-muted {
+  color: var(--theme-muted) !important;
+}
+
+.theme-primary {
+  background: var(--theme-primary) !important;
+  color: var(--theme-button-text) !important;
+}
+
+.theme-primary-text {
+  color: var(--theme-primary) !important;
+}
+
+.theme-accent {
+  color: var(--theme-accent) !important;
+}
+
+.theme-border {
+  border-color: var(--theme-border) !important;
+}
+
+.theme-gradient {
+  background: var(--theme-gradient) !important;
+  color: white !important;
+}
+
+.theme-hero {
+  background: var(--theme-hero-gradient) !important;
+  color: white !important;
+}
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.theme-navbar {
+  font-family: var(--theme-font-body);
+}
+
+.theme-nav-primary {
+  background: var(--theme-nav-background) !important;
+  color: white !important;
+  border-bottom: 1px solid var(--theme-secondary);
+  font-family: var(--theme-font-body);
+}
+
+.theme-nav-secondary {
+  background: var(--theme-nav-secondary) !important;
+  color: white !important;
+  font-family: var(--theme-font-body);
+}
+
+.theme-nav-tertiary {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.theme-nav-accent {
+  color: var(--theme-secondary) !important;
+}
+
+.theme-nav-badge {
+  background: var(--theme-secondary) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-nav-primary a,
+.theme-nav-secondary a {
+  color: inherit;
+}
+
+.theme-nav-primary a:hover,
+.theme-nav-secondary a:hover {
+  color: var(--theme-secondary) !important;
+}
+
+.theme-nav-tertiary a:hover {
+  color: var(--theme-primary) !important;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.theme-footer {
+  background: var(--theme-footer-background) !important;
+  color: white !important;
+  border-color: var(--theme-border) !important;
+  font-family: var(--theme-font-body);
+}
+
+.theme-footer-main {
+  background: transparent !important;
+}
+
+.theme-footer-top {
+  background: var(--theme-primary) !important;
+  color: white !important;
+}
+
+.theme-footer-brand-mark {
+  background: var(--theme-gradient) !important;
+  color: white !important;
+}
+
+.theme-footer-brand-name,
+.theme-footer-heading {
+  color: white !important;
+  font-family: var(--theme-font-heading) !important;
+}
+
+.theme-footer-muted,
+.theme-footer-links {
+  color: rgba(255,255,255,.72) !important;
+}
+
+.theme-footer-links a:hover {
+  color: var(--theme-secondary) !important;
+}
+
+.theme-footer-button {
+  background: var(--theme-gradient) !important;
+  color: white !important;
+  border: 1px solid var(--theme-secondary);
+  border-radius: var(--theme-button-radius) !important;
+}
+
+.theme-footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.16);
+}
+
+.theme-footer-powered {
+  background: var(--theme-primary-dark) !important;
+  color: rgba(255,255,255,.75) !important;
+}
+
+/* =====================================================
+   HOMEPAGE
+===================================================== */
+
+.maison-store {
+  background: var(--theme-background) !important;
+  color: var(--theme-text) !important;
+  font-family: var(--theme-font-body) !important;
+  transition: background .35s ease, color .35s ease;
+}
+
+.maison-store .announcement {
+  background: var(--theme-primary-dark) !important;
+  color: var(--theme-secondary) !important;
+  letter-spacing: 2px;
+}
+
+.maison-store .brand,
+.maison-store .hero h1,
+.maison-store .section-heading h2,
+.maison-store .promo-copy h2,
+.maison-store .story-copy h2 {
+  color: var(--theme-text) !important;
+  font-family: var(--theme-font-heading) !important;
+}
+
+.maison-store .hero {
+  background: var(--theme-hero-gradient) !important;
+  color: white !important;
+}
+
+.maison-store .hero h1,
+.maison-store .hero-copy,
+.maison-store .eyebrow,
+.maison-store .hero-notes {
+  color: white !important;
+}
+
+.maison-store .hero h1 em {
+  color: var(--theme-secondary) !important;
+}
+
+.maison-store .eyebrow:before {
+  background: var(--theme-secondary) !important;
+}
+
+.maison-store .button,
+.maison-store .newsletter-link {
+  background: var(--theme-primary) !important;
+  color: white !important;
+  border: 1px solid var(--theme-secondary);
+  border-radius: var(--theme-button-radius) !important;
+  font-family: var(--theme-font-body);
+}
+
+.maison-store .button:hover,
+.maison-store .newsletter-link:hover {
+  background: var(--theme-accent) !important;
+  color: white !important;
+}
+
+.maison-store .button-outline {
+  background: transparent !important;
+  color: white !important;
+  border: 1px solid var(--theme-secondary);
+}
+
+.maison-store .section {
+  background: var(--theme-background);
+  color: var(--theme-text);
+}
+
+.maison-store .section-heading h2,
+.maison-store .category-info h3,
+.maison-store .story-copy h2,
+.maison-store .benefit h3 {
+  font-family: var(--theme-font-heading) !important;
+  color: var(--theme-text) !important;
+}
+
+.maison-store .section-heading p,
+.maison-store .category-info p,
+.maison-store .story-copy p,
+.maison-store .hero-copy {
+  font-family: var(--theme-font-body);
+}
+
+.maison-store .text-link {
+  color: var(--theme-primary) !important;
+  border-color: var(--theme-secondary) !important;
+}
+
+.maison-store .category-image {
+  border-radius: var(--theme-card-radius);
+  overflow: hidden;
+}
+
+.maison-store .category-card {
+  color: var(--theme-text) !important;
+}
+
+.maison-store .arrow,
+.maison-store .benefit-icon {
+  color: var(--theme-accent) !important;
+}
+
+.maison-store .products-section {
+  background: var(--theme-surface-alt) !important;
+}
+
+.maison-store .product-card,
+.maison-store .empty-products {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-card-radius);
+  box-shadow: var(--theme-shadow);
+}
+
+.maison-store .product-card:hover {
+  border-color: var(--theme-accent);
+  box-shadow: var(--theme-shadow-hover);
+}
+
+.maison-store .promo-inner {
+  background: var(--theme-surface-alt) !important;
+  border-radius: var(--theme-card-radius);
+}
+
+.maison-store .promo-copy h2,
+.maison-store .story-copy h2 {
+  color: var(--theme-text) !important;
+}
+
+.maison-store .benefits {
+  background: var(--theme-surface-alt) !important;
+}
+
+.maison-store .newsletter {
+  background: var(--theme-gradient) !important;
+  color: white !important;
+}
+
+.maison-store .newsletter h2 {
+  color: white !important;
+  font-family: var(--theme-font-heading) !important;
+}
+
+.maison-store .newsletter p {
+  color: rgba(255,255,255,.8) !important;
+}
+
+/* =====================================================
+   PRODUCT CARDS - STOREFRONT ONLY
+===================================================== */
+
+.storefront-theme .theme-card,
+.storefront-theme [data-testid="product-wrapper"] {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: var(--theme-card-radius) !important;
+  box-shadow: var(--theme-shadow);
+  transition: all .3s ease;
+}
+
+.storefront-theme .theme-card:hover,
+.storefront-theme [data-testid="product-wrapper"]:hover {
+  transform: translateY(-5px);
+  border-color: var(--theme-accent) !important;
+  box-shadow: var(--theme-shadow-hover);
+}
+
+/* =====================================================
+   BUTTONS AND INPUTS - STOREFRONT ONLY
+===================================================== */
+
+.storefront-theme .theme-button {
+  background: var(--theme-gradient) !important;
+  color: white !important;
+  border-radius: var(--theme-button-radius) !important;
+  border: 1px solid var(--theme-secondary);
+  transition: all .3s ease;
+}
+
+.storefront-theme .theme-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.storefront-theme .theme-input {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  border: 1px solid var(--theme-border) !important;
+  border-radius: var(--theme-button-radius) !important;
+}
+
+.storefront-theme .theme-input:focus {
+  outline: none;
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 0 3px var(--theme-secondary);
+}
+
+.storefront-theme .theme-badge {
+  background: var(--theme-secondary) !important;
+  color: var(--theme-text) !important;
+  border-radius: 30px;
+}
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+* {
+  scrollbar-color: #d4af37 #f7f3ea;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f7f3ea;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #171717;
+}
+
+/* =====================================================
+   EXISTING TAILWIND UTILITIES
+===================================================== */
 
 @layer utilities {
-  /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -13,13 +695,16 @@
   }
 
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   input:focus ~ label,
   input:not(:placeholder-shown) ~ label {
-    @apply -translate-y-2 text-xsmall-regular;
+    @apply -translate-y-2;
+    font-size: 10px;
+    line-height: 1rem;
+    font-weight: 400;
   }
 
   input:focus ~ label {

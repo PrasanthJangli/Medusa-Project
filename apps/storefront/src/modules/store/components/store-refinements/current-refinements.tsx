@@ -1,3 +1,4 @@
+
 "use client"
 
 import { XMarkMini } from "@medusajs/icons"
@@ -16,9 +17,7 @@ type Refinement = ReturnType<
 >["items"][number]["refinements"][number]
 
 /**
- * What a single refinement reads as on its chip. The raw label is the facet
- * value, which is the option's `Size:M` form for options and a bare `true` for
- * the on-sale toggle — neither says what it filters on out of context.
+ * What a single refinement reads as on its chip.
  */
 function refinementLabel(refinement: Refinement, currencyCode: string) {
   const { attribute, label, value, operator } = refinement
@@ -31,10 +30,6 @@ function refinementLabel(refinement: Refinement, currencyCode: string) {
       : `${String(value).slice(0, separator)}: ${String(value).slice(
           separator + 1
         )}`
-  }
-
-  if (attribute === priceAttribute("on_sale", currencyCode)) {
-    return "On sale"
   }
 
   if (attribute === priceAttribute("min_price", currencyCode)) {
@@ -61,9 +56,7 @@ function refinementLabel(refinement: Refinement, currencyCode: string) {
 }
 
 /**
- * Every active refinement as a chip that drops it, above the filters that set
- * them. The free-text query is excluded by the connector's own defaults, so
- * only what the sidebar controls shows up here.
+ * Every active refinement as a chip that drops it.
  */
 const CurrentRefinements = ({ currencyCode }: { currencyCode: string }) => {
   const { items, refine } = useCurrentRefinements()

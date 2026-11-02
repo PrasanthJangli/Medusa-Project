@@ -1,4 +1,3 @@
-
 import { Suspense } from "react"
 
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
@@ -35,10 +34,7 @@ export default function CollectionTemplate({
           aria-label="Breadcrumb"
           className="mb-6 flex items-center gap-2 text-sm text-gray-500"
         >
-          <a
-            href="/"
-            className="transition-colors hover:text-violet-700"
-          >
+          <a href="/" className="transition-colors hover:text-violet-700">
             Home
           </a>
           <span>/</span>
@@ -58,12 +54,6 @@ export default function CollectionTemplate({
               <h1 className="text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl lg:text-5xl">
                 {collection.title}
               </h1>
-
-              {collection.description && (
-                <p className="mt-4 max-w-2xl text-sm leading-7 text-gray-600 sm:text-base">
-                  {collection.description}
-                </p>
-              )}
             </div>
 
             <div className="flex shrink-0 items-center gap-3 self-start rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm md:self-auto">
@@ -88,7 +78,9 @@ export default function CollectionTemplate({
                   {productCount}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {productCount === 1 ? "Product loaded" : "Products loaded"}
+                  {productCount === 1
+                    ? "Product loaded"
+                    : "Products loaded"}
                 </p>
               </div>
             </div>

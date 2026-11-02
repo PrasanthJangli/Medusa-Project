@@ -1,4 +1,3 @@
-
 import { Container, clx } from "@modules/common/components/ui"
 import Image from "next/image"
 import React from "react"
@@ -40,7 +39,11 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       )}
       data-testid={dataTestid}
     >
-      <ImageOrPlaceholder image={initialImage} size={size} />
+      <ImageOrPlaceholder
+        image={initialImage}
+        size={size}
+        isFeatured={isFeatured}
+      />
     </Container>
   )
 }
@@ -48,7 +51,10 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 const ImageOrPlaceholder = ({
   image,
   size,
-}: Pick<ThumbnailProps, "size"> & { image?: string | null }) => {
+  isFeatured,
+}: Pick<ThumbnailProps, "size" | "isFeatured"> & {
+  image?: string | null
+}) => {
   return image ? (
     <Image
       src={image}
@@ -58,6 +64,7 @@ const ImageOrPlaceholder = ({
       quality={80}
       sizes="(max-width: 576px) 100vw, 1200px"
       fill
+      priority={isFeatured}
     />
   ) : (
     <div className="absolute inset-0 flex h-full w-full items-center justify-center">

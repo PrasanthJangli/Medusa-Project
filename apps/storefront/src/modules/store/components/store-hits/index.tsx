@@ -38,6 +38,28 @@ const StoreHits = ({
   const { status, error, indexUiState } = useInstantSearch()
   const { isSearching, hasNoResultsYet } = useSearchSettled()
 
+  // Temporary price debugging
+  useEffect(() => {
+    if (items.length > 0) {
+      const firstProduct = items[0]
+
+      console.log("FIRST PRODUCT SEARCH HIT:", firstProduct)
+
+      console.log("PRICE FIELDS:", {
+        currencyCode,
+        min_price_inr: firstProduct.min_price_inr,
+        max_price_inr: firstProduct.max_price_inr,
+        original_price_inr: firstProduct.original_price_inr,
+        min_price_eur: firstProduct.min_price_eur,
+        max_price_eur: firstProduct.max_price_eur,
+        original_price_eur: firstProduct.original_price_eur,
+        min_price_usd: firstProduct.min_price_usd,
+        max_price_usd: firstProduct.max_price_usd,
+        original_price_usd: firstProduct.original_price_usd,
+      })
+    }
+  }, [items, currencyCode])
+
   const [selectedTemplate, setSelectedTemplate] =
     useState<ProductDisplayTemplate>("classic-grid")
 
@@ -153,7 +175,6 @@ const StoreHits = ({
                       : "w-full flex-col",
                   ].join(" ")}
                 >
-                  {/* Premium collection label */}
                   {isPremium && (
                     <div className="relative overflow-hidden bg-gradient-to-r from-violet-950 via-violet-900 to-purple-800 px-3 py-3 text-white sm:px-4">
                       <div
@@ -169,7 +190,6 @@ const StoreHits = ({
                     </div>
                   )}
 
-                  {/* Product image */}
                   <div
                     className={[
                       "relative min-w-0 overflow-hidden",
@@ -213,7 +233,6 @@ const StoreHits = ({
                     </div>
                   </div>
 
-                  {/* Product information */}
                   <div
                     className={[
                       "flex min-w-0 flex-1 flex-col",
@@ -254,7 +273,6 @@ const StoreHits = ({
                       )}
                     </div>
 
-                    {/* Actual Medusa price */}
                     <div className="mt-auto border-t border-slate-100 pt-3">
                       <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                         Price
@@ -271,7 +289,6 @@ const StoreHits = ({
                       </div>
                     </div>
 
-                    {/* Product detail link */}
                     <div className="flex min-h-10 items-center justify-center gap-2 rounded-xl bg-violet-600 px-3 py-2.5 text-[11px] font-bold text-white transition-all duration-200 group-hover:bg-violet-700 group-hover:shadow-md sm:text-xs">
                       <span>View product</span>
                       <span

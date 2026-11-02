@@ -1,59 +1,75 @@
+
 "use server"
 
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 import { getCacheOptions } from "./cookies"
 
-export const listRegions = async () => {
+export const listRegions = async (): Promise<HttpTypes.StoreRegion[]> => {
   const next = {
     ...(await getCacheOptions("regions")),
   }
 
-  return await sdk.client
-    .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
-      method: "GET",
-      next,
-      cache: "force-cache",
-    })
-    .then(({ regions }) => regions)
+  const { regions } = await sdk.client.fetch<{
+    regions: HttpTypes.StoreRegion[]
+  }>("/store/regions", {
+    method: "GET",
+    next,
+    cache: "no-store",
+  })
+
+  return regions ?? []
 }
 
-export const retrieveRegion = async (id: string) => {
+export const retrieveRegion = async (
+  id: string
+): Promise<HttpTypes.StoreRegion> => {
   const next = {
     ...(await getCacheOptions(["regions", id].join("-"))),
   }
 
-  return await sdk.client
-    .fetch<{ region: HttpTypes.StoreRegion }>(`/store/regions/${id}`, {
-      method: "GET",
-      next,
-      cache: "force-cache",
-    })
-    .then(({ region }) => region)
+  const { region } = await sdk.client.fetch<{
+    region: HttpTypes.StoreRegion
+  }>(`/store/regions/${id}`, {
+    method: "GET",
+    next,
+    cache: "no-store",
+  })
+
+  return region
 }
 
-const regionMap = new Map<string, HttpTypes.StoreRegion>()
+export const getRegion = async (
+  countryCode: string
+): Promise<HttpTypes.StoreRegion | undefined> => {
+  const normalizedCountryCode = countryCode?.toLowerCase()
 
-export const getRegion = async (countryCode: string) => {
-  if (regionMap.has(countryCode)) {
-    return regionMap.get(countryCode)
+  if (!normalizedCountryCode) {
+    return undefined
   }
 
   const regions = await listRegions()
 
-  if (!regions) {
-    return null
-  }
+  console.log(
+    "[REGIONS]",
+    regions.map((region) => ({
+      name: region.name,
+      id: region.id,
+      currency_code: region.currency_code,
+      countries: region.countries?.map((country) => country.iso_2),
+    }))
+  )
 
-  regions.forEach((region) => {
-    region.countries?.forEach((c) => {
-      regionMap.set(c?.iso_2 ?? "", region)
-    })
-  })
+  const region = regions.find((item) =>
+    item.countries?.some(
+      (country) =>
+        country.iso_2?.toLowerCase() === normalizedCountryCode
+    )
+  )
 
-  const region = countryCode
-    ? regionMap.get(countryCode)
-    : regionMap.get("us")
+  console.log(
+    `[REGION MATCH] country=${normalizedCountryCode}, region=${region?.name ?? "NOT FOUND"}, currency=${region?.currency_code ?? "N/A"}`
+  )
 
   return region
 }

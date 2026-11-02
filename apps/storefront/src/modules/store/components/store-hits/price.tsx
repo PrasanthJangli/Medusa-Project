@@ -1,3 +1,4 @@
+
 "use client"
 
 import { indexedCurrency, priceAttribute } from "@lib/search-client"
@@ -12,16 +13,40 @@ type HitPriceProps = {
   currencyCode: string
 }
 
-const amount = (value: unknown) => (typeof value === "number" ? value : null)
+const amount = (value: unknown): number | null => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value
+  }
+
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value)
+
+    return Number.isFinite(parsed) ? parsed : null
+  }
+
+  return null
+}
 
 const HitPrice = ({ hit, currencyCode }: HitPriceProps) => {
   const currency_code = indexedCurrency(currencyCode)
-  const min_price = amount(hit[priceAttribute("min_price", currencyCode)])
-  const max_price = amount(hit[priceAttribute("max_price", currencyCode)])
+
+  const min_price = amount(
+    hit[priceAttribute("min_price", currencyCode)]
+  )
+
+  const max_price = amount(
+    hit[priceAttribute("max_price", currencyCode)]
+  )
+
   const original_price = amount(
     hit[priceAttribute("original_price", currencyCode)]
   )
-  const on_sale = hit[priceAttribute("on_sale", currencyCode)] === true
+
+  // Calculate sale status without reading the removed on_sale field.
+  const on_sale =
+    original_price !== null &&
+    min_price !== null &&
+    original_price > min_price
 
   if (min_price === null) {
     return null
@@ -43,13 +68,16 @@ const HitPrice = ({ hit, currencyCode }: HitPriceProps) => {
           {format(original_price)}
         </Text>
       )}
+
       <Text
         className={clx("text-ui-fg-muted", {
           "text-ui-tag-red-text": on_sale,
         })}
         data-testid="price"
       >
-        {isRange ? `${format(min_price)} - ${format(max)}` : format(min_price)}
+        {isRange
+          ? `${format(min_price)} - ${format(max)}`
+          : format(min_price)}
       </Text>
     </div>
   )

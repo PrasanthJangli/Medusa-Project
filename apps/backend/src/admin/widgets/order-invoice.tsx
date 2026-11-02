@@ -4,7 +4,7 @@ import {
   AdminOrder,
   DetailWidgetProps,
 } from "@medusajs/framework/types"
-import { sdk } from "../lib/sdk.ts"
+import { sdk } from "../lib/sdk"
 
 const OrderInvoiceWidget = ({
   data: order,
