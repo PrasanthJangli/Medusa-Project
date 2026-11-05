@@ -23,72 +23,92 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
   return (
     <main
       data-testid="category-container"
-      className="min-h-screen overflow-x-clip bg-[#FAF8F5] text-[#1A1816]"
+      className="min-h-screen w-full min-w-0 overflow-x-clip bg-[#FAF8F5] text-[#1A1816]"
     >
-      {/* Announcement bar */}
-      <div className="border-b border-[#E5DFD7] bg-[#FDFBF7] px-4 py-2.5">
-        <div className="mx-auto flex max-w-[1720px] items-center justify-between gap-4">
-          <p className="truncate text-[9px] font-medium uppercase tracking-[0.16em] text-[#7D756C] sm:text-[10px] sm:tracking-[0.22em]">
-            <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-emerald-700" />
-            A considered collection of everyday essentials
+      {/* ANNOUNCEMENT BAR */}
+      <div className="border-b border-[#E5DFD7] bg-[#FDFBF7] px-3 py-2 sm:px-4 sm:py-2.5">
+        <div className="mx-auto flex max-w-[1720px] items-center justify-between gap-3">
+          <p className="flex min-w-0 items-center truncate text-[8px] font-medium uppercase tracking-[0.12em] text-[#7D756C] sm:text-[10px] sm:tracking-[0.22em]">
+            <span className="mr-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700" />
+            <span className="truncate">
+              A considered collection of everyday essentials
+            </span>
           </p>
+
           <span className="hidden shrink-0 text-[10px] uppercase tracking-[0.18em] text-[#7D756C] sm:inline">
             Thoughtfully curated
           </span>
         </div>
       </div>
 
-      {/* Editorial header */}
+      {/* EDITORIAL HEADER */}
       <header className="sticky top-0 z-40 border-b border-[#E5DFD7]/80 bg-[#FAF8F5]/95 backdrop-blur-md">
-        <div className="mx-auto grid h-[76px] max-w-[1720px] grid-cols-3 items-center px-4 sm:px-6 lg:px-10">
+        <div className="mx-auto grid h-[66px] max-w-[1720px] grid-cols-3 items-center px-3 sm:h-[76px] sm:px-6 lg:px-10">
           <nav className="hidden items-center gap-6 text-[10px] uppercase tracking-[0.16em] text-[#49433D] lg:flex">
             <a className="group relative py-2" href="#shop-categories">
               Collections
               <span className="absolute bottom-0 left-0 h-px w-0 bg-[#1A1816] transition-all duration-300 group-hover:w-full" />
             </a>
+
             <a className="group relative py-2" href="#all-products">
               Shop
               <span className="absolute bottom-0 left-0 h-px w-0 bg-[#1A1816] transition-all duration-300 group-hover:w-full" />
             </a>
           </nav>
 
-          <a href="#top" className="col-start-1 flex flex-col items-center text-center lg:col-start-2">
-            <span className="whitespace-nowrap font-serif text-[21px] font-normal uppercase leading-none tracking-[0.13em] sm:text-[27px] sm:tracking-[0.2em]">
+          <a
+            href="#top"
+            className="col-start-2 flex min-w-0 flex-col items-center text-center lg:col-start-2"
+          >
+            <span className="whitespace-nowrap font-serif text-[16px] font-normal uppercase leading-none tracking-[0.1em] sm:text-[27px] sm:tracking-[0.2em]">
               Maison Medusa
             </span>
-            <span className="mt-1.5 text-[7px] uppercase tracking-[0.22em] text-[#8C857B] sm:text-[9px] sm:tracking-[0.3em]">
+
+            <span className="mt-1.5 whitespace-nowrap text-[6px] uppercase tracking-[0.16em] text-[#8C857B] sm:text-[9px] sm:tracking-[0.3em]">
               Atelier · Style · Everyday
             </span>
           </a>
 
-          <div className="col-start-3 flex items-center justify-end gap-4 text-[10px] uppercase tracking-[0.12em] sm:gap-6 sm:tracking-[0.18em]">
-            <a href="#product-search" className="hidden text-[#7D756C] transition-colors hover:text-black sm:inline">
+          <div className="col-start-3 flex items-center justify-end gap-2 text-[9px] uppercase tracking-[0.08em] sm:gap-6 sm:text-[10px] sm:tracking-[0.18em]">
+            <a
+              href="#product-search"
+              className="hidden text-[#7D756C] transition-colors hover:text-black sm:inline"
+            >
               Search
             </a>
-            <LocalizedClientLink href="/account" className="hidden transition-colors hover:text-[#8C857B] md:inline">
+
+            <LocalizedClientLink
+              href="/account"
+              className="hidden transition-colors hover:text-[#8C857B] md:inline"
+            >
               Account
             </LocalizedClientLink>
-            <LocalizedClientLink href="/cart" className="transition-opacity hover:opacity-60">
+
+            <LocalizedClientLink
+              href="/cart"
+              className="whitespace-nowrap transition-opacity hover:opacity-60"
+            >
               Bag <span className="text-[#8C857B]">↗</span>
             </LocalizedClientLink>
           </div>
         </div>
       </header>
 
-      {/* Editorial hero */}
+      {/* EDITORIAL HERO */}
       <section id="top" className="relative border-b border-[#E5DFD7]/70">
-        <div className="mx-auto max-w-[1720px] px-4 py-10 sm:px-6 sm:py-14 lg:px-12 lg:py-12 xl:py-14">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-7 xl:gap-12">
-            {/* Left editorial content */}
-            <div className="relative z-20 lg:col-span-5">
-              <div className="mb-7 flex items-center gap-3">
-                <span className="h-px w-7 bg-[#1A1816]/70" />
-                <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-[#8C857B] sm:text-[11px] sm:tracking-[0.3em]">
+        <div className="mx-auto max-w-[1720px] px-3 py-8 sm:px-6 sm:py-14 lg:px-12 lg:py-12 xl:py-14">
+          <div className="grid grid-cols-1 items-center gap-8 sm:gap-12 lg:grid-cols-12 lg:gap-7 xl:gap-12">
+            {/* LEFT EDITORIAL CONTENT */}
+            <div className="relative z-20 min-w-0 lg:col-span-5">
+              <div className="mb-5 flex items-center gap-3 sm:mb-7">
+                <span className="h-px w-7 shrink-0 bg-[#1A1816]/70" />
+
+                <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#8C857B] sm:text-[11px] sm:tracking-[0.3em]">
                   The Art of Everyday
                 </p>
               </div>
 
-              <h1 className="font-serif text-[58px] font-normal leading-[0.88] tracking-[-0.045em] text-[#1A1816] sm:text-7xl xl:text-[88px] 2xl:text-[100px]">
+              <h1 className="font-serif text-[46px] font-normal leading-[0.9] tracking-[-0.045em] text-[#1A1816] min-[375px]:text-[52px] sm:text-7xl xl:text-[88px] 2xl:text-[100px]">
                 Style that
                 <br />
                 speaks
@@ -98,15 +118,15 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                 </em>
               </h1>
 
-              <p className="mt-7 max-w-md text-sm leading-7 text-[#7D756C] sm:mt-8 sm:text-base sm:leading-8">
+              <p className="mt-5 max-w-md text-[13px] leading-6 text-[#7D756C] sm:mt-8 sm:text-base sm:leading-8">
                 Discover timeless essentials, distinctive silhouettes, and
                 refined everyday style selected with care for the way you live.
               </p>
 
-              <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+              <div className="mt-6 flex flex-col items-stretch gap-4 min-[420px]:flex-row min-[420px]:items-center sm:mt-8 sm:gap-8">
                 <a
                   href="#all-products"
-                  className="group inline-flex min-h-[52px] items-center justify-center gap-4 bg-[#1A1816] px-7 py-4 text-[10px] font-medium uppercase tracking-[0.18em] text-[#FDFBF7] shadow-sm transition-all duration-300 hover:bg-[#49433D] hover:shadow-lg sm:px-8"
+                  className="group inline-flex min-h-[48px] w-full items-center justify-center gap-3 bg-[#1A1816] px-5 py-3 text-[9px] font-medium uppercase tracking-[0.15em] text-[#FDFBF7] shadow-sm transition-all duration-300 hover:bg-[#49433D] hover:shadow-lg min-[420px]:w-auto sm:min-h-[52px] sm:gap-4 sm:px-8 sm:text-[10px] sm:tracking-[0.18em]"
                 >
                   Discover the Collection
                   <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5">
@@ -116,58 +136,64 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
 
                 <a
                   href="#shop-categories"
-                  className="group relative py-2 text-[10px] font-medium uppercase tracking-[0.2em] text-[#1A1816]"
+                  className="group relative w-fit py-2 text-[9px] font-medium uppercase tracking-[0.16em] text-[#1A1816] sm:text-[10px] sm:tracking-[0.2em]"
                 >
                   Explore the Edit
                   <span className="absolute bottom-0 left-0 h-px w-full origin-left bg-[#1A1816]/50 transition-transform duration-300 group-hover:scale-x-0" />
                 </a>
               </div>
 
-              <div className="mt-10 grid max-w-md grid-cols-2 gap-5 border-t border-[#E5DFD7] pt-6 sm:mt-12">
-                <div>
-                  <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#49433D]">
+              <div className="mt-8 grid max-w-md grid-cols-2 gap-3 border-t border-[#E5DFD7] pt-5 sm:mt-12 sm:gap-5 sm:pt-6">
+                <div className="min-w-0">
+                  <p className="text-[8px] font-semibold uppercase tracking-[0.13em] text-[#49433D] sm:text-[9px] sm:tracking-[0.18em]">
                     Thoughtfully Curated
                   </p>
-                  <p className="mt-2 text-xs leading-5 text-[#8C857B]">
+
+                  <p className="mt-2 text-[11px] leading-5 text-[#8C857B] sm:text-xs">
                     Considered styles for everyday living.
                   </p>
                 </div>
-                <div>
-                  <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#49433D]">
+
+                <div className="min-w-0">
+                  <p className="text-[8px] font-semibold uppercase tracking-[0.13em] text-[#49433D] sm:text-[9px] sm:tracking-[0.18em]">
                     Effortless Style
                   </p>
-                  <p className="mt-2 text-xs leading-5 text-[#8C857B]">
+
+                  <p className="mt-2 text-[11px] leading-5 text-[#8C857B] sm:text-xs">
                     Versatile pieces, timeless inspiration.
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Right fashion collage */}
+            {/* RIGHT FASHION COLLAGE */}
             <div
               aria-label="Fashion editorial image collection"
-              className="relative mx-auto w-full max-w-[680px] lg:col-span-7 lg:max-w-none"
+              className="relative mx-auto w-full min-w-0 max-w-[680px] lg:col-span-7 lg:max-w-none"
             >
               <div className="absolute -right-1 top-5 h-[70%] w-[62%] bg-[#EFEAE3]/80 sm:-right-3 sm:top-8" />
 
-              <div className="relative min-h-[470px] sm:min-h-[610px] lg:min-h-[650px] xl:min-h-[720px]">
-                {/* Main fashion image */}
-                <div className="absolute left-[12%] top-[5%] z-10 w-[68%] border border-[#E5DFD7] bg-white p-2 shadow-[0_20px_45px_-15px_rgba(26,24,22,0.16)] transition-transform duration-700 hover:scale-[1.015] sm:left-[16%] sm:w-[62%] sm:p-2.5 lg:left-[14%] lg:w-[62%]">
+              <div className="relative min-h-[370px] min-[375px]:min-h-[420px] sm:min-h-[610px] lg:min-h-[650px] xl:min-h-[720px]">
+                {/* MAIN FASHION IMAGE */}
+                <div className="absolute left-[10%] top-[5%] z-10 w-[72%] border border-[#E5DFD7] bg-white p-1.5 shadow-[0_20px_45px_-15px_rgba(26,24,22,0.16)] transition-transform duration-700 hover:scale-[1.015] min-[375px]:left-[12%] sm:left-[16%] sm:w-[62%] sm:p-2.5 lg:left-[14%] lg:w-[62%]">
                   <div className="aspect-[4/5] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1100&q=85"
                       alt="Editorial fashion portrait in timeless neutral styling"
+                      loading="eager"
+                      fetchPriority="high"
                       className="h-full w-full object-cover object-center transition-transform duration-1000 hover:scale-[1.04]"
                     />
                   </div>
-                  <div className="flex items-center justify-between px-1 pb-1 pt-3 text-[8px] uppercase tracking-[0.14em] text-[#8C857B] sm:text-[9px] sm:tracking-[0.18em]">
+
+                  <div className="flex flex-wrap items-center justify-between gap-1 px-1 pb-1 pt-2 text-[6px] uppercase tracking-[0.1em] text-[#8C857B] min-[375px]:text-[7px] sm:pt-3 sm:text-[9px] sm:tracking-[0.18em]">
                     <span>Look 01 / The New Edit</span>
                     <span>Fig. 01</span>
                   </div>
                 </div>
 
-                {/* Upper overlapping detail image */}
-                <div className="absolute right-0 top-[1%] z-20 w-[36%] border border-[#E5DFD7] bg-white p-1.5 shadow-[0_18px_40px_-16px_rgba(26,24,22,0.2)] transition-transform duration-500 hover:-translate-y-2 sm:right-[1%] sm:w-[34%] sm:p-2 lg:-right-1 lg:w-[34%]">
+                {/* UPPER DETAIL IMAGE */}
+                <div className="absolute right-0 top-[1%] z-20 w-[34%] border border-[#E5DFD7] bg-white p-1 shadow-[0_18px_40px_-16px_rgba(26,24,22,0.2)] transition-transform duration-500 hover:-translate-y-2 sm:right-[1%] sm:w-[34%] sm:p-2 lg:-right-1">
                   <div className="aspect-[3/4] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=700&q=85"
@@ -176,13 +202,14 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                       className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
                   </div>
-                  <p className="px-1 pb-1 pt-2 text-[7px] uppercase tracking-[0.12em] text-[#7D756C] sm:text-[9px] sm:tracking-[0.16em]">
+
+                  <p className="px-1 pb-1 pt-1.5 text-[6px] uppercase tracking-[0.08em] text-[#7D756C] min-[375px]:text-[7px] sm:pt-2 sm:text-[9px] sm:tracking-[0.16em]">
                     Objects of desire
                   </p>
                 </div>
 
-                {/* Lower overlapping detail image */}
-                <div className="absolute bottom-[1%] left-0 z-30 w-[38%] border border-[#E5DFD7] bg-[#FAF8F5] p-1.5 shadow-[0_18px_40px_-16px_rgba(26,24,22,0.18)] transition-transform duration-500 hover:translate-y-[-5px] sm:bottom-[2%] sm:left-[1%] sm:w-[34%] sm:p-2 lg:-left-1">
+                {/* LOWER DETAIL IMAGE */}
+                <div className="absolute bottom-[1%] left-0 z-30 w-[36%] border border-[#E5DFD7] bg-[#FAF8F5] p-1 shadow-[0_18px_40px_-16px_rgba(26,24,22,0.18)] transition-transform duration-500 hover:translate-y-[-5px] sm:bottom-[2%] sm:left-[1%] sm:w-[34%] sm:p-2 lg:-left-1">
                   <div className="aspect-[3/4] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
@@ -191,7 +218,8 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                       className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
                   </div>
-                  <p className="px-1 pb-1 pt-2 text-[7px] uppercase tracking-[0.1em] text-[#7D756C] sm:text-[9px] sm:tracking-[0.14em]">
+
+                  <p className="px-1 pb-1 pt-1.5 text-[6px] uppercase tracking-[0.06em] text-[#7D756C] min-[375px]:text-[7px] sm:pt-2 sm:text-[9px] sm:tracking-[0.14em]">
                     The finishing touch
                   </p>
                 </div>
@@ -204,10 +232,11 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
           </div>
         </div>
 
-        {/* Editorial footer strip */}
-        <div className="border-t border-[#E5DFD7] px-4 py-4 sm:px-8">
-          <div className="mx-auto flex max-w-[1720px] flex-col items-center justify-between gap-3 text-[9px] uppercase tracking-[0.16em] text-[#8C857B] sm:flex-row sm:tracking-[0.2em]">
+        {/* EDITORIAL FOOTER STRIP */}
+        <div className="border-t border-[#E5DFD7] px-3 py-4 sm:px-8">
+          <div className="mx-auto flex max-w-[1720px] flex-col items-center justify-between gap-3 text-center text-[8px] uppercase tracking-[0.13em] text-[#8C857B] sm:flex-row sm:text-[9px] sm:tracking-[0.2em]">
             <span>Maison Medusa · The New Edit</span>
+
             <a
               href="#shop-categories"
               className="group flex items-center gap-3 text-[#1A1816]"
@@ -217,49 +246,57 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                 <span className="h-1.5 w-px bg-[#1A1816] transition-transform group-hover:translate-y-1" />
               </span>
             </a>
-            <span className="hidden lg:inline">Considered style, every day</span>
+
+            <span className="hidden lg:inline">
+              Considered style, every day
+            </span>
           </div>
         </div>
       </section>
 
-      {/* Categories */}
+      {/* CATEGORIES */}
       <section
         id="shop-categories"
-        className="mx-auto max-w-[1720px] scroll-mt-24 px-4 py-14 sm:px-6 lg:px-10 lg:py-20"
+        className="mx-auto max-w-[1720px] scroll-mt-24 px-3 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-20"
       >
-        <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        <div className="mb-7 flex flex-col justify-between gap-3 sm:mb-8 sm:flex-row sm:items-end">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.25em] text-[#8C857B]">
+            <p className="text-[9px] uppercase tracking-[0.2em] text-[#8C857B] sm:text-[10px] sm:tracking-[0.25em]">
               The curated edit
             </p>
-            <h2 className="mt-3 font-serif text-4xl font-normal tracking-tight sm:text-5xl">
+
+            <h2 className="mt-2 font-serif text-3xl font-normal tracking-tight sm:mt-3 sm:text-5xl">
               Explore by category
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-6 text-[#7D756C]">
+
+          <p className="max-w-sm text-xs leading-6 text-[#7D756C] sm:text-sm">
             Thoughtfully selected pieces to make everyday dressing feel special.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {categories.map((category, index) => (
             <LocalizedClientLink
               key={category.name}
               href={category.href}
-              className="group flex min-h-[150px] items-end justify-between border border-[#E5DFD7] bg-[#FDFBF7] p-5 transition-all duration-300 hover:border-[#B9AFA3] hover:bg-white hover:shadow-[0_14px_30px_-20px_rgba(26,24,22,0.3)] sm:min-h-[180px] sm:p-6"
+              className="group flex min-h-[135px] min-w-0 items-end justify-between gap-3 border border-[#E5DFD7] bg-[#FDFBF7] p-4 transition-all duration-300 hover:border-[#B9AFA3] hover:bg-white hover:shadow-[0_14px_30px_-20px_rgba(26,24,22,0.3)] sm:min-h-[180px] sm:p-6"
             >
-              <div>
-                <span className="text-[9px] tracking-[0.2em] text-[#8C857B]">
+              <div className="min-w-0">
+                <span className="text-[8px] tracking-[0.15em] text-[#8C857B] sm:text-[9px] sm:tracking-[0.2em]">
                   0{index + 1} / COLLECTION
                 </span>
-                <h3 className="mt-4 font-serif text-3xl transition-transform duration-300 group-hover:translate-x-1">
+
+                <h3 className="mt-3 break-words font-serif text-2xl transition-transform duration-300 group-hover:translate-x-1 sm:mt-4 sm:text-3xl">
                   {category.name}
                 </h3>
-                <p className="mt-1 text-xs text-[#8C857B]">
+
+                <p className="mt-1 text-[11px] text-[#8C857B] sm:text-xs">
                   {category.description}
                 </p>
               </div>
-              <span className="text-xl text-[#7D756C] transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1">
+
+              <span className="shrink-0 text-lg text-[#7D756C] transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 sm:text-xl">
                 ↗
               </span>
             </LocalizedClientLink>
@@ -267,38 +304,41 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
         </div>
       </section>
 
-      {/* Product catalog heading */}
+      {/* PRODUCT CATALOG */}
       <section
         id="all-products"
-        className="mx-auto mt-2 max-w-[1720px] scroll-mt-24 px-4 pb-14 sm:px-6 lg:px-10 lg:pb-20"
+        className="mx-auto mt-2 w-full max-w-[1720px] min-w-0 scroll-mt-24 px-3 pb-10 sm:px-6 sm:pb-14 lg:px-10 lg:pb-20"
       >
-        <div className="border-y border-[#E5DFD7] py-8 sm:py-10">
-          <p className="text-[10px] uppercase tracking-[0.25em] text-[#8C857B]">
+        <div className="border-y border-[#E5DFD7] py-7 sm:py-10">
+          <p className="text-[9px] uppercase tracking-[0.2em] text-[#8C857B] sm:text-[10px] sm:tracking-[0.25em]">
             Find your next favourite
           </p>
-          <div className="mt-3 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <h2 className="font-serif text-4xl font-normal sm:text-5xl">
+
+          <div className="mt-3 flex min-w-0 flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div className="min-w-0">
+              <h2 className="font-serif text-3xl font-normal sm:text-5xl">
                 The collection
               </h2>
-              <p className="mt-3 max-w-xl text-sm leading-7 text-[#7D756C]">
+
+              <p className="mt-2 max-w-xl text-xs leading-6 text-[#7D756C] sm:mt-3 sm:text-sm sm:leading-7">
                 Browse the collection, discover new favourites, and refine
                 your search to find the pieces that feel right for you.
               </p>
             </div>
+
             <a
               href="#product-search"
-              className="inline-flex items-center gap-3 self-start border-b border-[#1A1816] pb-2 text-[10px] uppercase tracking-[0.18em] transition-opacity hover:opacity-60 sm:self-auto"
+              className="inline-flex w-fit shrink-0 items-center gap-3 border-b border-[#1A1816] pb-2 text-[9px] uppercase tracking-[0.15em] transition-opacity hover:opacity-60 sm:text-[10px] sm:tracking-[0.18em]"
             >
               Browse products <span>↓</span>
             </a>
           </div>
         </div>
 
-        {/* Existing Medusa search, filters and product listing */}
+        {/* EXISTING MEDUSA SEARCH, FILTERS AND PRODUCT LISTING */}
         <div
           id="product-search"
-          className="scroll-mt-24 border-b border-[#E5DFD7] py-6 sm:py-8"
+          className="w-full min-w-0 scroll-mt-24 border-b border-[#E5DFD7] py-5 sm:py-8"
         >
           <InstantSearch
             indexName={PRODUCT_INDEX_NAME}
@@ -308,40 +348,51 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
           >
             <Configure hitsPerPage={PRODUCT_LIMIT} />
 
-            <div className="flex min-w-0 flex-col items-stretch gap-6 lg:flex-row lg:items-start lg:gap-8">
+            <div className="flex w-full min-w-0 flex-col items-stretch gap-5 lg:flex-row lg:items-start lg:gap-8">
+              {/* FILTER SIDEBAR */}
               <aside className="w-full min-w-0 lg:w-[260px] lg:shrink-0">
-                <div className="border border-[#E5DFD7] bg-[#FDFBF7] p-4 sm:p-5">
-                  <h3 className="border-b border-[#E5DFD7] pb-4 font-serif text-2xl">
+                <div className="w-full min-w-0 border border-[#E5DFD7] bg-[#FDFBF7] p-3 sm:p-5">
+                  <h3 className="border-b border-[#E5DFD7] pb-3 font-serif text-xl sm:pb-4 sm:text-2xl">
                     Refine
                   </h3>
+
                   <p className="py-3 text-xs text-[#8C857B]">
                     Find your perfect piece
                   </p>
-                  <StoreRefinements currencyCode={currencyCode} />
+
+                  <div className="w-full min-w-0">
+                    <StoreRefinements currencyCode={currencyCode} />
+                  </div>
                 </div>
               </aside>
 
+              {/* SEARCH AND PRODUCTS */}
               <div className="w-full min-w-0 flex-1">
-                <div className="mb-6 border border-[#E5DFD7] bg-white p-3 transition-colors focus-within:border-[#8C857B] sm:p-4">
+                <div className="mb-5 w-full min-w-0 border border-[#E5DFD7] bg-white p-3 transition-colors focus-within:border-[#8C857B] sm:mb-6 sm:p-4">
                   <StoreSearchBox />
                 </div>
 
-                <StoreHits
-                  hitsPerPage={PRODUCT_LIMIT}
-                  currencyCode={currencyCode}
-                />
+                <div className="w-full min-w-0">
+                  <StoreHits
+                    hitsPerPage={PRODUCT_LIMIT}
+                    currencyCode={currencyCode}
+                  />
+                </div>
               </div>
             </div>
           </InstantSearch>
         </div>
       </section>
 
-      <footer className="border-t border-[#E5DFD7] bg-[#FDFBF7] px-4 py-7 sm:px-8">
-        <div className="mx-auto flex max-w-[1720px] flex-col items-center justify-between gap-3 text-center text-[9px] uppercase tracking-[0.18em] text-[#8C857B] sm:flex-row sm:text-left">
+      {/* FOOTER */}
+      <footer className="border-t border-[#E5DFD7] bg-[#FDFBF7] px-3 py-6 sm:px-8 sm:py-7">
+        <div className="mx-auto flex max-w-[1720px] flex-col items-center justify-between gap-3 text-center text-[8px] uppercase tracking-[0.13em] text-[#8C857B] sm:flex-row sm:text-left sm:text-[9px] sm:tracking-[0.18em]">
           <span className="font-serif text-lg tracking-[0.12em] text-[#1A1816]">
             Maison Medusa
           </span>
+
           <span>Everyday essentials · Thoughtfully selected</span>
+
           <a href="#top" className="text-[#1A1816] hover:opacity-60">
             Back to top ↑
           </a>

@@ -32,11 +32,15 @@ export default async function Nav() {
     ])
 
   return (
-    <div className="theme-navbar sticky top-0 z-50 w-full shadow-lg">
-      {/* ROW 1 */}
+    <div className="theme-navbar sticky top-0 z-50 w-full min-w-0 overflow-x-clip shadow-lg">
+      {/* ROW 1: MAIN NAVIGATION */}
       <header className="theme-nav-primary">
-        <nav className="mx-auto flex min-h-[82px] w-full items-center gap-3 px-3 sm:gap-5 sm:px-6 lg:px-10">
-          <div className="rounded-lg border border-white/20 px-2 py-2 transition hover:border-white">
+        <nav
+          aria-label="Main navigation"
+          className="theme-nav-primary-inner mx-auto flex w-full max-w-[1600px] min-w-0 flex-wrap items-center gap-x-2 gap-y-2 px-3 py-2.5 sm:gap-x-5 sm:gap-y-3 sm:px-6 sm:py-4 lg:px-8 xl:flex-nowrap xl:gap-5 xl:px-10"
+        >
+          {/* MENU */}
+          <div className="order-1 flex shrink-0 items-center rounded-lg border border-white/20 p-1.5 transition hover:border-white sm:p-2">
             <SideMenu
               regions={regions}
               locales={locales}
@@ -44,21 +48,28 @@ export default async function Nav() {
             />
           </div>
 
+          {/* STORE LOGO */}
           <LocalizedClientLink
             href="/"
-            className="group flex shrink-0 flex-col rounded-lg px-2 py-1"
+            className="order-2 flex min-w-0 shrink-0 flex-col rounded-lg px-1.5 py-1 sm:px-2"
             data-testid="nav-store-link"
+            aria-label="Medusa Store home"
           >
-            <span className="text-xl font-extrabold tracking-[.12em] sm:text-2xl">
+            <span className="whitespace-nowrap text-base font-extrabold tracking-[.08em] sm:text-2xl sm:tracking-[.12em]">
               MEDUSA<span className="theme-nav-accent">.</span>
             </span>
-            <span className="text-center text-[9px] font-semibold tracking-[.35em] text-white/65">
+
+            <span className="text-center text-[7px] font-semibold tracking-[.3em] text-white/65 sm:text-[9px]">
               STORE
             </span>
           </LocalizedClientLink>
 
-          <div className="hidden shrink-0 flex-col lg:flex">
-            <span className="text-xs text-white/65">Deliver to</span>
+          {/* DELIVERY LOCATION - DESKTOP */}
+          <div className="hidden shrink-0 flex-col xl:flex">
+            <span className="text-xs text-white/65">
+              Deliver to
+            </span>
+
             <span className="flex items-center gap-1 text-sm font-bold">
               <svg
                 aria-hidden="true"
@@ -75,39 +86,51 @@ export default async function Nav() {
             </span>
           </div>
 
-          <div className="min-w-0 flex-1">
-            <div className="mx-auto w-full max-w-4xl overflow-hidden rounded-lg bg-white [&_input]:text-gray-900">
+          {/* SEARCH */}
+          <div className="theme-nav-search order-4 w-full min-w-0 basis-full xl:order-3 xl:flex-1 xl:basis-auto">
+            <div className="mx-auto w-full max-w-4xl min-w-0 overflow-hidden rounded-lg bg-white [&_input]:min-w-0 [&_input]:text-gray-900">
               <Search />
             </div>
           </div>
 
+          {/* ACCOUNT - DESKTOP */}
           <LocalizedClientLink
             href="/account"
             data-testid="nav-account-link"
-            className="hidden shrink-0 flex-col rounded-lg border border-transparent px-2 py-2 hover:border-white sm:flex"
+            className="hidden shrink-0 flex-col rounded-lg border border-transparent px-2 py-2 transition hover:border-white xl:order-4 xl:flex"
           >
-            <span className="text-xs text-white/65">Hello, sign in</span>
-            <span className="text-sm font-bold">Account</span>
+            <span className="text-xs text-white/65">
+              Hello, sign in
+            </span>
+            <span className="text-sm font-bold">
+              Account
+            </span>
           </LocalizedClientLink>
 
+          {/* ORDERS - DESKTOP */}
           <LocalizedClientLink
             href="/account/orders"
-            className="hidden shrink-0 flex-col rounded-lg border border-transparent px-2 py-2 hover:border-white lg:flex"
+            className="hidden shrink-0 flex-col rounded-lg border border-transparent px-2 py-2 transition hover:border-white xl:order-5 xl:flex"
           >
-            <span className="text-xs text-white/65">Your</span>
-            <span className="text-sm font-bold">Orders</span>
+            <span className="text-xs text-white/65">
+              Your
+            </span>
+            <span className="text-sm font-bold">
+              Orders
+            </span>
           </LocalizedClientLink>
 
-          <div className="shrink-0 rounded-lg border border-transparent px-2 py-2 hover:border-white">
+          {/* CART */}
+          <div className="order-3 ml-auto flex shrink-0 items-center rounded-lg border border-transparent p-1.5 transition hover:border-white sm:p-2 xl:order-6 xl:ml-0">
             <Suspense
               fallback={
                 <LocalizedClientLink
                   href="/cart"
                   data-testid="nav-cart-link"
                   aria-label="Shopping cart"
-                  className="flex items-center gap-2 text-sm font-bold"
+                  className="flex min-h-9 items-center gap-2 text-sm font-bold"
                 >
-                  <span className="text-2xl">🛒</span>
+                  <span className="text-xl sm:text-2xl">🛒</span>
                   <span className="hidden sm:inline">Cart</span>
                 </LocalizedClientLink>
               }
@@ -118,22 +141,22 @@ export default async function Nav() {
         </nav>
       </header>
 
-      {/* ROW 2 */}
-      <div className="theme-nav-secondary">
+      {/* ROW 2: PRODUCT CATEGORIES */}
+      <div className="theme-nav-secondary min-w-0">
         <nav
           aria-label="Product categories"
-          className="mx-auto flex min-h-12 items-center gap-1 overflow-x-auto px-3 sm:px-6 lg:px-10"
+          className="mx-auto flex min-h-11 w-full max-w-[1600px] min-w-0 items-center gap-1 overflow-x-auto overscroll-x-contain whitespace-nowrap px-2 sm:min-h-12 sm:px-6 lg:px-10 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
         >
           <LocalizedClientLink
             href="/store"
-            className="shrink-0 rounded-lg border border-transparent px-4 py-2 text-sm font-bold transition hover:border-white"
+            className="shrink-0 rounded-lg border border-transparent px-3 py-2 text-xs font-bold transition hover:border-white sm:px-4 sm:text-sm"
           >
             ☰ All Products
           </LocalizedClientLink>
 
           <LocalizedClientLink
             href="/collections"
-            className="shrink-0 whitespace-nowrap rounded-lg border border-transparent px-4 py-2 text-sm font-semibold transition hover:border-white"
+            className="shrink-0 rounded-lg border border-transparent px-3 py-2 text-xs font-semibold transition hover:border-white sm:px-4 sm:text-sm"
           >
             All Collections
           </LocalizedClientLink>
@@ -142,7 +165,7 @@ export default async function Nav() {
             <LocalizedClientLink
               key={category.id}
               href={`/categories/${category.handle}`}
-              className="shrink-0 whitespace-nowrap rounded-lg border border-transparent px-4 py-2 text-sm transition hover:border-white"
+              className="shrink-0 rounded-lg border border-transparent px-3 py-2 text-xs transition hover:border-white sm:px-4 sm:text-sm"
             >
               {category.name}
             </LocalizedClientLink>
@@ -150,27 +173,27 @@ export default async function Nav() {
         </nav>
       </div>
 
-      {/* ROW 3 */}
-      <div className="theme-nav-tertiary">
+      {/* ROW 3: STORE SHORTCUTS */}
+      <div className="theme-nav-tertiary min-w-0">
         <nav
           aria-label="Store shortcuts"
-          className="mx-auto flex min-h-11 items-center gap-6 overflow-x-auto px-4 sm:gap-9 sm:px-6 lg:px-10"
+          className="mx-auto flex min-h-9 w-full max-w-[1600px] min-w-0 items-center gap-4 overflow-x-auto overscroll-x-contain whitespace-nowrap px-3 sm:min-h-11 sm:gap-9 sm:px-6 lg:px-10 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
         >
           <LocalizedClientLink
             href="/store"
-            className="shrink-0 py-2 text-xs font-bold transition sm:text-sm"
+            className="shrink-0 py-2 text-[11px] font-bold transition hover:opacity-70 sm:text-sm"
           >
             Explore Products
           </LocalizedClientLink>
 
           <LocalizedClientLink
             href="/collections"
-            className="shrink-0 py-2 text-xs font-medium transition sm:text-sm"
+            className="shrink-0 py-2 text-[11px] font-medium transition hover:opacity-70 sm:text-sm"
           >
             Browse Collections
           </LocalizedClientLink>
 
-          <span className="theme-nav-badge shrink-0 rounded-full px-4 py-1.5 text-xs font-bold">
+          <span className="theme-nav-badge shrink-0 rounded-full px-3 py-1.5 text-[10px] font-bold sm:px-4 sm:text-xs">
             Discover something new
           </span>
         </nav>

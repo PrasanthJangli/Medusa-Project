@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 
 import { getBaseURL } from "@lib/util/env"
+import {ThemeProvider} from "@modules/theme/theme-provider"
 
 import "styles/globals.css"
 
@@ -14,9 +15,11 @@ export default function RootLayout(props: {
   return (
     <html lang="en" data-mode="light">
       <body>
-        <main className="relative">
-          {props.children}
-        </main>
+        <ThemeProvider>
+          <div className="relative min-h-screen">
+            {props.children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )

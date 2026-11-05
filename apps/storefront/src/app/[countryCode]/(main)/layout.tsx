@@ -10,7 +10,7 @@ import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner"
 import Footer from "@modules/layout/templates/footer"
 import Nav from "@modules/layout/templates/nav"
 import FreeShippingPriceNudge from "@modules/shipping/components/free-shipping-price-nudge"
-import ThemeProvider from "@modules/theme/theme-provider"
+import {ThemeProvider} from "@modules/theme/theme-provider"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),

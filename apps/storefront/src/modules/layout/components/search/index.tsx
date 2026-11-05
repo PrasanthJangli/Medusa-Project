@@ -51,7 +51,7 @@ const SearchPanel = () => {
   }, [])
 
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
+    const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
@@ -61,9 +61,11 @@ const SearchPanel = () => {
     }
 
     document.addEventListener("mousedown", handleOutsideClick)
+    document.addEventListener("touchstart", handleOutsideClick)
 
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick)
+      document.removeEventListener("touchstart", handleOutsideClick)
     }
   }, [])
 
@@ -82,12 +84,15 @@ const SearchPanel = () => {
   }
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <div
+      ref={containerRef}
+      className="relative w-full min-w-0"
+    >
       {/* Search input */}
       <form
         role="search"
         onSubmit={handleSubmit}
-        className="flex h-10 w-full overflow-hidden rounded-md bg-white ring-1 ring-gray-300 transition focus-within:ring-2 focus-within:ring-[#febd69]"
+        className="flex h-10 w-full min-w-0 overflow-hidden rounded-md bg-white ring-1 ring-gray-300 transition focus-within:ring-2 focus-within:ring-[#febd69] sm:h-11"
       >
         <input
           ref={inputRef}
@@ -106,17 +111,17 @@ const SearchPanel = () => {
           aria-expanded={showDropdown}
           aria-controls="product-search-results"
           autoComplete="off"
-          className="min-w-0 flex-1 border-0 bg-white px-3 text-sm text-gray-900 outline-none placeholder:text-gray-500 focus:ring-0"
+          className="min-w-0 flex-1 border-0 bg-white px-2.5 text-sm text-gray-900 outline-none placeholder:text-gray-500 focus:ring-0 sm:px-4"
           data-testid="search-input"
         />
 
         <button
           type="submit"
           aria-label="Submit product search"
-          className="flex w-12 shrink-0 items-center justify-center bg-[#febd69] text-gray-900 transition hover:bg-[#f3a847]"
+          className="flex h-full w-10 shrink-0 items-center justify-center bg-[#febd69] text-gray-900 transition hover:bg-[#f3a847] sm:w-12"
           data-testid="nav-search-button"
         >
-          <MagnifyingGlass />
+          <MagnifyingGlass className="h-5 w-5" />
         </button>
       </form>
 
@@ -124,19 +129,19 @@ const SearchPanel = () => {
       {showDropdown && (
         <div
           id="product-search-results"
-          className="absolute left-0 right-0 top-full z-[80] mt-1 max-h-[70vh] overflow-y-auto rounded-md border border-gray-200 bg-white text-gray-900 shadow-xl"
+          className="absolute left-0 right-0 top-full z-[80] mt-1 max-h-[65dvh] w-full overflow-x-hidden overflow-y-auto rounded-md border border-gray-200 bg-white text-gray-900 shadow-xl sm:max-h-[70vh]"
         >
           {!query.trim() || isPending ? (
-            <Text className="px-4 py-4 text-sm text-gray-500">
+            <Text className="px-3 py-4 text-sm text-gray-500 sm:px-4">
               Searching...
             </Text>
           ) : status === "error" ? (
-            <Text className="px-4 py-4 text-sm text-red-600">
+            <Text className="break-words px-3 py-4 text-sm text-red-600 sm:px-4">
               Could not search products
               {error?.message ? `: ${error.message}` : "."}
             </Text>
           ) : !isSettled ? (
-            <Text className="px-4 py-4 text-sm text-gray-500">
+            <Text className="px-3 py-4 text-sm text-gray-500 sm:px-4">
               Searching...
             </Text>
           ) : hasResults ? (
@@ -151,7 +156,7 @@ const SearchPanel = () => {
             </ul>
           ) : (
             <Text
-              className="px-4 py-4 text-sm text-gray-500"
+              className="break-words px-3 py-4 text-sm text-gray-500 sm:px-4"
               data-testid="search-no-results"
             >
               No products found for &quot;{query}&quot;

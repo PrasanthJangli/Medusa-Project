@@ -1,3 +1,4 @@
+
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { STOREFRONT_THEME_MODULE } from "../../../../../modules/storefront-theme"
 
@@ -11,7 +12,9 @@ export async function POST(
 
     const themes = await themeService.listStorefrontThemes()
 
-    const selectedTheme = themes.find((theme) => theme.id === id)
+    const selectedTheme = themes.find(
+      (theme) => theme.id === id
+    )
 
     if (!selectedTheme) {
       return res.status(404).json({
@@ -19,23 +22,36 @@ export async function POST(
       })
     }
 
-    const currentTheme = themes.find(
-      (theme) => theme.status === "published"
+    // Archive other published themes.
+    const otherPublishedThemes = themes.filter(
+      (theme) =>
+        theme.status === "published" &&
+        theme.id !== id
     )
 
-    if (currentTheme && currentTheme.id !== id) {
+    for (const theme of otherPublishedThemes) {
       await themeService.updateStorefrontThemes({
-        id: currentTheme.id,
+        id: theme.id,
         status: "archived",
       })
     }
 
-    const publishedTheme = await themeService.updateStorefrontThemes({
-      id,
-      status: "published",
+    // Publish selected theme.
+    const publishedTheme =
+      await themeService.updateStorefrontThemes({
+        id,
+        status: "published",
+      })
+
+    console.log("Storefront theme published:", {
+      id: publishedTheme.id,
+      name: publishedTheme.name,
+      preset: publishedTheme.preset,
+      status: publishedTheme.status,
+      settings: publishedTheme.settings,
     })
 
-    return res.json({
+    return res.status(200).json({
       message: "Theme published successfully!",
       theme: publishedTheme,
     })
