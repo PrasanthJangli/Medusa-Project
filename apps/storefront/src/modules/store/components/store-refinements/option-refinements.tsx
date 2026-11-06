@@ -1,9 +1,11 @@
+
 "use client"
 
 import * as Accordion from "@radix-ui/react-accordion"
 import { ChevronDownMini } from "@medusajs/icons"
 import clsx from "clsx"
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import { useRefinementList } from "react-instantsearch"
 
 import { OPTION_VALUES_ATTRIBUTE } from "./attributes"
@@ -51,13 +53,15 @@ function groupItems(
 }
 
 const OptionRefinements = () => {
+  const t = useTranslations("Store")
+
   const { items, refine } = useRefinementList({
     attribute: OPTION_VALUES_ATTRIBUTE,
     limit: FACET_LIMIT,
-    // Alphabetical keeps a size or colour list stable as counts move around.
     sortBy: ["name:asc"],
     operator: "and",
   })
+
   const [closedGroups, setClosedGroups] = useState<string[]>([])
 
   const groups = groupItems(items)
@@ -94,7 +98,10 @@ const OptionRefinements = () => {
             className="overflow-hidden"
           >
             <Accordion.Header>
-              <Accordion.Trigger className="flex w-full items-center justify-between py-3 text-left">
+              <Accordion.Trigger
+                className="flex w-full items-center justify-between py-3 text-left"
+                aria-label={`${group.title} ${t("options")}`}
+              >
                 <div className="flex items-center gap-2">
                   <span className="txt-compact-small-plus text-ui-fg-base">
                     {group.title}
@@ -103,6 +110,7 @@ const OptionRefinements = () => {
                     ({selectedCount})
                   </span>
                 </div>
+
                 <span
                   className={clsx(
                     "flex h-7 w-7 items-center justify-center text-ui-fg-muted transition-transform duration-150",
@@ -113,6 +121,7 @@ const OptionRefinements = () => {
                 </span>
               </Accordion.Trigger>
             </Accordion.Header>
+
             <Accordion.Content className="pb-4 pt-1">
               <div className="flex flex-wrap gap-2">
                 {group.values.map((value) => (
@@ -132,7 +141,9 @@ const OptionRefinements = () => {
                     data-testid="option-refinement"
                   >
                     {value.label}
-                    <span className="text-ui-fg-muted">({value.count})</span>
+                    <span className="text-ui-fg-muted">
+                      ({value.count})
+                    </span>
                   </button>
                 ))}
               </div>

@@ -5,14 +5,106 @@ import EmptyCartMessage from "../components/empty-cart-message"
 import SignInPrompt from "../components/sign-in-prompt"
 import Divider from "@modules/common/components/divider"
 import { HttpTypes } from "@medusajs/types"
+import { getUiLocale } from "@lib/data/ui-locale-actions"
 
-const CartTemplate = ({
+const translations = {
+  en: {
+    home: "Home",
+    shoppingCart: "Shopping Cart",
+    shoppingBag: "Your shopping bag",
+    yourCart: "Your Cart",
+    description:
+      "Your favourites are waiting. Review your items and continue when you are ready.",
+    secureShopping: "Secure shopping",
+    checkoutConfidence: "Checkout with confidence",
+    cartItems: "Cart Items",
+    reviewProducts: "Review your products and selected quantities.",
+    item: "item",
+    items: "items",
+    selected: "selected",
+    easyOrderReview: "Easy order review",
+    almostYours: "Almost yours",
+    orderSummary: "Order Summary",
+    orderDetails: "Check your order details before continuing.",
+    protectedCheckout: "Your checkout is protected",
+    securePayment: "Secure payment",
+    protectedProcess: "Protected checkout process",
+    orderUpdates: "Order updates",
+    orderJourney: "Follow your order journey",
+    shoppingEasy: "Shopping made easy",
+    everythingOnePlace: "Everything in one place",
+    nextFind: "Your next favourite find is just around the corner.",
+    shoppingBagUpper: "YOUR SHOPPING BAG",
+  },
+  te: {
+    home: "హోమ్",
+    shoppingCart: "షాపింగ్ కార్ట్",
+    shoppingBag: "మీ షాపింగ్ బ్యాగ్",
+    yourCart: "మీ కార్ట్",
+    description:
+      "మీకు నచ్చిన ఉత్పత్తులు మీ కోసం వేచి ఉన్నాయి. వాటిని పరిశీలించి కొనసాగించండి.",
+    secureShopping: "సురక్షితమైన షాపింగ్",
+    checkoutConfidence: "నమ్మకంగా చెక్అవుట్ చేయండి",
+    cartItems: "కార్ట్ వస్తువులు",
+    reviewProducts: "మీ ఉత్పత్తులు మరియు ఎంచుకున్న పరిమాణాలను పరిశీలించండి.",
+    item: "వస్తువు",
+    items: "వస్తువులు",
+    selected: "ఎంచుకున్నారు",
+    easyOrderReview: "ఆర్డర్‌ను సులభంగా పరిశీలించండి",
+    almostYours: "మీ సొంతం కాబోతోంది",
+    orderSummary: "ఆర్డర్ వివరాలు",
+    orderDetails: "కొనసాగించే ముందు మీ ఆర్డర్ వివరాలను పరిశీలించండి.",
+    protectedCheckout: "మీ చెక్అవుట్ సురక్షితం",
+    securePayment: "సురక్షిత చెల్లింపు",
+    protectedProcess: "రక్షిత చెక్అవుట్ ప్రక్రియ",
+    orderUpdates: "ఆర్డర్ అప్‌డేట్స్",
+    orderJourney: "మీ ఆర్డర్ స్థితిని తెలుసుకోండి",
+    shoppingEasy: "సులభమైన షాపింగ్",
+    everythingOnePlace: "అన్నీ ఒకే చోట",
+    nextFind: "మీ తదుపరి ఇష్టమైన ఉత్పత్తి మీ కోసం వేచి ఉంది.",
+    shoppingBagUpper: "మీ షాపింగ్ బ్యాగ్",
+  },
+  hi: {
+    home: "होम",
+    shoppingCart: "शॉपिंग कार्ट",
+    shoppingBag: "आपका शॉपिंग बैग",
+    yourCart: "आपका कार्ट",
+    description:
+      "आपके पसंदीदा उत्पाद आपका इंतज़ार कर रहे हैं। उन्हें देखें और आगे बढ़ें।",
+    secureShopping: "सुरक्षित खरीदारी",
+    checkoutConfidence: "विश्वास के साथ चेकआउट करें",
+    cartItems: "कार्ट के उत्पाद",
+    reviewProducts: "अपने उत्पादों और चुनी गई मात्रा की समीक्षा करें।",
+    item: "वस्तु",
+    items: "वस्तुएं",
+    selected: "चुने गए",
+    easyOrderReview: "आसान ऑर्डर समीक्षा",
+    almostYours: "बस आपके होने वाले हैं",
+    orderSummary: "ऑर्डर का सारांश",
+    orderDetails: "आगे बढ़ने से पहले अपने ऑर्डर की जानकारी देखें।",
+    protectedCheckout: "आपका चेकआउट सुरक्षित है",
+    securePayment: "सुरक्षित भुगतान",
+    protectedProcess: "सुरक्षित चेकआउट प्रक्रिया",
+    orderUpdates: "ऑर्डर अपडेट",
+    orderJourney: "अपने ऑर्डर की स्थिति जानें",
+    shoppingEasy: "आसान खरीदारी",
+    everythingOnePlace: "सब कुछ एक ही जगह",
+    nextFind: "आपका अगला पसंदीदा उत्पाद बस मिलने ही वाला है।",
+    shoppingBagUpper: "आपका शॉपिंग बैग",
+  },
+}
+
+const CartTemplate = async ({
   cart,
   customer,
 }: {
   cart: HttpTypes.StoreCart | null
   customer: HttpTypes.StoreCustomer | null
 }) => {
+  const locale = await getUiLocale()
+  const t =
+    translations[locale as keyof typeof translations] ?? translations.en
+
   const itemCount =
     cart?.items?.reduce(
       (total, item) => total + (item.quantity ?? 0),
@@ -27,13 +119,12 @@ const CartTemplate = ({
       >
         {cart?.items?.length ? (
           <>
-            {/* Cart heading */}
             <header className="mb-7 sm:mb-10">
               <div className="mb-4 flex flex-wrap items-center gap-2 text-xs text-gray-500 sm:mb-5 sm:text-sm">
-                <span>Home</span>
+                <span>{t.home}</span>
                 <span>/</span>
                 <span className="font-medium text-violet-700">
-                  Shopping Cart
+                  {t.shoppingCart}
                 </span>
               </div>
 
@@ -41,19 +132,18 @@ const CartTemplate = ({
                 <div className="min-w-0">
                   <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-violet-100 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-violet-700 sm:text-xs">
                     <span className="h-2 w-2 shrink-0 rounded-full bg-violet-500" />
-                    Your shopping bag
+                    {t.shoppingBag}
                   </div>
 
                   <h1 className="flex flex-wrap items-center gap-2 text-3xl font-extrabold tracking-tight text-gray-950 sm:gap-3 sm:text-4xl lg:text-5xl">
-                    Your Cart
+                    {t.yourCart}
                     <span className="inline-flex shrink-0 items-center rounded-full bg-violet-100 px-3 py-1 text-base font-bold text-violet-700 sm:text-lg">
                       {itemCount}
                     </span>
                   </h1>
 
                   <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-500 sm:text-base">
-                    Your favourites are waiting. Review your items
-                    and continue when you are ready.
+                    {t.description}
                   </p>
                 </div>
 
@@ -82,32 +172,31 @@ const CartTemplate = ({
 
                   <span className="min-w-0">
                     <span className="block text-sm font-bold text-gray-900">
-                      Secure shopping
+                      {t.secureShopping}
                     </span>
                     <span className="mt-0.5 block text-xs text-gray-500">
-                      Checkout with confidence
+                      {t.checkoutConfidence}
                     </span>
                   </span>
                 </div>
               </div>
             </header>
 
-            {/* Main cart layout */}
             <div className="grid min-w-0 grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_350px] lg:gap-7 xl:grid-cols-[minmax(0,1fr)_410px] xl:gap-8">
-              {/* Cart items */}
               <section className="min-w-0 overflow-hidden rounded-2xl border border-violet-100/80 bg-white shadow-[0_8px_35px_rgba(76,29,149,0.05)] sm:rounded-3xl">
                 <div className="flex flex-col justify-between gap-3 border-b border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:px-6 sm:py-6 lg:px-7">
                   <div className="min-w-0">
                     <h2 className="text-lg font-bold text-gray-950 sm:text-xl">
-                      Cart Items
+                      {t.cartItems}
                     </h2>
                     <p className="mt-1 text-xs leading-5 text-gray-500 sm:text-sm">
-                      Review your products and selected quantities.
+                      {t.reviewProducts}
                     </p>
                   </div>
 
                   <span className="w-fit shrink-0 rounded-full bg-violet-50 px-3 py-1.5 text-[10px] font-semibold text-violet-700 sm:text-xs">
-                    {itemCount} {itemCount === 1 ? "item" : "items"} selected
+                    {itemCount} {itemCount === 1 ? t.item : t.items}{" "}
+                    {t.selected}
                   </span>
                 </div>
 
@@ -130,17 +219,16 @@ const CartTemplate = ({
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-gray-500 sm:text-sm">
                     <span className="flex items-center gap-2">
                       <span className="text-emerald-600">✓</span>
-                      Secure shopping
+                      {t.secureShopping}
                     </span>
                     <span className="flex items-center gap-2">
                       <span className="text-emerald-600">✓</span>
-                      Easy order review
+                      {t.easyOrderReview}
                     </span>
                   </div>
                 </div>
               </section>
 
-              {/* Order summary */}
               <aside className="min-w-0 w-full lg:sticky lg:top-8">
                 {cart.region && (
                   <div className="min-w-0 overflow-hidden rounded-2xl border border-violet-100 bg-white shadow-[0_12px_40px_rgba(76,29,149,0.08)] sm:rounded-3xl">
@@ -156,13 +244,13 @@ const CartTemplate = ({
 
                       <div className="relative">
                         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-200 sm:text-xs">
-                          Almost yours
+                          {t.almostYours}
                         </p>
                         <h2 className="mt-2 text-xl font-extrabold tracking-tight sm:text-2xl">
-                          Order Summary
+                          {t.orderSummary}
                         </h2>
                         <p className="mt-2 text-xs leading-6 text-violet-100 sm:text-sm">
-                          Check your order details before continuing.
+                          {t.orderDetails}
                         </p>
                       </div>
                     </div>
@@ -193,7 +281,7 @@ const CartTemplate = ({
                             strokeLinecap="round"
                           />
                         </svg>
-                        Your checkout is protected
+                        {t.protectedCheckout}
                       </div>
                     </div>
                   </div>
@@ -201,7 +289,6 @@ const CartTemplate = ({
               </aside>
             </div>
 
-            {/* Trust section */}
             <section className="mt-7 grid grid-cols-1 gap-3 border-t border-violet-100 pt-6 sm:mt-8 sm:grid-cols-2 sm:gap-4 sm:pt-7 lg:grid-cols-3">
               <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-gray-100 bg-white p-3 sm:p-4">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
@@ -219,10 +306,10 @@ const CartTemplate = ({
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-gray-900">
-                    Secure payment
+                    {t.securePayment}
                   </p>
                   <p className="mt-1 text-xs text-gray-500">
-                    Protected checkout process
+                    {t.protectedProcess}
                   </p>
                 </div>
               </div>
@@ -245,10 +332,10 @@ const CartTemplate = ({
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-gray-900">
-                    Order updates
+                    {t.orderUpdates}
                   </p>
                   <p className="mt-1 text-xs text-gray-500">
-                    Follow your order journey
+                    {t.orderJourney}
                   </p>
                 </div>
               </div>
@@ -268,10 +355,10 @@ const CartTemplate = ({
                 </span>
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-gray-900">
-                    Shopping made easy
+                    {t.shoppingEasy}
                   </p>
                   <p className="mt-1 text-xs text-gray-500">
-                    Everything in one place
+                    {t.everythingOnePlace}
                   </p>
                 </div>
               </div>
@@ -281,13 +368,13 @@ const CartTemplate = ({
           <div className="mx-auto w-full max-w-4xl">
             <div className="mb-6 text-center">
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-600 sm:text-xs">
-                YOUR SHOPPING BAG
+                {t.shoppingBagUpper}
               </p>
               <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-gray-950 sm:text-4xl">
-                Your Cart
+                {t.yourCart}
               </h1>
               <p className="mt-3 text-sm text-gray-500 sm:text-base">
-                Your next favourite find is just around the corner.
+                {t.nextFind}
               </p>
             </div>
 

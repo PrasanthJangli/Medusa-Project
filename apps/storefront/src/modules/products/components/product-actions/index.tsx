@@ -1,4 +1,3 @@
-
 "use client"
 
 import { addToCart } from "@lib/data/cart"
@@ -8,6 +7,7 @@ import { Button, Text } from "@modules/common/components/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 import { isEqual } from "lodash"
+import { useLocale } from "next-intl"
 import {
   useParams,
   usePathname,
@@ -23,6 +23,63 @@ type ProductActionsProps = {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
   disabled?: boolean
+}
+
+const translations = {
+  en: {
+    yourSelection: "Your selection",
+    chooseOptions: "Choose your options",
+    selectOptionsDescription: "Select the available options before adding this product to your cart.",
+    options: "Options",
+    selectRequired: "Please select all required options.",
+    available: "Available for purchase",
+    outOfStock: "Currently out of stock",
+    price: "Price",
+    finalPrice: "Final price depends on the selected variant.",
+    chooseOptionsButton: "Choose options",
+    adding: "Adding to cart...",
+    addToCart: "Add to cart",
+    productAdded: "Product added to cart.",
+    addError: "Could not add this product. Please try again.",
+    ready: "Ready when you are",
+    readyDescription: "Review your selected options and add the item to your cart when you are ready.",
+  },
+  te: {
+    yourSelection: "మీ ఎంపిక",
+    chooseOptions: "మీకు కావలసిన ఎంపికలను ఎంచుకోండి",
+    selectOptionsDescription: "ఈ ఉత్పత్తిని కార్ట్‌లో చేర్చే ముందు అందుబాటులో ఉన్న ఎంపికలను ఎంచుకోండి.",
+    options: "ఎంపికలు",
+    selectRequired: "దయచేసి అవసరమైన అన్ని ఎంపికలను ఎంచుకోండి.",
+    available: "కొనుగోలుకు అందుబాటులో ఉంది",
+    outOfStock: "ప్రస్తుతం స్టాక్‌లో లేదు",
+    price: "ధర",
+    finalPrice: "చివరి ధర మీరు ఎంచుకున్న వేరియంట్‌పై ఆధారపడి ఉంటుంది.",
+    chooseOptionsButton: "ఎంపికలను ఎంచుకోండి",
+    adding: "కార్ట్‌లో చేరుస్తున్నాము...",
+    addToCart: "కార్ట్‌లో చేర్చండి",
+    productAdded: "ఉత్పత్తి కార్ట్‌లో చేర్చబడింది.",
+    addError: "ఈ ఉత్పత్తిని కార్ట్‌లో చేర్చలేకపోయాము. దయచేసి మళ్లీ ప్రయత్నించండి.",
+    ready: "మీరు సిద్ధంగా ఉన్నప్పుడు",
+    readyDescription: "మీరు ఎంచుకున్న ఎంపికలను పరిశీలించి, సిద్ధంగా ఉన్నప్పుడు ఉత్పత్తిని కార్ట్‌లో చేర్చండి.",
+  },
+  hi: {
+    yourSelection: "आपका चयन",
+    chooseOptions: "अपने विकल्प चुनें",
+    selectOptionsDescription: "इस उत्पाद को कार्ट में जोड़ने से पहले उपलब्ध विकल्प चुनें।",
+    options: "विकल्प",
+    selectRequired: "कृपया सभी आवश्यक विकल्प चुनें।",
+    available: "खरीदारी के लिए उपलब्ध",
+    outOfStock: "फिलहाल स्टॉक में उपलब्ध नहीं है",
+    price: "कीमत",
+    finalPrice: "अंतिम कीमत आपके चुने गए विकल्प पर निर्भर करती है।",
+    chooseOptionsButton: "विकल्प चुनें",
+    adding: "कार्ट में जोड़ा जा रहा है...",
+    addToCart: "कार्ट में जोड़ें",
+    productAdded: "उत्पाद कार्ट में जोड़ दिया गया है।",
+    addError: "इस उत्पाद को कार्ट में नहीं जोड़ सके। कृपया फिर से प्रयास करें।",
+    ready: "जब आप तैयार हों",
+    readyDescription: "अपने चुने हुए विकल्पों की समीक्षा करें और तैयार होने पर उत्पाद को कार्ट में जोड़ें।",
+  },
 }
 
 const optionsAsKeymap = (
@@ -44,6 +101,9 @@ export default function ProductActions({
   product,
   disabled,
 }: ProductActionsProps) {
+  const locale = useLocale()
+  const t = translations[locale as keyof typeof translations] || translations.en
+
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -54,6 +114,7 @@ export default function ProductActions({
   >({})
   const [isAdding, setIsAdding] = useState(false)
   const [cartMessage, setCartMessage] = useState("")
+  const [cartMessageType, setCartMessageType] = useState<"success" | "error" | "">("")
 
   const actionsRef = useRef<HTMLDivElement>(null)
   const inView = useIntersection(actionsRef, "0px")
@@ -89,6 +150,7 @@ export default function ProductActions({
     }))
 
     setCartMessage("")
+    setCartMessageType("")
   }
 
   // Check whether the selected options match a real variant.
@@ -142,6 +204,7 @@ export default function ProductActions({
 
     setIsAdding(true)
     setCartMessage("")
+    setCartMessageType("")
 
     try {
       await addToCart({
@@ -150,22 +213,24 @@ export default function ProductActions({
         countryCode,
       })
 
-      setCartMessage("Product added to cart.")
+      setCartMessage(t.productAdded)
+      setCartMessageType("success")
     } catch (error) {
       console.error("Could not add product to cart:", error)
-      setCartMessage("Could not add this product. Please try again.")
+      setCartMessage(t.addError)
+      setCartMessageType("error")
     } finally {
       setIsAdding(false)
     }
   }
 
   const buttonText = !selectedVariant
-    ? "Choose options"
+    ? t.chooseOptionsButton
     : !inStock
-      ? "Out of stock"
+      ? t.outOfStock
       : isAdding
-        ? "Adding to cart..."
-        : "Add to cart"
+        ? t.adding
+        : t.addToCart
 
   return (
     <>
@@ -176,16 +241,15 @@ export default function ProductActions({
         {/* PURCHASE PANEL HEADING */}
         <div className="min-w-0">
           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-500 sm:text-xs sm:tracking-[0.18em]">
-            Your selection
+            {t.yourSelection}
           </p>
 
           <h3 className="mt-1 break-words text-base font-bold text-[#17283d] sm:text-lg">
-            Choose your options
+            {t.chooseOptions}
           </h3>
 
           <p className="mt-1 text-xs leading-5 text-gray-500 sm:text-sm sm:leading-6">
-            Select the available options before adding this product
-            to your cart.
+            {t.selectOptionsDescription}
           </p>
         </div>
 
@@ -203,7 +267,7 @@ export default function ProductActions({
                   option={option}
                   current={options[option.id]}
                   updateOption={setOptionValue}
-                  title={option.title ?? "Options"}
+                  title={option.title ?? t.options}
                   data-testid="product-options"
                   disabled={!!disabled || isAdding}
                 />
@@ -215,7 +279,7 @@ export default function ProductActions({
         {/* SELECTION STATUS */}
         {(product.variants?.length ?? 0) > 1 && !selectedVariant && (
           <p className="break-words rounded-lg bg-amber-50 px-3 py-2.5 text-xs leading-5 text-amber-800 sm:text-sm">
-            Please select all required options.
+            {t.selectRequired}
           </p>
         )}
 
@@ -234,9 +298,7 @@ export default function ProductActions({
               }`}
             />
             <span className="min-w-0 break-words">
-              {inStock
-                ? "Available for purchase"
-                : "Currently out of stock"}
+              {inStock ? t.available : t.outOfStock}
             </span>
           </div>
         )}
@@ -244,7 +306,7 @@ export default function ProductActions({
         {/* PRICE */}
         <div className="w-full min-w-0 rounded-lg border border-gray-100 bg-[#f8fafc] p-3 sm:rounded-xl sm:p-4">
           <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:text-xs">
-            Price
+            {t.price}
           </p>
 
           <div className="min-w-0 break-words text-[#17283d]">
@@ -255,7 +317,7 @@ export default function ProductActions({
           </div>
 
           <p className="mt-2 text-[11px] leading-5 text-gray-500 sm:text-xs">
-            Final price depends on the selected variant.
+            {t.finalPrice}
           </p>
         </div>
 
@@ -288,7 +350,7 @@ export default function ProductActions({
             role="status"
             aria-live="polite"
             className={`break-words text-xs sm:text-sm ${
-              cartMessage.startsWith("Product added")
+              cartMessageType === "success"
                 ? "text-emerald-700"
                 : "text-red-600"
             }`}
@@ -305,12 +367,11 @@ export default function ProductActions({
 
           <div className="min-w-0">
             <p className="break-words text-xs font-semibold text-gray-800 sm:text-sm">
-              Ready when you are
+              {t.ready}
             </p>
 
             <p className="mt-1 break-words text-[11px] leading-5 text-gray-500 sm:text-xs">
-              Review your selected options and add the item to your
-              cart when you are ready.
+              {t.readyDescription}
             </p>
           </div>
         </div>

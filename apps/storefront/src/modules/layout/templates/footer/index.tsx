@@ -1,9 +1,11 @@
-
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { getTranslations } from "next-intl/server"
 
 export default async function Footer() {
+  const t = await getTranslations("Footer")
+
   const [{ collections }, productCategories] = await Promise.all([
     listCollections({
       fields: "*products",
@@ -18,6 +20,23 @@ export default async function Footer() {
     .filter((category) => !category.parent_category)
     .slice(0, 6)
 
+  const categoryTranslations: Record<string, string> = {
+    shirts: t("shirts"),
+    shirt: t("shirts"),
+    pants: t("pants"),
+    trousers: t("pants"),
+    shoes: t("shoes"),
+    "t-shirts": t("tshirts"),
+    tshirts: t("tshirts"),
+    shorts: t("shorts"),
+  }
+
+  const collectionTranslations: Record<string, string> = {
+    "best-price": t("bestPrice"),
+    "new-arrival": t("newArrival"),
+    "best-sellers-now": t("bestSellers"),
+  }
+
   return (
     <footer className="theme-footer mt-0 w-full overflow-hidden text-sm">
       {/* Back to top */}
@@ -26,7 +45,7 @@ export default async function Footer() {
         className="theme-footer-top flex min-h-12 items-center justify-center gap-2 px-3 py-4 text-center text-xs font-bold uppercase tracking-[.16em] transition sm:px-4 sm:py-5 sm:text-sm"
       >
         <span aria-hidden="true">↑</span>
-        Back to top
+        {t("backToTop")}
       </a>
 
       <div className="theme-footer-main">
@@ -47,36 +66,35 @@ export default async function Footer() {
             </LocalizedClientLink>
 
             <p className="theme-footer-muted mt-5 max-w-xs text-sm leading-7 sm:mt-6 sm:leading-8">
-              Discover products you love with a simple, beautiful and enjoyable
-              online shopping experience.
+              {t("description")}
             </p>
 
             <LocalizedClientLink
               href="/store"
               className="theme-footer-button mt-6 inline-flex min-h-11 max-w-full items-center justify-center gap-3 px-5 py-3 text-sm font-bold transition hover:-translate-y-1 sm:mt-7 sm:px-6 sm:py-3.5"
             >
-              Explore Store <span>→</span>
+              {t("exploreStore")} <span>→</span>
             </LocalizedClientLink>
           </div>
 
           {/* EXPLORE */}
           <div className="min-w-0">
             <h3 className="theme-footer-heading mb-4 text-xs font-bold uppercase tracking-[.18em] sm:mb-6 sm:text-sm">
-              Explore
+              {t("explore")}
             </h3>
 
             <ul className="theme-footer-links space-y-4 sm:space-y-5">
               <li>
-                <LocalizedClientLink href="/">Home</LocalizedClientLink>
+                <LocalizedClientLink href="/">{t("home")}</LocalizedClientLink>
               </li>
               <li>
                 <LocalizedClientLink href="/store">
-                  All Products
+                  {t("allProducts")}
                 </LocalizedClientLink>
               </li>
               <li>
                 <LocalizedClientLink href="/collections">
-                  Collections
+                  {t("collections")}
                 </LocalizedClientLink>
               </li>
               <li>
@@ -85,7 +103,7 @@ export default async function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Medusa on GitHub
+                  {t("github")}
                 </a>
               </li>
             </ul>
@@ -94,60 +112,70 @@ export default async function Footer() {
           {/* CATEGORIES */}
           <div className="min-w-0">
             <h3 className="theme-footer-heading mb-4 text-xs font-bold uppercase tracking-[.18em] sm:mb-6 sm:text-sm">
-              Shop Categories
+              {t("shopCategories")}
             </h3>
 
             {rootCategories.length > 0 ? (
               <ul className="theme-footer-links space-y-4 sm:space-y-5">
-                {rootCategories.map((category) => (
-                  <li key={category.id} className="break-words">
-                    <LocalizedClientLink
-                      href={`/categories/${category.handle}`}
-                    >
-                      {category.name}
-                    </LocalizedClientLink>
-                  </li>
-                ))}
+                {rootCategories.map((category) => {
+                  const handle = category.handle.toLowerCase()
+                  const translatedName =
+                    categoryTranslations[handle] ?? category.name
+
+                  return (
+                    <li key={category.id} className="break-words">
+                      <LocalizedClientLink
+                        href={`/categories/${category.handle}`}
+                      >
+                        {translatedName}
+                      </LocalizedClientLink>
+                    </li>
+                  )
+                })}
               </ul>
             ) : (
-              <p className="theme-footer-muted">
-                No categories available.
-              </p>
+              <p className="theme-footer-muted">{t("noCategories")}</p>
             )}
           </div>
 
           {/* HELP */}
           <div className="min-w-0">
             <h3 className="theme-footer-heading mb-4 text-xs font-bold uppercase tracking-[.18em] sm:mb-6 sm:text-sm">
-              Help & Discover
+              {t("helpDiscover")}
             </h3>
 
             <ul className="theme-footer-links space-y-4 sm:space-y-5">
               <li>
                 <LocalizedClientLink href="/account">
-                  My Account
+                  {t("myAccount")}
                 </LocalizedClientLink>
               </li>
               <li>
                 <LocalizedClientLink href="/account/orders">
-                  My Orders
+                  {t("myOrders")}
                 </LocalizedClientLink>
               </li>
               <li>
                 <LocalizedClientLink href="/cart">
-                  Shopping Cart
+                  {t("shoppingCart")}
                 </LocalizedClientLink>
               </li>
 
-              {collections?.slice(0, 3).map((collection) => (
-                <li key={collection.id} className="break-words">
-                  <LocalizedClientLink
-                    href={`/collections/${collection.handle}`}
-                  >
-                    {collection.title}
-                  </LocalizedClientLink>
-                </li>
-              ))}
+              {collections?.slice(0, 3).map((collection) => {
+                const handle = collection.handle.toLowerCase()
+                const translatedTitle =
+                  collectionTranslations[handle] ?? collection.title
+
+                return (
+                  <li key={collection.id} className="break-words">
+                    <LocalizedClientLink
+                      href={`/collections/${collection.handle}`}
+                    >
+                      {translatedTitle}
+                    </LocalizedClientLink>
+                  </li>
+                )
+              })}
 
               <li>
                 <a
@@ -155,7 +183,7 @@ export default async function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Documentation
+                  {t("documentation")}
                 </a>
               </li>
             </ul>
@@ -168,12 +196,12 @@ export default async function Footer() {
             <p className="theme-footer-heading flex flex-wrap items-center justify-center gap-1 text-sm font-semibold tracking-wider md:justify-start">
               MEDUSA<span className="theme-nav-accent">.</span>
               <span className="theme-footer-muted ml-1 font-normal tracking-normal">
-                Your destination for online shopping
+                {t("tagline")}
               </span>
             </p>
 
             <p className="theme-footer-muted text-xs leading-5">
-              © {new Date().getFullYear()} Medusa Store. All rights reserved.
+              © {new Date().getFullYear()} Medusa Store. {t("copyright")}
             </p>
           </div>
         </div>
@@ -181,7 +209,7 @@ export default async function Footer() {
 
       {/* POWERED BY */}
       <div className="theme-footer-powered px-3 py-4 text-center text-[11px] tracking-wider sm:px-4 sm:py-5 sm:text-xs">
-        Powered by{" "}
+        {t("poweredBy")}{" "}
         <span className="theme-footer-brand-name font-bold">Medusa</span>
       </div>
     </footer>

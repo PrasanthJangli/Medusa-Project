@@ -1,8 +1,10 @@
 
 import { Suspense } from "react"
+import { getTranslations } from "next-intl/server"
 
 import { listLocales } from "@lib/data/locales"
 import { getLocale } from "@lib/data/locale-actions"
+import { getUiLocale } from "@lib/data/ui-locale-actions"
 import { listRegions } from "@lib/data/regions"
 import { listCategories } from "@lib/data/categories"
 
@@ -15,9 +17,58 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import CartButton from "@modules/layout/components/cart-button"
 import Search from "@modules/layout/components/search"
 import SideMenu from "@modules/layout/components/side-menu"
+import UiLanguageSelect from "@modules/layout/components/ui-language-select"
+
+const categoryTranslations: Record<
+  string,
+  { te: string; hi: string }
+> = {
+  shirts: {
+    te: "షర్ట్లు",
+    hi: "शर्ट",
+  },
+  pants: {
+    te: "ప్యాంట్లు",
+    hi: "पैंट",
+  },
+  shoes: {
+    te: "షూస్",
+    hi: "जूते",
+  },
+  "t-shirts": {
+    te: "టీ-షర్ట్లు",
+    hi: "टी-शर्ट",
+  },
+  tshirts: {
+    te: "టీ-షర్ట్లు",
+    hi: "टी-शर्ट",
+  },
+  shorts: {
+    te: "షార్ట్స్",
+    hi: "शॉर्ट्स",
+  },
+  sweatshirts: {
+    te: "స్వెట్‌షర్ట్లు",
+    hi: "स्वेटशर्ट",
+  },
+}
+
+function translateCategoryName(name: string, locale: string) {
+  const normalizedName = name.trim().toLowerCase()
+  const translation = categoryTranslations[normalizedName]
+
+  if (!translation) return name
+
+  if (locale === "te") return translation.te
+  if (locale === "hi") return translation.hi
+
+  return name
+}
 
 export default async function Nav() {
-  const [regions, locales, currentLocale, categories] =
+  const t = await getTranslations()
+
+  const [regions, locales, currentLocale, categories, uiLocale] =
     await Promise.all([
       listRegions().then((result: StoreRegion[]) => result),
       listLocales(),
@@ -29,14 +80,22 @@ export default async function Nav() {
         console.error("Unable to load categories:", error)
         return [] as StoreProductCategory[]
       }),
+      getUiLocale(),
     ])
+
+  const storeLabel =
+    uiLocale === "te"
+      ? "స్టోర్"
+      : uiLocale === "hi"
+        ? "स्टोर"
+        : "STORE"
 
   return (
     <div className="theme-navbar sticky top-0 z-50 w-full min-w-0 overflow-x-clip shadow-lg">
       {/* ROW 1: MAIN NAVIGATION */}
       <header className="theme-nav-primary">
         <nav
-          aria-label="Main navigation"
+          aria-label={t("Navigation.mainNavigation")}
           className="theme-nav-primary-inner mx-auto flex w-full max-w-[1600px] min-w-0 flex-wrap items-center gap-x-2 gap-y-2 px-3 py-2.5 sm:gap-x-5 sm:gap-y-3 sm:px-6 sm:py-4 lg:px-8 xl:flex-nowrap xl:gap-5 xl:px-10"
         >
           {/* MENU */}
@@ -45,6 +104,7 @@ export default async function Nav() {
               regions={regions}
               locales={locales}
               currentLocale={currentLocale}
+              uiLocale={uiLocale}
             />
           </div>
 
@@ -53,21 +113,21 @@ export default async function Nav() {
             href="/"
             className="order-2 flex min-w-0 shrink-0 flex-col rounded-lg px-1.5 py-1 sm:px-2"
             data-testid="nav-store-link"
-            aria-label="Medusa Store home"
+            aria-label={t("Common.home")}
           >
             <span className="whitespace-nowrap text-base font-extrabold tracking-[.08em] sm:text-2xl sm:tracking-[.12em]">
               MEDUSA<span className="theme-nav-accent">.</span>
             </span>
 
-            <span className="text-center text-[7px] font-semibold tracking-[.3em] text-white/65 sm:text-[9px]">
-              STORE
+            <span className="text-center text-[9px] font-semibold tracking-normal text-white/80 sm:text-[10px]">
+              {storeLabel}
             </span>
           </LocalizedClientLink>
 
           {/* DELIVERY LOCATION - DESKTOP */}
           <div className="hidden shrink-0 flex-col xl:flex">
             <span className="text-xs text-white/65">
-              Deliver to
+              {t("Navigation.deliverTo")}
             </span>
 
             <span className="flex items-center gap-1 text-sm font-bold">
@@ -82,14 +142,14 @@ export default async function Nav() {
                 <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
                 <circle cx="12" cy="10" r="2.5" />
               </svg>
-              Your location
+              {t("Navigation.yourLocation")}
             </span>
           </div>
 
           {/* SEARCH */}
           <div className="theme-nav-search order-4 w-full min-w-0 basis-full xl:order-3 xl:flex-1 xl:basis-auto">
             <div className="mx-auto w-full max-w-4xl min-w-0 overflow-hidden rounded-lg bg-white [&_input]:min-w-0 [&_input]:text-gray-900">
-              <Search />
+              <Search locale={uiLocale} />
             </div>
           </div>
 
@@ -100,10 +160,10 @@ export default async function Nav() {
             className="hidden shrink-0 flex-col rounded-lg border border-transparent px-2 py-2 transition hover:border-white xl:order-4 xl:flex"
           >
             <span className="text-xs text-white/65">
-              Hello, sign in
+              {t("Navigation.helloSignIn")}
             </span>
             <span className="text-sm font-bold">
-              Account
+              {t("Common.account")}
             </span>
           </LocalizedClientLink>
 
@@ -113,30 +173,36 @@ export default async function Nav() {
             className="hidden shrink-0 flex-col rounded-lg border border-transparent px-2 py-2 transition hover:border-white xl:order-5 xl:flex"
           >
             <span className="text-xs text-white/65">
-              Your
+              {t("Navigation.your")}
             </span>
             <span className="text-sm font-bold">
-              Orders
+              {t("Navigation.orders")}
             </span>
           </LocalizedClientLink>
 
-          {/* CART */}
-          <div className="order-3 ml-auto flex shrink-0 items-center rounded-lg border border-transparent p-1.5 transition hover:border-white sm:p-2 xl:order-6 xl:ml-0">
-            <Suspense
-              fallback={
-                <LocalizedClientLink
-                  href="/cart"
-                  data-testid="nav-cart-link"
-                  aria-label="Shopping cart"
-                  className="flex min-h-9 items-center gap-2 text-sm font-bold"
-                >
-                  <span className="text-xl sm:text-2xl">🛒</span>
-                  <span className="hidden sm:inline">Cart</span>
-                </LocalizedClientLink>
-              }
-            >
-              <CartButton />
-            </Suspense>
+          {/* UI LANGUAGE + CART */}
+          <div className="order-3 ml-auto flex shrink-0 items-center gap-2 xl:order-6 xl:ml-0">
+            <UiLanguageSelect currentLocale={uiLocale} />
+
+            <div className="flex items-center rounded-lg border border-transparent p-1.5 transition hover:border-white sm:p-2">
+              <Suspense
+                fallback={
+                  <LocalizedClientLink
+                    href="/cart"
+                    data-testid="nav-cart-link"
+                    aria-label={t("Common.cart")}
+                    className="flex min-h-9 items-center gap-2 text-sm font-bold"
+                  >
+                    <span className="text-xl sm:text-2xl">🛒</span>
+                    <span className="hidden sm:inline">
+                      {t("Common.cart")}
+                    </span>
+                  </LocalizedClientLink>
+                }
+              >
+                <CartButton />
+              </Suspense>
+            </div>
           </div>
         </nav>
       </header>
@@ -144,21 +210,21 @@ export default async function Nav() {
       {/* ROW 2: PRODUCT CATEGORIES */}
       <div className="theme-nav-secondary min-w-0">
         <nav
-          aria-label="Product categories"
+          aria-label={t("Navigation.productCategories")}
           className="mx-auto flex min-h-11 w-full max-w-[1600px] min-w-0 items-center gap-1 overflow-x-auto overscroll-x-contain whitespace-nowrap px-2 sm:min-h-12 sm:px-6 lg:px-10 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
         >
           <LocalizedClientLink
             href="/store"
             className="shrink-0 rounded-lg border border-transparent px-3 py-2 text-xs font-bold transition hover:border-white sm:px-4 sm:text-sm"
           >
-            ☰ All Products
+            ☰ {t("Navigation.allProducts")}
           </LocalizedClientLink>
 
           <LocalizedClientLink
             href="/collections"
             className="shrink-0 rounded-lg border border-transparent px-3 py-2 text-xs font-semibold transition hover:border-white sm:px-4 sm:text-sm"
           >
-            All Collections
+            {t("Navigation.allCollections")}
           </LocalizedClientLink>
 
           {categories.map((category: StoreProductCategory) => (
@@ -167,7 +233,7 @@ export default async function Nav() {
               href={`/categories/${category.handle}`}
               className="shrink-0 rounded-lg border border-transparent px-3 py-2 text-xs transition hover:border-white sm:px-4 sm:text-sm"
             >
-              {category.name}
+              {translateCategoryName(category.name, uiLocale)}
             </LocalizedClientLink>
           ))}
         </nav>
@@ -176,25 +242,25 @@ export default async function Nav() {
       {/* ROW 3: STORE SHORTCUTS */}
       <div className="theme-nav-tertiary min-w-0">
         <nav
-          aria-label="Store shortcuts"
+          aria-label={t("Navigation.storeShortcuts")}
           className="mx-auto flex min-h-9 w-full max-w-[1600px] min-w-0 items-center gap-4 overflow-x-auto overscroll-x-contain whitespace-nowrap px-3 sm:min-h-11 sm:gap-9 sm:px-6 lg:px-10 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
         >
           <LocalizedClientLink
             href="/store"
             className="shrink-0 py-2 text-[11px] font-bold transition hover:opacity-70 sm:text-sm"
           >
-            Explore Products
+            {t("Navigation.exploreProducts")}
           </LocalizedClientLink>
 
           <LocalizedClientLink
             href="/collections"
             className="shrink-0 py-2 text-[11px] font-medium transition hover:opacity-70 sm:text-sm"
           >
-            Browse Collections
+            {t("Navigation.browseCollections")}
           </LocalizedClientLink>
 
           <span className="theme-nav-badge shrink-0 rounded-full px-3 py-1.5 text-[10px] font-bold sm:px-4 sm:text-xs">
-            Discover something new
+            {t("Navigation.discoverSomethingNew")}
           </span>
         </nav>
       </div>

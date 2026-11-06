@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Radio, RadioGroup } from "@headlessui/react"
@@ -11,6 +10,7 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
 import { Button, clx, Heading, Text } from "@modules/common/components/ui"
+import { useLocale } from "next-intl"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -20,6 +20,63 @@ const PICKUP_OPTION_OFF = "__PICKUP_OFF"
 type ShippingProps = {
   cart: HttpTypes.StoreCart
   availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null
+}
+
+const translations = {
+  en: {
+    delivery: "Delivery",
+    description: "Choose how you want your order delivered",
+    selected: "Selected",
+    edit: "Edit",
+    shippingMethod: "Shipping method",
+    selectDelivery: "Select your preferred delivery option below.",
+    pickupOrder: "Pick up your order",
+    collectOrder: "Collect your order from a pickup location",
+    selectedDelivery: "Selected delivery method",
+    chooseDelivery: "Choose this delivery option",
+    pickupLocation: "Choose a pickup location",
+    selectStore: "Select an available store for collection.",
+    continuePayment: "Continue to payment →",
+    reviewOrder: "You can review your order before completing your purchase.",
+    deliverySelected: "Delivery method selected",
+    selectMethod: "Select a delivery method to continue.",
+  },
+  te: {
+    delivery: "డెలివరీ",
+    description: "మీ ఆర్డర్‌ను ఎలా డెలివరీ చేయాలో ఎంచుకోండి",
+    selected: "ఎంచుకున్నారు",
+    edit: "మార్చండి",
+    shippingMethod: "షిప్పింగ్ విధానం",
+    selectDelivery: "మీకు నచ్చిన డెలివరీ ఎంపికను ఎంచుకోండి.",
+    pickupOrder: "మీ ఆర్డర్‌ను స్వయంగా తీసుకోండి",
+    collectOrder: "పికప్ లొకేషన్ నుండి మీ ఆర్డర్‌ను తీసుకోండి",
+    selectedDelivery: "ఎంచుకున్న డెలివరీ విధానం",
+    chooseDelivery: "ఈ డెలివరీ ఎంపికను ఎంచుకోండి",
+    pickupLocation: "పికప్ లొకేషన్ ఎంచుకోండి",
+    selectStore: "ఆర్డర్ తీసుకోవడానికి అందుబాటులో ఉన్న స్టోర్‌ను ఎంచుకోండి.",
+    continuePayment: "పేమెంట్‌కు కొనసాగండి →",
+    reviewOrder: "కొనుగోలును పూర్తి చేయడానికి ముందు మీ ఆర్డర్‌ను సమీక్షించవచ్చు.",
+    deliverySelected: "డెలివరీ విధానం ఎంచుకోబడింది",
+    selectMethod: "కొనసాగడానికి డెలివరీ విధానాన్ని ఎంచుకోండి.",
+  },
+  hi: {
+    delivery: "डिलीवरी",
+    description: "चुनें कि आपका ऑर्डर कैसे डिलीवर किया जाए",
+    selected: "चुना गया",
+    edit: "बदलें",
+    shippingMethod: "शिपिंग का तरीका",
+    selectDelivery: "नीचे अपना पसंदीदा डिलीवरी विकल्प चुनें।",
+    pickupOrder: "अपना ऑर्डर स्वयं लें",
+    collectOrder: "पिकअप स्थान से अपना ऑर्डर प्राप्त करें",
+    selectedDelivery: "चुना गया डिलीवरी तरीका",
+    chooseDelivery: "यह डिलीवरी विकल्प चुनें",
+    pickupLocation: "पिकअप स्थान चुनें",
+    selectStore: "ऑर्डर लेने के लिए उपलब्ध स्टोर चुनें।",
+    continuePayment: "भुगतान के लिए आगे बढ़ें →",
+    reviewOrder: "खरीदारी पूरी करने से पहले आप अपने ऑर्डर की समीक्षा कर सकते हैं।",
+    deliverySelected: "डिलीवरी का तरीका चुना गया",
+    selectMethod: "आगे बढ़ने के लिए डिलीवरी का तरीका चुनें।",
+  },
 }
 
 function formatAddress(address: HttpTypes.StoreCartAddress) {
@@ -39,6 +96,9 @@ const Shipping: React.FC<ShippingProps> = ({
   cart,
   availableShippingMethods,
 }) => {
+  const locale = useLocale() as "en" | "te" | "hi"
+  const t = translations[locale] || translations.en
+
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)
   const [showPickupOptions, setShowPickupOptions] =
@@ -181,7 +241,6 @@ const Shipping: React.FC<ShippingProps> = ({
 
   return (
     <section className="w-full min-w-0 overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-br from-white via-indigo-50/40 to-sky-50/60 shadow-sm shadow-indigo-100/60">
-      {/* Responsive section heading */}
       <div className="flex flex-col gap-3 border-b border-indigo-100 bg-gradient-to-r from-violet-50 via-indigo-50 to-sky-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-md shadow-indigo-200 sm:h-11 sm:w-11">
@@ -210,10 +269,10 @@ const Shipping: React.FC<ShippingProps> = ({
                 "opacity-50": !isOpen && !cart.shipping_methods?.length,
               })}
             >
-              Delivery
+              {t.delivery}
             </Heading>
             <Text className="mt-1 text-xs leading-5 text-slate-500 sm:text-sm">
-              Choose how you want your order delivered
+              {t.description}
             </Text>
           </div>
         </div>
@@ -226,7 +285,7 @@ const Shipping: React.FC<ShippingProps> = ({
             <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
               <div className="flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
                 <CheckCircleSolid />
-                <span className="hidden sm:inline">Selected</span>
+                <span className="hidden sm:inline">{t.selected}</span>
               </div>
 
               <button
@@ -234,22 +293,21 @@ const Shipping: React.FC<ShippingProps> = ({
                 className="rounded-lg px-3 py-2 text-sm font-semibold text-indigo-700 transition-colors hover:bg-indigo-100"
                 data-testid="edit-delivery-button"
               >
-                Edit
+                {t.edit}
               </button>
             </div>
           )}
       </div>
 
-      {/* Section content */}
       <div className="p-4 sm:p-6">
         {isOpen ? (
           <>
             <div className="mb-5">
               <Text className="font-semibold text-slate-800">
-                Shipping method
+                {t.shippingMethod}
               </Text>
               <Text className="mt-1 text-sm leading-5 text-slate-500">
-                Select your preferred delivery option below.
+                {t.selectDelivery}
               </Text>
             </div>
 
@@ -285,10 +343,10 @@ const Shipping: React.FC<ShippingProps> = ({
                       />
                       <div className="min-w-0">
                         <Text className="font-semibold text-slate-800">
-                          Pick up your order
+                          {t.pickupOrder}
                         </Text>
                         <Text className="mt-1 text-xs leading-5 text-slate-500">
-                          Collect your order from a pickup location
+                          {t.collectOrder}
                         </Text>
                       </div>
                     </div>
@@ -336,9 +394,7 @@ const Shipping: React.FC<ShippingProps> = ({
                             {option.name}
                           </Text>
                           <Text className="mt-1 text-xs leading-5 text-slate-500">
-                            {selected
-                              ? "Selected delivery method"
-                              : "Choose this delivery option"}
+                            {selected ? t.selectedDelivery : t.chooseDelivery}
                           </Text>
                         </div>
                       </div>
@@ -354,7 +410,7 @@ const Shipping: React.FC<ShippingProps> = ({
                         </Text>
                         {selected && (
                           <Text className="mt-1 text-xs font-medium text-emerald-600">
-                            Selected
+                            {t.selected}
                           </Text>
                         )}
                       </div>
@@ -367,10 +423,10 @@ const Shipping: React.FC<ShippingProps> = ({
             {showPickupOptions === PICKUP_OPTION_ON && (
               <div className="mt-6 rounded-xl border border-orange-100 bg-gradient-to-br from-orange-50 to-amber-50 p-3 sm:p-4">
                 <Text className="mb-1 font-semibold text-orange-950">
-                  Choose a pickup location
+                  {t.pickupLocation}
                 </Text>
                 <Text className="mb-4 text-sm leading-5 text-orange-800">
-                  Select an available store for collection.
+                  {t.selectStore}
                 </Text>
 
                 <RadioGroup
@@ -455,11 +511,11 @@ const Shipping: React.FC<ShippingProps> = ({
                 }
                 data-testid="submit-delivery-option-button"
               >
-                Continue to payment →
+                {t.continuePayment}
               </Button>
 
               <Text className="mt-3 text-center text-xs leading-5 text-slate-500">
-                You can review your order before completing your purchase.
+                {t.reviewOrder}
               </Text>
             </div>
           </>
@@ -472,7 +528,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 </span>
                 <div className="min-w-0">
                   <Text className="break-words font-semibold text-emerald-950">
-                    Delivery method selected
+                    {t.deliverySelected}
                   </Text>
                   <Text className="mt-1 break-words text-sm text-emerald-800">
                     {cart.shipping_methods.at(-1)!.name}
@@ -487,7 +543,7 @@ const Shipping: React.FC<ShippingProps> = ({
               </div>
             ) : (
               <Text className="text-sm text-slate-500">
-                Select a delivery method to continue.
+                {t.selectMethod}
               </Text>
             )}
           </div>

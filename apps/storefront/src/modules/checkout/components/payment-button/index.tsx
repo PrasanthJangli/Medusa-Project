@@ -1,12 +1,15 @@
 "use client"
+
 import { isManual, isStripeLike } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
 import { useParams } from "next/navigation"
+import { useLocale } from "next-intl"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
+
 declare global {
   interface Window {
     Cashfree?: (options: {
@@ -31,6 +34,57 @@ type CashfreePaymentSession = {
   data?: Record<string, unknown>
 }
 
+const translations = {
+  en: {
+    selectPayment: "Select a payment method",
+    openingCashfree: "Opening Cashfree checkout...",
+    payCashfree: "Pay with Cashfree →",
+    placeOrder: "Place Order →",
+    processing: "Processing your order...",
+    cashfreeMissing:
+      "Cashfree payment session ID is missing. Go back to Payment and select Cashfree again.",
+    cashfreeUnavailable: "Cashfree checkout SDK is unavailable.",
+    cashfreeLoadError: "Unable to load Cashfree checkout SDK.",
+    cashfreeApiError:
+      "Cashfree SDK loaded, but the checkout API is unavailable.",
+    cashfreeOpenError: "Unable to open Cashfree checkout.",
+    paymentFailed: "Payment could not be completed.",
+    somethingWrong: "Something went wrong.",
+  },
+  te: {
+    selectPayment: "చెల్లింపు పద్ధతిని ఎంచుకోండి",
+    openingCashfree: "Cashfree చెక్‌అవుట్ తెరవబడుతోంది...",
+    payCashfree: "Cashfree ద్వారా చెల్లించండి →",
+    placeOrder: "ఆర్డర్ చేయండి →",
+    processing: "మీ ఆర్డర్ ప్రాసెస్ అవుతోంది...",
+    cashfreeMissing:
+      "Cashfree చెల్లింపు సెషన్ ID లేదు. Payment విభాగానికి తిరిగి వెళ్లి Cashfreeని మళ్లీ ఎంచుకోండి.",
+    cashfreeUnavailable: "Cashfree చెక్‌అవుట్ SDK అందుబాటులో లేదు.",
+    cashfreeLoadError: "Cashfree చెక్‌అవుట్ SDK లోడ్ కాలేదు.",
+    cashfreeApiError:
+      "Cashfree SDK లోడ్ అయింది, కానీ చెక్‌అవుట్ API అందుబాటులో లేదు.",
+    cashfreeOpenError: "Cashfree చెక్‌అవుట్ తెరవడం సాధ్యం కాలేదు.",
+    paymentFailed: "చెల్లింపు పూర్తి కాలేదు.",
+    somethingWrong: "ఏదో సమస్య ఏర్పడింది.",
+  },
+  hi: {
+    selectPayment: "भुगतान का तरीका चुनें",
+    openingCashfree: "Cashfree चेकआउट खुल रहा है...",
+    payCashfree: "Cashfree से भुगतान करें →",
+    placeOrder: "ऑर्डर दें →",
+    processing: "आपका ऑर्डर प्रोसेस हो रहा है...",
+    cashfreeMissing:
+      "Cashfree पेमेंट सेशन ID उपलब्ध नहीं है। Payment सेक्शन पर वापस जाएं और Cashfree दोबारा चुनें।",
+    cashfreeUnavailable: "Cashfree चेकआउट SDK उपलब्ध नहीं है।",
+    cashfreeLoadError: "Cashfree चेकआउट SDK लोड नहीं हो सका।",
+    cashfreeApiError:
+      "Cashfree SDK लोड हो गया, लेकिन चेकआउट API उपलब्ध नहीं है।",
+    cashfreeOpenError: "Cashfree चेकआउट नहीं खुल सका।",
+    paymentFailed: "भुगतान पूरा नहीं हो सका।",
+    somethingWrong: "कुछ गलत हो गया।",
+  },
+}
+
 const placeOrderButtonClass =
   "!w-full !rounded-xl !bg-gradient-to-r !from-violet-600 !via-indigo-600 !to-blue-600 !text-white !font-semibold !shadow-lg !shadow-indigo-200/70 hover:!from-violet-700 hover:!via-indigo-700 hover:!to-blue-700 hover:!shadow-xl transition-all duration-200"
 
@@ -38,6 +92,10 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   "data-testid": dataTestId,
 }) => {
+  const locale = useLocale()
+  const t =
+    translations[locale as keyof typeof translations] ?? translations.en
+
   const paymentSessions =
     cart.payment_collection?.payment_sessions ?? []
 
@@ -85,7 +143,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
 
   return (
     <Button disabled size="large" className="w-full">
-      Select a payment method
+      {t.selectPayment}
     </Button>
   )
 }
@@ -99,10 +157,13 @@ const CashfreePaymentButton = ({
   notReady: boolean
   "data-testid"?: string
 }) => {
+  const locale = useLocale()
+  const t =
+    translations[locale as keyof typeof translations] ?? translations.en
+
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  // Explicitly narrow the unknown value to a string.
   const rawPaymentSessionId =
     paymentSession?.data?.payment_session_id
 
@@ -119,9 +180,7 @@ const CashfreePaymentButton = ({
     setErrorMessage(null)
 
     if (!paymentSessionId) {
-      setErrorMessage(
-        "Cashfree payment session ID is missing. Go back to Payment and select Cashfree again."
-      )
+      setErrorMessage(t.cashfreeMissing)
       return
     }
 
@@ -145,18 +204,12 @@ const CashfreePaymentButton = ({
             if (window.Cashfree) {
               resolve()
             } else {
-              reject(
-                new Error(
-                  "Cashfree SDK loaded, but the checkout API is unavailable."
-                )
-              )
+              reject(new Error(t.cashfreeApiError))
             }
           }
 
           const handleError = () => {
-            reject(
-              new Error("Unable to load Cashfree checkout SDK.")
-            )
+            reject(new Error(t.cashfreeLoadError))
           }
 
           script.addEventListener("load", handleLoad, {
@@ -177,7 +230,7 @@ const CashfreePaymentButton = ({
       }
 
       if (!window.Cashfree) {
-        throw new Error("Cashfree checkout SDK is unavailable.")
+        throw new Error(t.cashfreeUnavailable)
       }
 
       const mode =
@@ -191,14 +244,11 @@ const CashfreePaymentButton = ({
         paymentSessionId,
         redirectTarget: "_self",
       })
-
-      // Cashfree controls the checkout/redirect.
-      // Do not place the order here before verifying payment status.
     } catch (error) {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "Unable to open Cashfree checkout."
+          : t.cashfreeOpenError
       )
       setSubmitting(false)
     }
@@ -214,9 +264,7 @@ const CashfreePaymentButton = ({
         className={placeOrderButtonClass}
         data-testid={dataTestId}
       >
-        {submitting
-          ? "Opening Cashfree checkout..."
-          : "Pay with Cashfree →"}
+        {submitting ? t.openingCashfree : t.payCashfree}
       </Button>
 
       <ErrorMessage
@@ -236,6 +284,10 @@ const StripePaymentButton = ({
   notReady: boolean
   "data-testid"?: string
 }) => {
+  const locale = useLocale()
+  const t =
+    translations[locale as keyof typeof translations] ?? translations.en
+
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -308,9 +360,7 @@ const StripePaymentButton = ({
           return
         }
 
-        setErrorMessage(
-          error.message || "Payment could not be completed."
-        )
+        setErrorMessage(error.message || t.paymentFailed)
         setSubmitting(false)
         return
       }
@@ -326,9 +376,7 @@ const StripePaymentButton = ({
       setSubmitting(false)
     } catch (err) {
       setErrorMessage(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong."
+        err instanceof Error ? err.message : t.somethingWrong
       )
       setSubmitting(false)
     }
@@ -344,7 +392,7 @@ const StripePaymentButton = ({
         className={placeOrderButtonClass}
         data-testid={dataTestId}
       >
-        {submitting ? "Processing your order..." : "Place Order →"}
+        {submitting ? t.processing : t.placeOrder}
       </Button>
 
       <ErrorMessage
@@ -362,6 +410,10 @@ const ManualTestPaymentButton = ({
   notReady: boolean
   "data-testid"?: string
 }) => {
+  const locale = useLocale()
+  const t =
+    translations[locale as keyof typeof translations] ?? translations.en
+
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -397,7 +449,7 @@ const ManualTestPaymentButton = ({
         className={placeOrderButtonClass}
         data-testid={dataTestId ?? "submit-order-button"}
       >
-        {submitting ? "Processing your order..." : "Place Order →"}
+        {submitting ? t.processing : t.placeOrder}
       </Button>
 
       <ErrorMessage

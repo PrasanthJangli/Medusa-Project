@@ -1,6 +1,9 @@
+"use client"
+
 import { Radio as RadioGroupOption } from "@headlessui/react"
 import { Text, clx } from "@modules/common/components/ui"
 import React, { useContext, type JSX } from "react"
+import { useLocale } from "next-intl"
 
 import Radio from "@modules/common/components/radio"
 
@@ -76,6 +79,24 @@ export const StripePaymentContainer = ({
   setPaymentComplete: (complete: boolean) => void
 }) => {
   const stripeReady = useContext(StripeContext)
+  const locale = useLocale()
+
+  const translations = {
+    en: {
+      paymentDetails: "Enter your payment details:",
+      loadError: "Could not load the payment methods.",
+    },
+    te: {
+      paymentDetails: "మీ చెల్లింపు వివరాలను నమోదు చేయండి:",
+      loadError: "చెల్లింపు పద్ధతులను లోడ్ చేయలేకపోయాము.",
+    },
+    hi: {
+      paymentDetails: "अपनी भुगतान जानकारी दर्ज करें:",
+      loadError: "भुगतान के तरीके लोड नहीं हो सके।",
+    },
+  }
+
+  const t = translations[locale as keyof typeof translations] || translations.en
 
   return (
     <PaymentContainer
@@ -88,7 +109,7 @@ export const StripePaymentContainer = ({
         (stripeReady ? (
           <div className="my-4 transition-all duration-150 ease-in-out">
             <Text className="txt-medium-plus text-ui-fg-base mb-1">
-              Enter your payment details:
+              {t.paymentDetails}
             </Text>
             <PaymentElement
               options={{ layout: "accordion" }}
@@ -96,15 +117,9 @@ export const StripePaymentContainer = ({
                 setError(null)
                 setPaymentComplete(e.complete)
               }}
-              // Without a handler Stripe.js reports a failed mount as an
-              // unhandled "payment Element loaderror" and the option renders
-              // blank with no explanation. Surface it in the checkout's own
-              // error slot instead.
               onLoadError={(e) => {
                 setPaymentComplete(false)
-                setError(
-                  e.error?.message ?? "Could not load the payment methods."
-                )
+                setError(e.error?.message ?? t.loadError)
               }}
             />
           </div>

@@ -12,22 +12,71 @@ import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
 import { Locale } from "@lib/data/locales"
 
-const SideMenuItems = {
-  Home: "/",
-  Store: "/store",
-  Account: "/account",
-  Cart: "/cart",
-}
+type UiLocale = "en" | "te" | "hi"
 
 type SideMenuProps = {
   regions: HttpTypes.StoreRegion[] | null
   locales: Locale[] | null
   currentLocale: string | null
+  uiLocale?: string
 }
 
-const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
+const menuTranslations = {
+  en: {
+    menu: "Menu",
+    home: "Home",
+    store: "Store",
+    account: "Account",
+    cart: "Cart",
+    close: "Close menu",
+    navigation: "Main navigation",
+    copyright: "All rights reserved.",
+    storeName: "Medusa Store",
+  },
+  te: {
+    menu: "మెనూ",
+    home: "హోమ్",
+    store: "స్టోర్",
+    account: "ఖాతా",
+    cart: "కార్ట్",
+    close: "మెనూను మూసివేయండి",
+    navigation: "ప్రధాన నావిగేషన్",
+    copyright: "అన్ని హక్కులు ప్రత్యేకించబడ్డాయి.",
+    storeName: "మెడూసా స్టోర్",
+  },
+  hi: {
+    menu: "मेन्यू",
+    home: "होम",
+    store: "स्टोर",
+    account: "खाता",
+    cart: "कार्ट",
+    close: "मेन्यू बंद करें",
+    navigation: "मुख्य नेविगेशन",
+    copyright: "सर्वाधिकार सुरक्षित।",
+    storeName: "मेडुसा स्टोर",
+  },
+}
+
+const SideMenuItems = [
+  { key: "home", href: "/" },
+  { key: "store", href: "/store" },
+  { key: "account", href: "/account" },
+  { key: "cart", href: "/cart" },
+] as const
+
+const SideMenu = ({
+  regions,
+  locales,
+  currentLocale,
+  uiLocale = "en",
+}: SideMenuProps) => {
   const countryToggleState = useToggleState()
   const languageToggleState = useToggleState()
+
+  const locale: UiLocale =
+    uiLocale === "te" || uiLocale === "hi" ? uiLocale : "en"
+
+  const labels = menuTranslations[locale]
 
   return (
     <div className="h-full">
@@ -40,7 +89,7 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                   data-testid="nav-menu-button"
                   className="flex h-full min-h-10 items-center px-2 text-sm font-medium transition-colors duration-200 hover:text-ui-fg-base focus:outline-none focus-visible:ring-2 focus-visible:ring-ui-fg-base focus-visible:ring-offset-2"
                 >
-                  Menu
+                  {labels.menu}
                 </Popover.Button>
               </div>
 
@@ -67,49 +116,44 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                     data-testid="nav-menu-popup"
                     className="flex min-h-full flex-col justify-between p-5 sm:p-7"
                   >
-                    {/* Header */}
                     <div>
                       <div className="mb-8 flex items-center justify-between border-b border-neutral-200 pb-5">
                         <span className="text-lg font-bold tracking-tight text-neutral-950">
-                          Menu
+                          {labels.menu}
                         </span>
 
                         <button
                           type="button"
                           data-testid="close-menu-button"
                           onClick={close}
-                          aria-label="Close menu"
+                          aria-label={labels.close}
                           className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900"
                         >
                           <XMark className="h-5 w-5" />
                         </button>
                       </div>
 
-                      {/* Navigation links */}
-                      <nav aria-label="Main navigation">
+                      <nav aria-label={labels.navigation}>
                         <ul className="flex flex-col items-stretch gap-2">
-                          {Object.entries(SideMenuItems).map(
-                            ([name, href]) => (
-                              <li key={name}>
-                                <LocalizedClientLink
-                                  href={href}
-                                  className="flex min-h-14 items-center justify-between rounded-xl px-3 py-3 text-2xl font-semibold leading-tight transition-colors hover:bg-neutral-100 hover:text-neutral-600 sm:text-3xl"
-                                  onClick={close}
-                                  data-testid={`${name.toLowerCase()}-link`}
-                                >
-                                  {name}
-                                  <span className="text-lg text-neutral-400">
-                                    →
-                                  </span>
-                                </LocalizedClientLink>
-                              </li>
-                            )
-                          )}
+                          {SideMenuItems.map(({ key, href }) => (
+                            <li key={key}>
+                              <LocalizedClientLink
+                                href={href}
+                                className="flex min-h-14 items-center justify-between rounded-xl px-3 py-3 text-2xl font-semibold leading-tight transition-colors hover:bg-neutral-100 hover:text-neutral-600 sm:text-3xl"
+                                onClick={close}
+                                data-testid={`${key}-link`}
+                              >
+                                {labels[key]}
+                                <span className="text-lg text-neutral-400">
+                                  →
+                                </span>
+                              </LocalizedClientLink>
+                            </li>
+                          ))}
                         </ul>
                       </nav>
                     </div>
 
-                    {/* Locale and country settings */}
                     <div className="mt-10 flex flex-col gap-y-5">
                       {!!locales?.length && (
                         <div
@@ -157,8 +201,8 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                       </div>
 
                       <Text className="flex flex-wrap justify-between border-t border-neutral-200 pt-5 text-xs leading-5 text-neutral-500">
-                        © {new Date().getFullYear()} Medusa Store. All rights
-                        reserved.
+                        © {new Date().getFullYear()} {labels.storeName}.{" "}
+                        {labels.copyright}
                       </Text>
                     </div>
                   </div>

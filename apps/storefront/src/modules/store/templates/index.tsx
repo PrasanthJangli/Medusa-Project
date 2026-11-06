@@ -2,6 +2,7 @@
 "use client"
 
 import type { SearchClient } from "instantsearch.js"
+import { useTranslations } from "next-intl"
 import { Configure, InstantSearch } from "react-instantsearch"
 
 import { PRODUCT_INDEX_NAME, searchClient } from "@lib/search-client"
@@ -13,13 +14,19 @@ import StoreSearchBox from "@modules/store/components/store-search-box"
 const PRODUCT_LIMIT = 12
 
 const categories = [
-  { name: "Shirts", description: "Everyday styles", href: "/categories/shirts" },
-  { name: "Pants", description: "Comfort meets style", href: "/categories/pants" },
-  { name: "Shoes", description: "Step out in style", href: "/categories/shoes" },
-  { name: "T-Shirts", description: "Casual essentials", href: "/categories/t-shirts" },
+  { key: "shirts", href: "/categories/shirts" },
+  { key: "pants", href: "/categories/pants" },
+  { key: "shoes", href: "/categories/shoes" },
+  { key: "tshirts", href: "/categories/t-shirts" },
 ]
 
-const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
+const StoreTemplate = ({
+  currencyCode,
+}: {
+  currencyCode: string
+}) => {
+  const t = useTranslations("Store")
+
   return (
     <main
       data-testid="category-container"
@@ -31,12 +38,12 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
           <p className="flex min-w-0 items-center truncate text-[8px] font-medium uppercase tracking-[0.12em] text-[#7D756C] sm:text-[10px] sm:tracking-[0.22em]">
             <span className="mr-2 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700" />
             <span className="truncate">
-              A considered collection of everyday essentials
+              {t("announcement")}
             </span>
           </p>
 
           <span className="hidden shrink-0 text-[10px] uppercase tracking-[0.18em] text-[#7D756C] sm:inline">
-            Thoughtfully curated
+            {t("curated")}
           </span>
         </div>
       </div>
@@ -46,12 +53,12 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
         <div className="mx-auto grid h-[66px] max-w-[1720px] grid-cols-3 items-center px-3 sm:h-[76px] sm:px-6 lg:px-10">
           <nav className="hidden items-center gap-6 text-[10px] uppercase tracking-[0.16em] text-[#49433D] lg:flex">
             <a className="group relative py-2" href="#shop-categories">
-              Collections
+              {t("collections")}
               <span className="absolute bottom-0 left-0 h-px w-0 bg-[#1A1816] transition-all duration-300 group-hover:w-full" />
             </a>
 
             <a className="group relative py-2" href="#all-products">
-              Shop
+              {t("shop")}
               <span className="absolute bottom-0 left-0 h-px w-0 bg-[#1A1816] transition-all duration-300 group-hover:w-full" />
             </a>
           </nav>
@@ -74,21 +81,21 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
               href="#product-search"
               className="hidden text-[#7D756C] transition-colors hover:text-black sm:inline"
             >
-              Search
+              {t("search")}
             </a>
 
             <LocalizedClientLink
               href="/account"
               className="hidden transition-colors hover:text-[#8C857B] md:inline"
             >
-              Account
+              {t("account")}
             </LocalizedClientLink>
 
             <LocalizedClientLink
               href="/cart"
               className="whitespace-nowrap transition-opacity hover:opacity-60"
             >
-              Bag <span className="text-[#8C857B]">↗</span>
+              {t("bag")} <span className="text-[#8C857B]">↗</span>
             </LocalizedClientLink>
           </div>
         </div>
@@ -104,23 +111,22 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                 <span className="h-px w-7 shrink-0 bg-[#1A1816]/70" />
 
                 <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-[#8C857B] sm:text-[11px] sm:tracking-[0.3em]">
-                  The Art of Everyday
+                  {t("artOfEveryday")}
                 </p>
               </div>
 
               <h1 className="font-serif text-[46px] font-normal leading-[0.9] tracking-[-0.045em] text-[#1A1816] min-[375px]:text-[52px] sm:text-7xl xl:text-[88px] 2xl:text-[100px]">
-                Style that
+                {t("heroTitle1")}
                 <br />
-                speaks
+                {t("heroTitle2")}
                 <br />
                 <em className="font-normal italic text-[#756B60]">
-                  without words.
+                  {t("heroTitle3")}
                 </em>
               </h1>
 
               <p className="mt-5 max-w-md text-[13px] leading-6 text-[#7D756C] sm:mt-8 sm:text-base sm:leading-8">
-                Discover timeless essentials, distinctive silhouettes, and
-                refined everyday style selected with care for the way you live.
+                {t("heroDescription")}
               </p>
 
               <div className="mt-6 flex flex-col items-stretch gap-4 min-[420px]:flex-row min-[420px]:items-center sm:mt-8 sm:gap-8">
@@ -128,7 +134,7 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                   href="#all-products"
                   className="group inline-flex min-h-[48px] w-full items-center justify-center gap-3 bg-[#1A1816] px-5 py-3 text-[9px] font-medium uppercase tracking-[0.15em] text-[#FDFBF7] shadow-sm transition-all duration-300 hover:bg-[#49433D] hover:shadow-lg min-[420px]:w-auto sm:min-h-[52px] sm:gap-4 sm:px-8 sm:text-[10px] sm:tracking-[0.18em]"
                 >
-                  Discover the Collection
+                  {t("discoverCollection")}
                   <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5">
                     ↗
                   </span>
@@ -138,7 +144,7 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                   href="#shop-categories"
                   className="group relative w-fit py-2 text-[9px] font-medium uppercase tracking-[0.16em] text-[#1A1816] sm:text-[10px] sm:tracking-[0.2em]"
                 >
-                  Explore the Edit
+                  {t("exploreEdit")}
                   <span className="absolute bottom-0 left-0 h-px w-full origin-left bg-[#1A1816]/50 transition-transform duration-300 group-hover:scale-x-0" />
                 </a>
               </div>
@@ -146,21 +152,21 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
               <div className="mt-8 grid max-w-md grid-cols-2 gap-3 border-t border-[#E5DFD7] pt-5 sm:mt-12 sm:gap-5 sm:pt-6">
                 <div className="min-w-0">
                   <p className="text-[8px] font-semibold uppercase tracking-[0.13em] text-[#49433D] sm:text-[9px] sm:tracking-[0.18em]">
-                    Thoughtfully Curated
+                    {t("thoughtfullyCurated")}
                   </p>
 
                   <p className="mt-2 text-[11px] leading-5 text-[#8C857B] sm:text-xs">
-                    Considered styles for everyday living.
+                    {t("consideredStyles")}
                   </p>
                 </div>
 
                 <div className="min-w-0">
                   <p className="text-[8px] font-semibold uppercase tracking-[0.13em] text-[#49433D] sm:text-[9px] sm:tracking-[0.18em]">
-                    Effortless Style
+                    {t("effortlessStyle")}
                   </p>
 
                   <p className="mt-2 text-[11px] leading-5 text-[#8C857B] sm:text-xs">
-                    Versatile pieces, timeless inspiration.
+                    {t("versatilePieces")}
                   </p>
                 </div>
               </div>
@@ -168,7 +174,7 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
 
             {/* RIGHT FASHION COLLAGE */}
             <div
-              aria-label="Fashion editorial image collection"
+              aria-label={t("fashionImages")}
               className="relative mx-auto w-full min-w-0 max-w-[680px] lg:col-span-7 lg:max-w-none"
             >
               <div className="absolute -right-1 top-5 h-[70%] w-[62%] bg-[#EFEAE3]/80 sm:-right-3 sm:top-8" />
@@ -179,7 +185,7 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                   <div className="aspect-[4/5] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1100&q=85"
-                      alt="Editorial fashion portrait in timeless neutral styling"
+                      alt={t("mainFashionImageAlt")}
                       loading="eager"
                       fetchPriority="high"
                       className="h-full w-full object-cover object-center transition-transform duration-1000 hover:scale-[1.04]"
@@ -187,8 +193,8 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-1 px-1 pb-1 pt-2 text-[6px] uppercase tracking-[0.1em] text-[#8C857B] min-[375px]:text-[7px] sm:pt-3 sm:text-[9px] sm:tracking-[0.18em]">
-                    <span>Look 01 / The New Edit</span>
-                    <span>Fig. 01</span>
+                    <span>{t("look01")}</span>
+                    <span>{t("figure01")}</span>
                   </div>
                 </div>
 
@@ -197,14 +203,14 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                   <div className="aspect-[3/4] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=700&q=85"
-                      alt="Elegant leather handbag and fashion accessory detail"
+                      alt={t("handbagImageAlt")}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
                   </div>
 
                   <p className="px-1 pb-1 pt-1.5 text-[6px] uppercase tracking-[0.08em] text-[#7D756C] min-[375px]:text-[7px] sm:pt-2 sm:text-[9px] sm:tracking-[0.16em]">
-                    Objects of desire
+                    {t("objectsOfDesire")}
                   </p>
                 </div>
 
@@ -213,19 +219,19 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
                   <div className="aspect-[3/4] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
-                      alt="Refined footwear detail from the fashion collection"
+                      alt={t("footwearImageAlt")}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
                   </div>
 
                   <p className="px-1 pb-1 pt-1.5 text-[6px] uppercase tracking-[0.06em] text-[#7D756C] min-[375px]:text-[7px] sm:pt-2 sm:text-[9px] sm:tracking-[0.14em]">
-                    The finishing touch
+                    {t("finishingTouch")}
                   </p>
                 </div>
 
                 <div className="absolute bottom-[7%] right-0 z-20 hidden bg-[#1A1816] px-4 py-3 text-[8px] uppercase tracking-[0.18em] text-[#FAF8F5] shadow-lg xl:block">
-                  A study in timeless style
+                  {t("timelessStyle")}
                 </div>
               </div>
             </div>
@@ -235,20 +241,20 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
         {/* EDITORIAL FOOTER STRIP */}
         <div className="border-t border-[#E5DFD7] px-3 py-4 sm:px-8">
           <div className="mx-auto flex max-w-[1720px] flex-col items-center justify-between gap-3 text-center text-[8px] uppercase tracking-[0.13em] text-[#8C857B] sm:flex-row sm:text-[9px] sm:tracking-[0.2em]">
-            <span>Maison Medusa · The New Edit</span>
+            <span>{t("editorialFooter")}</span>
 
             <a
               href="#shop-categories"
               className="group flex items-center gap-3 text-[#1A1816]"
             >
-              Explore below
+              {t("exploreBelow")}
               <span className="flex h-6 w-4 items-start justify-center rounded-full border border-[#8C857B] p-1">
                 <span className="h-1.5 w-px bg-[#1A1816] transition-transform group-hover:translate-y-1" />
               </span>
             </a>
 
             <span className="hidden lg:inline">
-              Considered style, every day
+              {t("consideredStyle")}
             </span>
           </div>
         </div>
@@ -262,37 +268,37 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
         <div className="mb-7 flex flex-col justify-between gap-3 sm:mb-8 sm:flex-row sm:items-end">
           <div>
             <p className="text-[9px] uppercase tracking-[0.2em] text-[#8C857B] sm:text-[10px] sm:tracking-[0.25em]">
-              The curated edit
+              {t("curatedEdit")}
             </p>
 
             <h2 className="mt-2 font-serif text-3xl font-normal tracking-tight sm:mt-3 sm:text-5xl">
-              Explore by category
+              {t("exploreCategory")}
             </h2>
           </div>
 
           <p className="max-w-sm text-xs leading-6 text-[#7D756C] sm:text-sm">
-            Thoughtfully selected pieces to make everyday dressing feel special.
+            {t("categoryDescription")}
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {categories.map((category, index) => (
             <LocalizedClientLink
-              key={category.name}
+              key={category.key}
               href={category.href}
               className="group flex min-h-[135px] min-w-0 items-end justify-between gap-3 border border-[#E5DFD7] bg-[#FDFBF7] p-4 transition-all duration-300 hover:border-[#B9AFA3] hover:bg-white hover:shadow-[0_14px_30px_-20px_rgba(26,24,22,0.3)] sm:min-h-[180px] sm:p-6"
             >
               <div className="min-w-0">
                 <span className="text-[8px] tracking-[0.15em] text-[#8C857B] sm:text-[9px] sm:tracking-[0.2em]">
-                  0{index + 1} / COLLECTION
+                  0{index + 1} / {t("collectionLabel")}
                 </span>
 
                 <h3 className="mt-3 break-words font-serif text-2xl transition-transform duration-300 group-hover:translate-x-1 sm:mt-4 sm:text-3xl">
-                  {category.name}
+                  {t(`categories.${category.key}`)}
                 </h3>
 
                 <p className="mt-1 text-[11px] text-[#8C857B] sm:text-xs">
-                  {category.description}
+                  {t(`categoryDescriptions.${category.key}`)}
                 </p>
               </div>
 
@@ -311,18 +317,17 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
       >
         <div className="border-y border-[#E5DFD7] py-7 sm:py-10">
           <p className="text-[9px] uppercase tracking-[0.2em] text-[#8C857B] sm:text-[10px] sm:tracking-[0.25em]">
-            Find your next favourite
+            {t("findFavourite")}
           </p>
 
           <div className="mt-3 flex min-w-0 flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div className="min-w-0">
               <h2 className="font-serif text-3xl font-normal sm:text-5xl">
-                The collection
+                {t("collection")}
               </h2>
 
               <p className="mt-2 max-w-xl text-xs leading-6 text-[#7D756C] sm:mt-3 sm:text-sm sm:leading-7">
-                Browse the collection, discover new favourites, and refine
-                your search to find the pieces that feel right for you.
+                {t("browseDescription")}
               </p>
             </div>
 
@@ -330,7 +335,7 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
               href="#product-search"
               className="inline-flex w-fit shrink-0 items-center gap-3 border-b border-[#1A1816] pb-2 text-[9px] uppercase tracking-[0.15em] transition-opacity hover:opacity-60 sm:text-[10px] sm:tracking-[0.18em]"
             >
-              Browse products <span>↓</span>
+              {t("browseProducts")} <span>↓</span>
             </a>
           </div>
         </div>
@@ -353,11 +358,11 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
               <aside className="w-full min-w-0 lg:w-[260px] lg:shrink-0">
                 <div className="w-full min-w-0 border border-[#E5DFD7] bg-[#FDFBF7] p-3 sm:p-5">
                   <h3 className="border-b border-[#E5DFD7] pb-3 font-serif text-xl sm:pb-4 sm:text-2xl">
-                    Refine
+                    {t("refine")}
                   </h3>
 
                   <p className="py-3 text-xs text-[#8C857B]">
-                    Find your perfect piece
+                    {t("findPerfectPiece")}
                   </p>
 
                   <div className="w-full min-w-0">
@@ -391,10 +396,10 @@ const StoreTemplate = ({ currencyCode }: { currencyCode: string }) => {
             Maison Medusa
           </span>
 
-          <span>Everyday essentials · Thoughtfully selected</span>
+          <span>{t("footerDescription")}</span>
 
           <a href="#top" className="text-[#1A1816] hover:opacity-60">
-            Back to top ↑
+            {t("backToTop")} ↑
           </a>
         </div>
       </footer>

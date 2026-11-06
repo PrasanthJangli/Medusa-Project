@@ -1,4 +1,3 @@
-
 "use client"
 
 import { HttpTypes } from "@medusajs/types"
@@ -6,9 +5,55 @@ import { Container } from "@modules/common/components/ui"
 import Checkbox from "@modules/common/components/checkbox"
 import Input from "@modules/common/components/input"
 import { mapKeys } from "lodash"
+import { useLocale } from "next-intl"
 import React, { useEffect, useMemo, useState } from "react"
 import AddressSelect from "../address-select"
 import CountrySelect from "../country-select"
+
+const translations = {
+  en: {
+    savedAddress: "Hi {name}, do you want to use one of your saved addresses?",
+    firstName: "First name",
+    lastName: "Last name",
+    address: "Address",
+    company: "Company",
+    postalCode: "Postal code",
+    city: "City",
+    state: "State / Province",
+    sameBilling: "Billing address same as shipping address",
+    email: "Email",
+    phone: "Phone",
+    validEmail: "Enter a valid email address.",
+  },
+  te: {
+    savedAddress: "హాయ్ {name}, మీరు సేవ్ చేసిన చిరునామాల్లో ఒకదాన్ని ఉపయోగించాలనుకుంటున్నారా?",
+    firstName: "మొదటి పేరు",
+    lastName: "చివరి పేరు",
+    address: "చిరునామా",
+    company: "కంపెనీ",
+    postalCode: "పోస్టల్ కోడ్",
+    city: "నగరం",
+    state: "రాష్ట్రం / ప్రావిన్స్",
+    sameBilling: "బిల్లింగ్ చిరునామా మరియు షిప్పింగ్ చిరునామా ఒకటే",
+    email: "ఈమెయిల్",
+    phone: "ఫోన్ నంబర్",
+    validEmail: "సరైన ఈమెయిల్ చిరునామాను నమోదు చేయండి.",
+  },
+  hi: {
+    savedAddress: "नमस्ते {name}, क्या आप अपने सहेजे गए पतों में से किसी एक का उपयोग करना चाहते हैं?",
+    firstName: "पहला नाम",
+    lastName: "अंतिम नाम",
+    address: "पता",
+    company: "कंपनी",
+    postalCode: "पोस्टल कोड",
+    city: "शहर",
+    state: "राज्य / प्रांत",
+    sameBilling: "बिलिंग पता और शिपिंग पता एक ही हैं",
+    email: "ईमेल",
+    phone: "फ़ोन नंबर",
+    validEmail: "कृपया सही ईमेल पता दर्ज करें।",
+  },
+}
 
 const ShippingAddress = ({
   customer,
@@ -21,6 +66,9 @@ const ShippingAddress = ({
   checked: boolean
   onChange: () => void
 }) => {
+  const locale = useLocale() as "en" | "te" | "hi"
+  const t = translations[locale] || translations.en
+
   const [formData, setFormData] = useState<Record<string, string>>({
     "shipping_address.first_name":
       cart?.shipping_address?.first_name || "",
@@ -96,9 +144,7 @@ const ShippingAddress = ({
   }, [cart, customer?.email])
 
   const handleChange = (
-    event: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement
-    >
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = event.target
 
@@ -113,7 +159,10 @@ const ShippingAddress = ({
       {customer && (addressesInRegion?.length || 0) > 0 && (
         <Container className="mb-6 flex flex-col gap-y-4 p-5">
           <p className="text-small-regular">
-            {`Hi ${customer.first_name}, do you want to use one of your saved addresses?`}
+            {t.savedAddress.replace(
+              "{name}",
+              customer.first_name || ""
+            )}
           </p>
 
           <AddressSelect
@@ -130,7 +179,7 @@ const ShippingAddress = ({
 
       <div className="grid grid-cols-2 gap-4">
         <Input
-          label="First name"
+          label={t.firstName}
           name="shipping_address.first_name"
           autoComplete="given-name"
           value={formData["shipping_address.first_name"]}
@@ -140,7 +189,7 @@ const ShippingAddress = ({
         />
 
         <Input
-          label="Last name"
+          label={t.lastName}
           name="shipping_address.last_name"
           autoComplete="family-name"
           value={formData["shipping_address.last_name"]}
@@ -150,7 +199,7 @@ const ShippingAddress = ({
         />
 
         <Input
-          label="Address"
+          label={t.address}
           name="shipping_address.address_1"
           autoComplete="address-line1"
           value={formData["shipping_address.address_1"]}
@@ -160,7 +209,7 @@ const ShippingAddress = ({
         />
 
         <Input
-          label="Company"
+          label={t.company}
           name="shipping_address.company"
           value={formData["shipping_address.company"]}
           onChange={handleChange}
@@ -169,7 +218,7 @@ const ShippingAddress = ({
         />
 
         <Input
-          label="Postal code"
+          label={t.postalCode}
           name="shipping_address.postal_code"
           autoComplete="postal-code"
           value={formData["shipping_address.postal_code"]}
@@ -179,7 +228,7 @@ const ShippingAddress = ({
         />
 
         <Input
-          label="City"
+          label={t.city}
           name="shipping_address.city"
           autoComplete="address-level2"
           value={formData["shipping_address.city"]}
@@ -199,7 +248,7 @@ const ShippingAddress = ({
         />
 
         <Input
-          label="State / Province"
+          label={t.state}
           name="shipping_address.province"
           autoComplete="address-level1"
           value={formData["shipping_address.province"]}
@@ -210,7 +259,7 @@ const ShippingAddress = ({
 
       <div className="my-8">
         <Checkbox
-          label="Billing address same as shipping address"
+          label={t.sameBilling}
           name="same_as_billing"
           checked={checked}
           onChange={onChange}
@@ -220,10 +269,10 @@ const ShippingAddress = ({
 
       <div className="mb-4 grid grid-cols-2 gap-4">
         <Input
-          label="Email"
+          label={t.email}
           name="email"
           type="email"
-          title="Enter a valid email address."
+          title={t.validEmail}
           autoComplete="email"
           value={formData.email}
           onChange={handleChange}
@@ -232,7 +281,7 @@ const ShippingAddress = ({
         />
 
         <Input
-          label="Phone"
+          label={t.phone}
           name="shipping_address.phone"
           type="tel"
           autoComplete="tel"

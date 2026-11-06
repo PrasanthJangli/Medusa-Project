@@ -8,6 +8,8 @@ import { getRegion } from "@lib/data/regions"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
 
+import { getLocale, getTranslations } from "next-intl/server"
+
 export const metadata: Metadata = {
   title: "MAISON MEDUSA | Discover Your Style",
   description:
@@ -16,70 +18,28 @@ export const metadata: Metadata = {
 
 const categoryImages = [
   {
-    title: "Everyday Fashion",
-    description: "Effortless looks for every moment.",
     image:
       "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=85",
-    label: "01 / STYLE",
   },
   {
-    title: "Accessories",
-    description: "The little details that make a difference.",
     image:
       "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1000&q=85",
-    label: "02 / DETAILS",
   },
   {
-    title: "Footwear",
-    description: "Step into something wonderful.",
     image:
       "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1000&q=85",
-    label: "03 / COMFORT",
   },
   {
-    title: "New Season",
-    description: "Fresh inspiration for your wardrobe.",
     image:
       "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1000&q=85",
-    label: "04 / NEW",
   },
   {
-    title: "Modern Looks",
-    description: "Find a look that feels like you.",
     image:
       "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=85",
-    label: "05 / EDIT",
   },
   {
-    title: "Seasonal Picks",
-    description: "Pieces worth making room for.",
     image:
       "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1000&q=85",
-    label: "06 / INSPIRE",
-  },
-]
-
-const benefits = [
-  {
-    icon: "✦",
-    title: "Curated Collections",
-    description:
-      "Explore thoughtfully selected products and discover styles that match your personality.",
-    number: "01",
-  },
-  {
-    icon: "◇",
-    title: "Discover Your Style",
-    description:
-      "Find fresh inspiration and pieces that make everyday dressing feel special.",
-    number: "02",
-  },
-  {
-    icon: "♡",
-    title: "Made for Everyday",
-    description:
-      "Explore versatile favourites for your everyday moments and special occasions.",
-    number: "03",
   },
 ]
 
@@ -87,6 +47,9 @@ export default async function Home(props: {
   params: Promise<{ countryCode: string }>
 }) {
   const { countryCode } = await props.params
+
+  const locale = await getLocale()
+  const t = await getTranslations("Home")
 
   const [region, collectionData] = await Promise.all([
     getRegion(countryCode),
@@ -114,6 +77,27 @@ export default async function Home(props: {
   const heroProduct = products[0]
   const secondProduct = products[1]
   const thirdProduct = products[2]
+
+  const benefits = [
+    {
+      icon: "✦",
+      title: t("benefit1Title"),
+      description: t("benefit1Description"),
+      number: "01",
+    },
+    {
+      icon: "◇",
+      title: t("benefit2Title"),
+      description: t("benefit2Description"),
+      number: "02",
+    },
+    {
+      icon: "♡",
+      title: t("benefit3Title"),
+      description: t("benefit3Description"),
+      number: "03",
+    },
+  ]
 
   // Theme customizer CSS variables
   const pageStyle = {
@@ -182,11 +166,9 @@ export default async function Home(props: {
         className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-3 py-3 text-center text-[9px] font-bold uppercase tracking-[0.15em] sm:gap-x-4 sm:px-4 sm:text-[11px] sm:tracking-[0.22em]"
         style={buttonStyle}
       >
-        <span>Discover your own kind of beautiful</span>
-
+        <span>{t("announcement1")}</span>
         <span style={secondaryAccentStyle}>✦</span>
-
-        <span>Maison Medusa — Style with soul</span>
+        <span>{t("announcement2")}</span>
       </div>
 
       {/* HERO SECTION */}
@@ -220,26 +202,24 @@ export default async function Home(props: {
                 className="h-2 w-2 shrink-0 rounded-full"
                 style={{ backgroundColor: "var(--theme-primary, #171717)" }}
               />
-              Welcome to Maison Medusa
+              {t("welcome")}
             </div>
 
             <h1
               className="text-[clamp(2.7rem,8.5vw,5.125rem)] font-medium leading-[1.06] tracking-[-0.045em] sm:text-6xl md:text-7xl lg:text-[82px]"
               style={headingStyle}
             >
-              Discover
+              {t("heroTitle1")}
               <br />
-              your own
+              {t("heroTitle2")}
               <br />
               <span className="italic" style={accentStyle}>
-                beautiful.
+                {t("heroTitle3")}
               </span>
             </h1>
 
             <p className="mt-6 max-w-[480px] text-sm leading-7 opacity-75 sm:mt-9 sm:text-base sm:leading-8">
-              Fashion is more than what you wear. It is how you express
-              yourself. Discover beautiful collections, explore fresh
-              favourites and create a style that feels completely yours.
+              {t("heroDescription")}
             </p>
 
             <div className="mt-7 flex w-full flex-col gap-3 min-[480px]:flex-row min-[480px]:flex-wrap sm:mt-9 sm:gap-4">
@@ -248,7 +228,7 @@ export default async function Home(props: {
                 className="group inline-flex min-h-[52px] w-full items-center justify-center gap-5 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.14em] shadow-lg transition-all duration-300 hover:-translate-y-1 hover:opacity-90 min-[480px]:w-fit sm:min-h-[55px] sm:px-8"
                 style={buttonStyle}
               >
-                Explore the store
+                {t("exploreStore")}
                 <span className="text-lg transition-transform group-hover:translate-x-2">
                   →
                 </span>
@@ -262,7 +242,7 @@ export default async function Home(props: {
                   backgroundColor: "var(--theme-background, #f7f3ea)",
                 }}
               >
-                Explore collections
+                {t("exploreCollections")}
               </LocalizedClientLink>
             </div>
 
@@ -271,9 +251,9 @@ export default async function Home(props: {
               style={subtleBorderStyle}
             >
               {[
-                ["01", "Find your style"],
-                ["02", "Explore new looks"],
-                ["03", "Make it yours"],
+                ["01", t("findStyle")],
+                ["02", t("exploreLooks")],
+                ["03", t("makeYours")],
               ].map(([number, label], index) => (
                 <div key={number} className="flex items-center gap-4 sm:gap-7">
                   <div className="min-w-0">
@@ -373,13 +353,13 @@ export default async function Home(props: {
               }}
             >
               <p className="text-base italic sm:text-2xl" style={headingStyle}>
-                Wear your story.
+                {t("wearStory")}
               </p>
               <p
                 className="mt-1 text-[7px] font-bold uppercase tracking-[0.16em] sm:mt-2 sm:text-[8px] sm:tracking-[0.22em]"
                 style={accentStyle}
               >
-                Maison Medusa edit
+                Maison Medusa
               </p>
             </div>
 
@@ -392,7 +372,7 @@ export default async function Home(props: {
             >
               <span className="text-xl sm:text-2xl">✦</span>
               <span className="text-[7px] font-bold uppercase tracking-wider sm:text-[8px]">
-                Be you
+                {t("beYou")}
               </span>
             </div>
           </div>
@@ -401,7 +381,10 @@ export default async function Home(props: {
 
       {/* COLLECTION SECTION */}
 
-      <section className="w-full min-w-0 px-4 py-14 sm:px-8 sm:py-20 md:py-24 lg:px-12" style={sectionStyle}>
+      <section
+        className="w-full min-w-0 px-4 py-14 sm:px-8 sm:py-20 md:py-24 lg:px-12"
+        style={sectionStyle}
+      >
         <div className="mx-auto max-w-[1440px]">
           <div className="mb-9 flex min-w-0 flex-col justify-between gap-5 sm:mb-12 md:mb-14 md:flex-row md:items-end">
             <div className="min-w-0">
@@ -413,22 +396,18 @@ export default async function Home(props: {
                   className="h-px w-9 shrink-0"
                   style={{ backgroundColor: "var(--theme-primary, #171717)" }}
                 />
-                The Maison Medusa edit
+                {t("collectionEyebrow")}
               </div>
 
               <h2
                 className="max-w-[700px] text-3xl font-medium leading-tight sm:text-5xl md:text-6xl"
                 style={headingStyle}
               >
-                Find a little{" "}
-                <span className="italic" style={accentStyle}>
-                  inspiration.
-                </span>
+                {t("collectionHeading")}
               </h2>
 
               <p className="mt-4 max-w-[560px] text-sm leading-7 opacity-70 sm:mt-5">
-                Explore our curated collections and discover something
-                wonderful for every version of you.
+                {t("collectionDescription")}
               </p>
             </div>
 
@@ -437,7 +416,7 @@ export default async function Home(props: {
               className="group inline-flex w-fit max-w-full items-center gap-3 border-b pb-2 text-[9px] font-bold uppercase tracking-[0.12em] transition-opacity hover:opacity-70 sm:text-[10px] sm:tracking-[0.16em]"
               style={secondaryButtonStyle}
             >
-              View all collections
+              {t("viewCollections")}
               <span className="text-lg transition-transform group-hover:translate-x-2">
                 →
               </span>
@@ -463,7 +442,7 @@ export default async function Home(props: {
                     >
                       <img
                         src={visual.image}
-                        alt={collection.title ?? visual.title}
+                        alt={collection.title ?? "Maison Medusa collection"}
                         loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                       />
@@ -476,7 +455,8 @@ export default async function Home(props: {
                           backgroundColor: "var(--theme-primary, #171717)",
                         }}
                       >
-                        {visual.label}
+                        {String(index + 1).padStart(2, "0")} /{" "}
+                        {t("collectionEyebrow")}
                       </div>
 
                       <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-3 p-4 text-white sm:p-7">
@@ -491,7 +471,7 @@ export default async function Home(props: {
                             {collection.title}
                           </h3>
                           <p className="mt-2 text-xs text-white/80">
-                            {visual.description}
+                            {t("collectionDescription")}
                           </p>
                         </div>
 
@@ -509,9 +489,9 @@ export default async function Home(props: {
                 )
               })
             ) : (
-              categoryImages.slice(0, 3).map((visual) => (
+              categoryImages.slice(0, 3).map((visual, index) => (
                 <LocalizedClientLink
-                  key={visual.title}
+                  key={visual.image}
                   href="/store"
                   className="group block min-w-0"
                 >
@@ -523,7 +503,7 @@ export default async function Home(props: {
                   >
                     <img
                       src={visual.image}
-                      alt={visual.title}
+                      alt="Maison Medusa collection"
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
@@ -536,10 +516,10 @@ export default async function Home(props: {
                             "var(--theme-font-heading, Playfair Display, serif)",
                         }}
                       >
-                        {visual.title}
+                        {t("collectionHeading")}
                       </h3>
                       <p className="mt-2 text-xs text-white/80">
-                        {visual.description}
+                        {t("collectionDescription")}
                       </p>
                     </div>
                   </div>
@@ -572,22 +552,18 @@ export default async function Home(props: {
                   className="h-px w-9 shrink-0"
                   style={{ backgroundColor: "var(--theme-primary, #171717)" }}
                 />
-                Fresh from our store
+                {t("productsEyebrow")}
               </div>
 
               <h2
                 className="text-3xl font-medium leading-tight sm:text-5xl md:text-6xl"
                 style={headingStyle}
               >
-                Your next{" "}
-                <span className="italic" style={accentStyle}>
-                  favourite.
-                </span>
+                {t("productsHeading")}
               </h2>
 
               <p className="mt-4 max-w-[560px] text-sm leading-7 opacity-70 sm:mt-5">
-                A selection of products waiting to become part of your
-                everyday style.
+                {t("productsDescription")}
               </p>
             </div>
 
@@ -596,7 +572,7 @@ export default async function Home(props: {
               className="group inline-flex w-fit max-w-full items-center gap-3 border-b pb-2 text-[9px] font-bold uppercase tracking-[0.12em] sm:text-[10px] sm:tracking-[0.16em]"
               style={secondaryButtonStyle}
             >
-              Shop all products
+              {t("shopProducts")}
               <span className="text-lg transition-transform group-hover:translate-x-2">
                 →
               </span>
@@ -616,7 +592,7 @@ export default async function Home(props: {
                       className="absolute left-4 top-4 z-20 rounded-full px-3 py-2 text-[8px] font-bold uppercase tracking-[0.14em] shadow-md"
                       style={buttonStyle}
                     >
-                      Featured
+                      {t("featured")}
                     </span>
                   )}
 
@@ -626,7 +602,11 @@ export default async function Home(props: {
                       borderRadius: "var(--theme-card-radius, 12px)",
                     }}
                   >
-                    <ProductPreview product={product} region={region} />
+                    <ProductPreview
+                      product={product}
+                      region={region}
+                      locale={locale}
+                    />
                   </div>
                 </div>
               ))}
@@ -647,12 +627,11 @@ export default async function Home(props: {
               </div>
 
               <h3 className="mt-6 text-2xl sm:text-3xl" style={headingStyle}>
-                Something lovely is on its way.
+                {t("noProducts")}
               </h3>
 
               <p className="mx-auto mt-4 max-w-[420px] text-sm leading-7 opacity-70">
-                Products will appear here as soon as they are available
-                in your Medusa store.
+                {t("noProductsDescription")}
               </p>
 
               <LocalizedClientLink
@@ -660,7 +639,7 @@ export default async function Home(props: {
                 className="mt-7 inline-flex px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] sm:px-7"
                 style={buttonStyle}
               >
-                Explore the store →
+                {t("exploreStore")} →
               </LocalizedClientLink>
             </div>
           )}
@@ -691,24 +670,22 @@ export default async function Home(props: {
                 className="mb-5 text-[9px] font-bold uppercase tracking-[0.18em] sm:mb-6 sm:text-[10px] sm:tracking-[0.22em]"
                 style={accentStyle}
               >
-                A different kind of everyday
+                {t("editorialEyebrow")}
               </div>
 
               <h2
                 className="max-w-[530px] text-3xl font-medium leading-tight sm:text-5xl md:text-6xl"
                 style={headingStyle}
               >
-                Make every
+                {t("editorialHeading1")}
                 <br />
                 <span className="italic" style={accentStyle}>
-                  look memorable.
+                  {t("editorialHeading2")}
                 </span>
               </h2>
 
               <p className="mt-6 max-w-[430px] text-sm leading-7 opacity-75 sm:mt-7 sm:leading-8">
-                Great style is about finding what feels right. Explore
-                beautiful pieces, mix your favourites and create a look
-                that is completely yours.
+                {t("editorialDescription")}
               </p>
 
               <LocalizedClientLink
@@ -716,7 +693,7 @@ export default async function Home(props: {
                 className="group mt-8 inline-flex min-h-[50px] items-center gap-4 px-6 py-4 text-[9px] font-bold uppercase tracking-[0.13em] shadow-lg transition-all duration-300 hover:-translate-y-1 hover:opacity-90 sm:mt-9 sm:gap-5 sm:px-8 sm:text-[10px] sm:tracking-[0.16em]"
                 style={buttonStyle}
               >
-                Discover the edit
+                {t("discoverEdit")}
                 <span className="text-lg transition-transform group-hover:translate-x-2">
                   →
                 </span>
@@ -742,7 +719,7 @@ export default async function Home(props: {
               }}
             >
               <p className="text-lg italic sm:text-xl" style={headingStyle}>
-                Style with soul.
+                {t("styleWithSoul")}
               </p>
               <p
                 className="mt-1 text-[7px] font-bold uppercase tracking-[0.16em] sm:text-[8px] sm:tracking-[0.2em]"
@@ -802,10 +779,10 @@ export default async function Home(props: {
                     "var(--theme-font-heading, Playfair Display, serif)",
                 }}
               >
-                Be original.
+                {t("beOriginal")}
               </p>
               <p className="mt-1 text-[7px] font-semibold uppercase tracking-[0.16em] opacity-80 sm:text-[8px] sm:tracking-[0.2em]">
-                Be unmistakably you
+                {t("beUnmistakablyYou")}
               </p>
             </div>
           </div>
@@ -819,30 +796,26 @@ export default async function Home(props: {
                 className="h-px w-8 shrink-0"
                 style={{ backgroundColor: "var(--theme-primary, #171717)" }}
               />
-              Our point of view
+              {t("brandEyebrow")}
             </div>
 
             <h2
               className="text-3xl font-medium leading-tight sm:text-5xl md:text-6xl"
               style={headingStyle}
             >
-              Fashion is
+              {t("brandHeading1")}
               <br />
               <span className="italic" style={accentStyle}>
-                personal.
+                {t("brandHeading2")}
               </span>
             </h2>
 
             <p className="mt-6 text-sm leading-7 opacity-75 sm:mt-7 sm:leading-8">
-              Your style tells a story before you say a word. It is in
-              the colours you choose, the details you love and the
-              confidence that comes from feeling like yourself.
+              {t("brandDescription1")}
             </p>
 
             <p className="mt-4 text-sm leading-7 opacity-75 sm:mt-5 sm:leading-8">
-              At Maison Medusa, we invite you to explore, experiment
-              and discover pieces that bring your own sense of style
-              to life.
+              {t("brandDescription2")}
             </p>
 
             <LocalizedClientLink
@@ -850,7 +823,7 @@ export default async function Home(props: {
               className="group mt-8 inline-flex items-center gap-4 border-b pb-2 text-[9px] font-bold uppercase tracking-[0.13em] sm:mt-9 sm:text-[10px] sm:tracking-[0.16em]"
               style={secondaryButtonStyle}
             >
-              Explore our collections
+              {t("exploreOurCollections")}
               <span className="text-lg transition-transform group-hover:translate-x-2">
                 →
               </span>
@@ -871,26 +844,25 @@ export default async function Home(props: {
               className="mb-4 text-[9px] font-bold uppercase tracking-[0.18em] sm:text-[10px] sm:tracking-[0.22em]"
               style={accentStyle}
             >
-              The Maison Medusa feeling
+              {t("benefitsEyebrow")}
             </div>
 
             <h2
               className="text-3xl font-medium sm:text-5xl"
               style={headingStyle}
             >
-              A little something for you.
+              {t("benefitsHeading")}
             </h2>
 
             <p className="mx-auto mt-4 max-w-[550px] text-sm leading-7 opacity-70 sm:mt-5">
-              Explore the details that make discovering your next
-              favourite feel special.
+              {t("benefitsDescription")}
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 md:grid-cols-3">
             {benefits.map((benefit) => (
               <div
-                key={benefit.title}
+                key={benefit.number}
                 className="group relative min-w-0 overflow-hidden border px-5 py-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl sm:px-7 sm:py-10"
                 style={cardStyle}
               >

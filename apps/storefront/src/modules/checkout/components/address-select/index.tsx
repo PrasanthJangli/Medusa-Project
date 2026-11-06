@@ -1,8 +1,10 @@
+"use client"
 
 import { Listbox, Transition } from "@headlessui/react"
 import { ChevronUpDown } from "@medusajs/icons"
 import { clx } from "@modules/common/components/ui"
 import { Fragment, useMemo } from "react"
+import { useLocale } from "next-intl"
 
 import compareAddresses from "@lib/util/compare-addresses"
 import { HttpTypes } from "@medusajs/types"
@@ -17,11 +19,26 @@ type AddressSelectProps = {
   ) => void
 }
 
+const translations = {
+  en: {
+    chooseAddress: "Choose an address",
+  },
+  te: {
+    chooseAddress: "చిరునామాను ఎంచుకోండి",
+  },
+  hi: {
+    chooseAddress: "पता चुनें",
+  },
+}
+
 const AddressSelect = ({
   addresses,
   addressInput,
   onSelect,
 }: AddressSelectProps) => {
+  const locale = useLocale() as "en" | "te" | "hi"
+  const t = translations[locale] || translations.en
+
   const handleSelect = (id: string) => {
     const savedAddress = addresses.find((a) => a.id === id)
 
@@ -48,7 +65,7 @@ const AddressSelect = ({
               <span className="min-w-0 flex-1 truncate">
                 {selectedAddress
                   ? selectedAddress.address_1
-                  : "Choose an address"}
+                  : t.chooseAddress}
               </span>
 
               <ChevronUpDown

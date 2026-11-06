@@ -1,6 +1,7 @@
 
 import { Text } from "@modules/common/components/ui"
 import { getProductPrice } from "@lib/util/get-product-price"
+import { translateProductName } from "@lib/util/translate-product"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "../thumbnail"
@@ -10,12 +11,22 @@ export default function ProductPreview({
   product,
   isFeatured,
   region,
+  locale = "en",
 }: {
   product: HttpTypes.StoreProduct
   isFeatured?: boolean
   region: HttpTypes.StoreRegion
+  locale?: string
 }) {
+  const productName = translateProductName(product.title, locale)
   const { cheapestPrice } = getProductPrice({ product })
+
+  const viewProductText =
+    locale === "te"
+      ? "ఉత్పత్తిని చూడండి"
+      : locale === "hi"
+        ? "उत्पाद देखें"
+        : "View Product"
 
   return (
     <div className="product-card">
@@ -27,7 +38,6 @@ export default function ProductPreview({
           data-testid="product-wrapper"
           className="theme-card h-full overflow-hidden"
         >
-          {/* Product Image */}
           <div className="overflow-hidden theme-surface">
             <Thumbnail
               thumbnail={product.thumbnail}
@@ -37,16 +47,14 @@ export default function ProductPreview({
             />
           </div>
 
-          {/* Product Information */}
           <div className="flex flex-col gap-2 p-3 small:p-4">
             <Text
               className="line-clamp-2 min-h-10 text-sm font-semibold leading-5 theme-text transition-colors group-hover:theme-primary-text"
               data-testid="product-title"
             >
-              {product.title}
+              {productName}
             </Text>
 
-            {/* Product Price */}
             <div className="flex items-center">
               {cheapestPrice ? (
                 <div className="text-base font-semibold theme-primary-text">
@@ -59,10 +67,9 @@ export default function ProductPreview({
               )}
             </div>
 
-            {/* View Product Indicator */}
             <div className="mt-2">
               <span className="inline-flex items-center text-xs font-semibold theme-primary-text transition-all duration-300 group-hover:translate-x-1">
-                View Product →
+                {viewProductText} →
               </span>
             </div>
           </div>

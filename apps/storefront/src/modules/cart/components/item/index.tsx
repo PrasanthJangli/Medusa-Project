@@ -1,7 +1,7 @@
-
 "use client"
 
 import { useState } from "react"
+import { useLocale } from "next-intl"
 
 import { Table, Text, clx } from "@modules/common/components/ui"
 import { updateLineItem } from "@lib/data/cart"
@@ -15,6 +15,7 @@ import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
+import { translateProductName } from "@lib/util/translate-product"
 
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem
@@ -25,6 +26,7 @@ type ItemProps = {
 const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const locale = useLocale()
 
   const changeQuantity = async (quantity: number) => {
     setError(null)
@@ -42,18 +44,18 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
       })
   }
 
-  // TODO: Update this to grab the actual max inventory
   const maxQtyFromInventory = 10
   const maxQuantity = item.variant?.manage_inventory
     ? 10
     : maxQtyFromInventory
 
+  const productTitle = translateProductName(
+    item.product_title || "",
+    locale
+  )
+
   return (
-    <Table.Row
-      className="w-full"
-      data-testid="product-row"
-    >
-      {/* Product image */}
+    <Table.Row className="w-full" data-testid="product-row">
       <Table.Cell
         className={clx(
           "!pl-0 align-top",
@@ -77,14 +79,13 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
         </LocalizedClientLink>
       </Table.Cell>
 
-      {/* Product information */}
       <Table.Cell className="min-w-0 p-2 text-left align-top sm:p-4">
         <div className="min-w-0">
           <Text
             className="txt-medium-plus break-words text-ui-fg-base"
             data-testid="product-title"
           >
-            {item.product_title}
+            {productTitle}
           </Text>
 
           <div className="mt-1 min-w-0 break-words">
@@ -120,9 +121,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
                 data-testid="product-select-button"
               >
                 {Array.from(
-                  {
-                    length: Math.min(maxQuantity, 10),
-                  },
+                  { length: Math.min(maxQuantity, 10) },
                   (_, i) => (
                     <option value={i + 1} key={i}>
                       {i + 1}
@@ -137,7 +136,6 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
         </div>
       </Table.Cell>
 
-      {/* Quantity controls - desktop */}
       {type === "full" && (
         <Table.Cell className="hidden align-top p-2 sm:table-cell sm:p-4">
           <div className="flex w-full items-center gap-2">
@@ -155,9 +153,7 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
               data-testid="product-select-button"
             >
               {Array.from(
-                {
-                  length: Math.min(maxQuantity, 10),
-                },
+                { length: Math.min(maxQuantity, 10) },
                 (_, i) => (
                   <option value={i + 1} key={i}>
                     {i + 1}
@@ -176,7 +172,6 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
         </Table.Cell>
       )}
 
-      {/* Unit price - desktop */}
       {type === "full" && (
         <Table.Cell className="hidden align-top p-2 sm:table-cell sm:p-4">
           <LineItemUnitPrice
@@ -187,7 +182,6 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
         </Table.Cell>
       )}
 
-      {/* Total price */}
       <Table.Cell className="!pr-0 p-2 text-right align-top sm:p-4">
         <span
           className={clx("!pr-0", {

@@ -2,6 +2,7 @@
 
 import { Badge, Heading, Input, Label, Text } from "@modules/common/components/ui"
 import React from "react"
+import { useLocale } from "next-intl"
 
 import { applyPromotions } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
@@ -14,11 +15,37 @@ type DiscountCodeProps = {
   cart: HttpTypes.StoreCart
 }
 
+const translations = {
+  en: {
+    addPromotion: "Add Promotion Code(s)",
+    apply: "Apply",
+    applied: "Promotion(s) applied:",
+    remove: "Remove discount code from order",
+  },
+  te: {
+    addPromotion: "ప్రమోషన్ కోడ్ జోడించండి",
+    apply: "వర్తింపజేయండి",
+    applied: "వర్తింపజేసిన ప్రమోషన్లు:",
+    remove: "ఆర్డర్ నుండి డిస్కౌంట్ కోడ్ తొలగించండి",
+  },
+  hi: {
+    addPromotion: "प्रमोशन कोड जोड़ें",
+    apply: "लागू करें",
+    applied: "लागू किए गए प्रमोशन:",
+    remove: "ऑर्डर से डिस्काउंट कोड हटाएं",
+  },
+}
+
 const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   const [isOpen, setIsOpen] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState("")
+  const locale = useLocale()
+
+  const t =
+    translations[locale as keyof typeof translations] ?? translations.en
 
   const { promotions = [] } = cart
+
   const removePromotionCode = async (code: string) => {
     const validPromotions = promotions.filter(
       (promotion) => promotion.code !== code
@@ -36,10 +63,15 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
     if (!code) {
       return
     }
-    const input = document.getElementById("promotion-input") as HTMLInputElement
+
+    const input = document.getElementById(
+      "promotion-input"
+    ) as HTMLInputElement
+
     const codes = promotions
       .filter((p) => p.code !== undefined)
       .map((p) => p.code!)
+
     codes.push(code.toString())
 
     try {
@@ -54,22 +86,18 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   }
 
   return (
-    <div className="w-full bg-white flex flex-col">
+    <div className="flex w-full flex-col bg-white">
       <div className="txt-medium">
-        <form action={(a) => addPromotionCode(a)} className="w-full mb-5">
-          <Label className="flex gap-x-1 my-2 items-center">
+        <form action={(a) => addPromotionCode(a)} className="mb-5 w-full">
+          <Label className="my-2 flex items-center gap-x-1">
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
               className="txt-medium text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
               data-testid="add-discount-button"
             >
-              Add Promotion Code(s)
+              {t.addPromotion}
             </button>
-
-            {/* <Tooltip content="You can add multiple promotion codes">
-              <InformationCircleSolid color="var(--fg-muted)" />
-            </Tooltip> */}
           </Label>
 
           {isOpen && (
@@ -83,11 +111,12 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                   autoFocus={false}
                   data-testid="discount-input"
                 />
+
                 <SubmitButton
                   variant="secondary"
                   data-testid="discount-apply-button"
                 >
-                  Apply
+                  {t.apply}
                 </SubmitButton>
               </div>
 
@@ -100,20 +129,20 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
         </form>
 
         {promotions.length > 0 && (
-          <div className="w-full flex items-center">
-            <div className="flex flex-col w-full">
-              <Heading className="txt-medium mb-2">
-                Promotion(s) applied:
+          <div className="flex w-full items-center">
+            <div className="flex w-full flex-col">
+              <Heading className="mb-2 txt-medium">
+                {t.applied}
               </Heading>
 
               {promotions.map((promotion) => {
                 return (
                   <div
                     key={promotion.id}
-                    className="flex items-center justify-between w-full max-w-full mb-2"
+                    className="mb-2 flex w-full max-w-full items-center justify-between"
                     data-testid="discount-row"
                   >
-                    <Text className="flex gap-x-1 items-baseline txt-small-plus w-4/5 pr-1">
+                    <Text className="flex w-4/5 items-baseline gap-x-1 pr-1 txt-small-plus">
                       <span className="truncate" data-testid="discount-code">
                         <Badge
                           color={promotion.is_automatic ? "green" : "grey"}
@@ -137,13 +166,9 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                             </>
                           )}
                         )
-                        {/* {promotion.is_automatic && (
-                          <Tooltip content="This promotion is automatically applied">
-                            <InformationCircleSolid className="inline text-zinc-400" />
-                          </Tooltip>
-                        )} */}
                       </span>
                     </Text>
+
                     {!promotion.is_automatic && (
                       <button
                         className="flex items-center"
@@ -157,9 +182,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                         data-testid="remove-discount-button"
                       >
                         <Trash size={14} />
-                        <span className="sr-only">
-                          Remove discount code from order
-                        </span>
+                        <span className="sr-only">{t.remove}</span>
                       </button>
                     )}
                   </div>

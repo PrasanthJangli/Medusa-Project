@@ -2,6 +2,7 @@
 "use client"
 
 import { XMarkMini } from "@medusajs/icons"
+import { useTranslations } from "next-intl"
 import { useClearRefinements, useCurrentRefinements } from "react-instantsearch"
 
 import { indexedCurrency, priceAttribute } from "@lib/search-client"
@@ -16,10 +17,18 @@ type Refinement = ReturnType<
   typeof useCurrentRefinements
 >["items"][number]["refinements"][number]
 
-/**
- * What a single refinement reads as on its chip.
- */
-function refinementLabel(refinement: Refinement, currencyCode: string) {
+type RefinementLabels = {
+  category: string
+  label: string
+  upTo: string
+  from: string
+}
+
+function refinementLabel(
+  refinement: Refinement,
+  currencyCode: string,
+  translations: RefinementLabels
+) {
   const { attribute, label, value, operator } = refinement
 
   if (attribute === OPTION_VALUES_ATTRIBUTE) {
@@ -40,27 +49,31 @@ function refinementLabel(refinement: Refinement, currencyCode: string) {
     })
 
     return operator === "<=" || operator === "<"
-      ? `Up to ${amount}`
-      : `From ${amount}`
+      ? `${translations.upTo} ${amount}`
+      : `${translations.from} ${amount}`
   }
 
   if (attribute === CATEGORY_ATTRIBUTE) {
-    return `Category: ${label}`
+    return `${translations.category}: ${label}`
   }
 
   if (attribute === LABELS_ATTRIBUTE) {
-    return `Label: ${label}`
+    return `${translations.label}: ${label}`
   }
 
   return label
 }
 
-/**
- * Every active refinement as a chip that drops it.
- */
-const CurrentRefinements = ({ currencyCode }: { currencyCode: string }) => {
+const CurrentRefinements = ({
+  currencyCode,
+}: {
+  currencyCode: string
+}) => {
+  const t = useTranslations("Store")
+
   const { items, refine } = useCurrentRefinements()
-  const { canRefine: canClearAll, refine: clearAll } = useClearRefinements()
+  const { canRefine: canClearAll, refine: clearAll } =
+    useClearRefinements()
 
   const refinements = items.flatMap((item) => item.refinements)
 
@@ -68,26 +81,38 @@ const CurrentRefinements = ({ currencyCode }: { currencyCode: string }) => {
     return null
   }
 
+  const translations: RefinementLabels = {
+    category: t("category"),
+    label: t("label"),
+    upTo: t("upTo"),
+    from: t("from"),
+  }
+
   return (
     <div className="flex flex-col gap-y-3" data-testid="current-refinements">
       <div className="flex items-center justify-between gap-x-2 pr-6">
         <span className="txt-compact-small-plus text-ui-fg-subtle">
-          Applied filters
+          {t("appliedFilters")}
         </span>
+
         {canClearAll && (
           <button
             onClick={clearAll}
             className="txt-compact-small-plus text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
             data-testid="clear-refinements"
           >
-            Clear all
+            {t("clearAll")}
           </button>
         )}
       </div>
 
       <ul className="flex flex-wrap gap-2 pr-6">
         {refinements.map((refinement) => {
-          const label = refinementLabel(refinement, currencyCode)
+          const label = refinementLabel(
+            refinement,
+            currencyCode,
+            translations
+          )
 
           return (
             <li
@@ -97,7 +122,7 @@ const CurrentRefinements = ({ currencyCode }: { currencyCode: string }) => {
             >
               <button
                 onClick={() => refine(refinement)}
-                aria-label={`Remove filter ${label}`}
+                aria-label={`${t("removeFilter")} ${label}`}
                 className="border-ui-border-interactive text-ui-fg-base border text-small-regular h-8 rounded-rounded px-3 flex items-center gap-x-1.5 transition-colors duration-150 hover:bg-ui-bg-base-hover"
                 data-testid="remove-refinement"
               >

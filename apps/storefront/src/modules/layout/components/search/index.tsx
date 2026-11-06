@@ -20,10 +20,41 @@ import SearchHit, { ProductHit } from "./hit"
 const HITS_PER_PAGE = 12
 const DEBOUNCE_MS = 250
 
-const SearchPanel = () => {
+const searchTranslations = {
+  en: {
+    placeholder: "Search products",
+    searchLabel: "Search products",
+    submit: "Submit product search",
+    searching: "Searching...",
+    error: "Could not search products",
+    noResults: "No products found for",
+  },
+  te: {
+    placeholder: "ఉత్పత్తులను వెతకండి",
+    searchLabel: "ఉత్పత్తులను వెతకండి",
+    submit: "ఉత్పత్తుల కోసం వెతకండి",
+    searching: "వెతుకుతోంది...",
+    error: "ఉత్పత్తుల కోసం వెతకడం సాధ్యం కాలేదు",
+    noResults: "ఉత్పత్తులు కనుగొనబడలేదు:",
+  },
+  hi: {
+    placeholder: "उत्पाद खोजें",
+    searchLabel: "उत्पाद खोजें",
+    submit: "उत्पाद खोजें",
+    searching: "खोज रहे हैं...",
+    error: "उत्पादों को खोजा नहीं जा सका",
+    noResults: "कोई उत्पाद नहीं मिला:",
+  },
+}
+
+type UiLocale = "en" | "te" | "hi"
+
+const SearchPanel = ({ locale }: { locale: UiLocale }) => {
   const timer = useRef<number | undefined>(undefined)
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const labels = searchTranslations[locale]
 
   const queryHook = useCallback(
     (nextQuery: string, search: (value: string) => void) => {
@@ -84,11 +115,7 @@ const SearchPanel = () => {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full min-w-0"
-    >
-      {/* Search input */}
+    <div ref={containerRef} className="relative w-full min-w-0">
       <form
         role="search"
         onSubmit={handleSubmit}
@@ -106,8 +133,8 @@ const SearchPanel = () => {
             refine(value)
             setIsFocused(true)
           }}
-          placeholder="Search products"
-          aria-label="Search products"
+          placeholder={labels.placeholder}
+          aria-label={labels.searchLabel}
           aria-expanded={showDropdown}
           aria-controls="product-search-results"
           autoComplete="off"
@@ -117,7 +144,7 @@ const SearchPanel = () => {
 
         <button
           type="submit"
-          aria-label="Submit product search"
+          aria-label={labels.submit}
           className="flex h-full w-10 shrink-0 items-center justify-center bg-[#febd69] text-gray-900 transition hover:bg-[#f3a847] sm:w-12"
           data-testid="nav-search-button"
         >
@@ -125,7 +152,6 @@ const SearchPanel = () => {
         </button>
       </form>
 
-      {/* Search suggestions */}
       {showDropdown && (
         <div
           id="product-search-results"
@@ -133,16 +159,16 @@ const SearchPanel = () => {
         >
           {!query.trim() || isPending ? (
             <Text className="px-3 py-4 text-sm text-gray-500 sm:px-4">
-              Searching...
+              {labels.searching}
             </Text>
           ) : status === "error" ? (
             <Text className="break-words px-3 py-4 text-sm text-red-600 sm:px-4">
-              Could not search products
+              {labels.error}
               {error?.message ? `: ${error.message}` : "."}
             </Text>
           ) : !isSettled ? (
             <Text className="px-3 py-4 text-sm text-gray-500 sm:px-4">
-              Searching...
+              {labels.searching}
             </Text>
           ) : hasResults ? (
             <ul className="py-2" data-testid="search-results">
@@ -159,7 +185,7 @@ const SearchPanel = () => {
               className="break-words px-3 py-4 text-sm text-gray-500 sm:px-4"
               data-testid="search-no-results"
             >
-              No products found for &quot;{query}&quot;
+              {labels.noResults} &quot;{query}&quot;
             </Text>
           )}
         </div>
@@ -168,7 +194,10 @@ const SearchPanel = () => {
   )
 }
 
-const Search = () => {
+const Search = ({ locale = "en" }: { locale?: string }) => {
+  const supportedLocale: UiLocale =
+    locale === "te" || locale === "hi" ? locale : "en"
+
   return (
     <InstantSearch
       indexName={PRODUCT_INDEX_NAME}
@@ -176,7 +205,7 @@ const Search = () => {
       future={{ preserveSharedStateOnUnmount: true }}
     >
       <Configure hitsPerPage={HITS_PER_PAGE} />
-      <SearchPanel />
+      <SearchPanel locale={supportedLocale} />
     </InstantSearch>
   )
 }
