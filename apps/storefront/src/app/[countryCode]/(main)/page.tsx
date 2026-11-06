@@ -1,53 +1,45 @@
 
 import type { Metadata } from "next"
+
 import { listCollections } from "@lib/data/collections"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
+
+import { getLocale, getTranslations } from "next-intl/server"
 
 export const metadata: Metadata = {
   title: "MAISON MEDUSA | Discover Your Style",
   description:
-    "Explore new arrivals, collections and everyday favourites at Maison Medusa.",
+    "Discover beautiful fashion, curated collections and everyday essentials at Maison Medusa.",
 }
 
 const categoryImages = [
   {
     image:
-      "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=85",
-    description: "Everyday looks, thoughtfully selected.",
-    color: "#f2e6d8",
+      "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=85",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=85",
-    description: "Accessories that make a statement.",
-    color: "#e8e4f2",
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1000&q=85",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=900&q=85",
-    description: "Find your perfect finishing touch.",
-    color: "#f4e3df",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1000&q=85",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=85",
-    description: "Comfort meets effortless style.",
-    color: "#e5eadf",
+      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1000&q=85",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=85",
-    description: "A little inspiration for your everyday.",
-    color: "#e9e3dc",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=85",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85",
-    description: "Explore pieces for every season.",
-    color: "#f1e8d5",
+      "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1000&q=85",
   },
 ]
 
@@ -55,6 +47,9 @@ export default async function Home(props: {
   params: Promise<{ countryCode: string }>
 }) {
   const { countryCode } = await props.params
+
+  const locale = await getLocale()
+  const t = await getTranslations("Home")
 
   const [region, collectionData] = await Promise.all([
     getRegion(countryCode),
@@ -71,7 +66,8 @@ export default async function Home(props: {
     regionId: region.id,
     queryParams: {
       limit: 8,
-      fields: "*variants.calculated_price",
+      fields:
+        "*variants.calculated_price,+variants.prices,*variants.images,*variants.options,+variants.inventory_quantity",
     },
   })
 
@@ -82,948 +78,833 @@ export default async function Home(props: {
   const secondProduct = products[1]
   const thirdProduct = products[2]
 
-  return (
-    <main className="maison-store min-h-screen overflow-hidden bg-white text-[#20251f]">
-      <style>{`
-        .maison-store {
-          --forest: #173f35;
-          --forest-dark: #102e27;
-          --coral: #f47765;
-          --cream: #faf7f0;
-          --gold: #e8bd68;
-        }
-        .maison-store * { box-sizing: border-box; }
-        .maison-store a { text-decoration: none; }
-        .maison-store .editorial {
-          font-family: Georgia, 'Times New Roman', serif;
-          font-weight: 400;
-          letter-spacing: -1.5px;
-        }
-        .maison-store .announcement {
-          background: var(--forest);
-          color: white;
-          text-align: center;
-          padding: 11px 16px;
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 2px;
-        }
-        .maison-store .header-inner {
-          max-width: 1440px;
-          min-height: 82px;
-          padding: 16px 5%;
-          margin: auto;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 24px;
-        }
-        .maison-store .brand {
-          color: var(--forest);
-          font-family: Georgia, serif;
-          font-size: 24px;
-          letter-spacing: 2.5px;
-          white-space: nowrap;
-        }
-        .maison-store .brand span {
-          display: block;
-          margin-top: 5px;
-          font-family: Arial, sans-serif;
-          font-size: 8px;
-          letter-spacing: 4px;
-          text-align: center;
-        }
-        .maison-store .nav-links {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 25px;
-          color: #393c37;
-          font-size: 12px;
-        }
-        .maison-store .nav-links a:hover,
-        .maison-store .header-actions a:hover,
-        .maison-store .footer-links a:hover {
-          color: var(--coral);
-        }
-        .maison-store .header-actions {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-          color: var(--forest);
-          font-size: 12px;
-          white-space: nowrap;
-        }
-        .maison-store .hero {
-          background: var(--cream);
-          padding: 55px 5% 62px;
-        }
-        .maison-store .hero-inner {
-          max-width: 1320px;
-          margin: auto;
-          display: grid;
-          grid-template-columns: .9fr 1.1fr;
-          align-items: center;
-          gap: 54px;
-        }
-        .maison-store .eyebrow {
-          display: inline-flex;
-          align-items: center;
-          gap: 9px;
-          color: var(--forest);
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 2.2px;
-          text-transform: uppercase;
-        }
-        .maison-store .eyebrow:before {
-          content: '';
-          width: 25px;
-          height: 1px;
-          background: var(--coral);
-        }
-        .maison-store .hero h1 {
-          max-width: 570px;
-          margin: 24px 0;
-          color: var(--forest);
-          font-size: clamp(46px, 5.4vw, 78px);
-          line-height: 1.04;
-        }
-        .maison-store .hero h1 em {
-          color: var(--coral);
-          font-weight: 400;
-        }
-        .maison-store .hero-copy {
-          max-width: 440px;
-          color: #65665e;
-          font-size: 14px;
-          line-height: 1.9;
-        }
-        .maison-store .button-row {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-          margin-top: 28px;
-        }
-        .maison-store .button {
-          min-height: 46px;
-          padding: 14px 20px;
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-          gap: 10px;
-          background: var(--forest);
-          color: white;
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: .6px;
-          transition: background .2s, transform .2s;
-        }
-        .maison-store .button:hover {
-          background: var(--forest-dark);
-          transform: translateY(-2px);
-        }
-        .maison-store .button-outline {
-          background: transparent;
-          color: var(--forest);
-          border: 1px solid #b9c3b9;
-        }
-        .maison-store .button-outline:hover {
-          background: var(--forest);
-          color: white;
-        }
-        .maison-store .hero-notes {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 18px;
-          margin-top: 32px;
-          color: #62645c;
-          font-size: 10px;
-        }
-        .maison-store .hero-notes span:before {
-          content: '✓';
-          color: var(--forest);
-          font-weight: 700;
-          margin-right: 7px;
-        }
-        .maison-store .hero-art {
-          min-height: 500px;
-          position: relative;
-          display: grid;
-          grid-template-columns: 1fr .72fr;
-          grid-template-rows: 1fr .72fr;
-          gap: 13px;
-        }
-        .maison-store .hero-photo {
-          overflow: hidden;
-          background: #e7ddd0;
-        }
-        .maison-store .hero-photo img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        .maison-store .hero-photo-main {
-          grid-row: 1 / 3;
-          min-height: 500px;
-        }
-        .maison-store .hero-photo-top { min-height: 245px; }
-        .maison-store .hero-photo-bottom { min-height: 200px; }
-        .maison-store .floating-note {
-          position: absolute;
-          left: -28px;
-          bottom: 35px;
-          padding: 17px 20px;
-          background: white;
-          box-shadow: 0 10px 35px #1c33221a;
-          color: var(--forest);
-          font-family: Georgia, serif;
-          font-size: 19px;
-          line-height: 1.3;
-        }
-        .maison-store .floating-note small {
-          display: block;
-          margin-top: 7px;
-          font-family: Arial, sans-serif;
-          font-size: 9px;
-          letter-spacing: 1.4px;
-          color: #77786f;
-        }
-        .maison-store .section {
-          max-width: 1440px;
-          padding: 72px 5%;
-          margin: auto;
-        }
-        .maison-store .section-heading {
-          display: flex;
-          justify-content: space-between;
-          align-items: end;
-          gap: 20px;
-          margin-bottom: 30px;
-        }
-        .maison-store .section-heading h2 {
-          margin: 12px 0 0;
-          color: var(--forest);
-          font-size: clamp(30px, 4vw, 47px);
-          line-height: 1.12;
-        }
-        .maison-store .section-heading p {
-          max-width: 430px;
-          margin: 12px 0 0;
-          color: #77776e;
-          font-size: 13px;
-          line-height: 1.8;
-        }
-        .maison-store .text-link {
-          color: var(--forest);
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: .6px;
-          border-bottom: 1px solid #a9b6aa;
-          padding-bottom: 7px;
-          white-space: nowrap;
-        }
-        .maison-store .category-grid {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 23px;
-        }
-        .maison-store .category-card {
-          display: block;
-          min-width: 0;
-          color: var(--forest);
-        }
-        .maison-store .category-image {
-          aspect-ratio: 1 / .85;
-          overflow: hidden;
-          background: #eee8df;
-        }
-        .maison-store .category-image img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform .45s;
-        }
-        .maison-store .category-card:hover .category-image img {
-          transform: scale(1.05);
-        }
-        .maison-store .category-info {
-          padding: 16px 0 4px;
-          display: flex;
-          align-items: start;
-          justify-content: space-between;
-          gap: 12px;
-        }
-        .maison-store .category-info h3 {
-          margin: 0;
-          font-family: Georgia, serif;
-          font-size: 22px;
-          font-weight: 400;
-        }
-        .maison-store .category-info p {
-          margin: 7px 0 0;
-          color: #77776e;
-          font-size: 11px;
-          line-height: 1.6;
-        }
-        .maison-store .arrow {
-          font-size: 20px;
-          color: var(--coral);
-        }
-        .maison-store .products-section { background: #faf8f3; }
-        .maison-store .product-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 21px;
-        }
-        .maison-store .product-card {
-          min-width: 0;
-          overflow: hidden;
-          background: white;
-          padding: 12px;
-          border: 1px solid #eeeae2;
-          transition: box-shadow .2s, transform .2s;
-        }
-        .maison-store .product-card:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 12px 28px #173f3510;
-        }
-        .maison-store .product-card > * { min-width: 0; }
-        .maison-store .empty-products {
-          grid-column: 1 / -1;
-          padding: 45px 20px;
-          background: white;
-          text-align: center;
-          color: #6b6d64;
-          line-height: 1.8;
-        }
-        .maison-store .promo { padding: 0 5% 72px; }
-        .maison-store .promo-inner {
-          max-width: 1320px;
-          min-height: 360px;
-          margin: auto;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          background: #f7e4de;
-          overflow: hidden;
-        }
-        .maison-store .promo-copy {
-          padding: 52px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: start;
-        }
-        .maison-store .promo-copy h2 {
-          max-width: 450px;
-          margin: 18px 0;
-          color: var(--forest);
-          font-size: clamp(34px, 4vw, 52px);
-          line-height: 1.1;
-        }
-        .maison-store .promo-copy p {
-          max-width: 390px;
-          color: #68665f;
-          font-size: 13px;
-          line-height: 1.9;
-        }
-        .maison-store .promo-image { min-height: 340px; }
-        .maison-store .promo-image img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        .maison-store .story {
-          display: grid;
-          grid-template-columns: .95fr 1.05fr;
-          align-items: center;
-          gap: 65px;
-        }
-        .maison-store .story-image {
-          aspect-ratio: 1 / 1.05;
-          overflow: hidden;
-          background: #eee5d9;
-        }
-        .maison-store .story-image img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        .maison-store .story-copy h2 {
-          margin: 17px 0;
-          color: var(--forest);
-          font-size: clamp(36px, 4.2vw, 56px);
-          line-height: 1.1;
-        }
-        .maison-store .story-copy p {
-          color: #6b6c63;
-          font-size: 13px;
-          line-height: 2;
-        }
-        .maison-store .benefits {
-          background: var(--cream);
-          padding: 35px 5%;
-        }
-        .maison-store .benefits-inner {
-          max-width: 1320px;
-          margin: auto;
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 30px;
-        }
-        .maison-store .benefit {
-          padding: 18px;
-          text-align: center;
-        }
-        .maison-store .benefit-icon {
-          color: var(--coral);
-          font-size: 25px;
-        }
-        .maison-store .benefit h3 {
-          margin: 12px 0 7px;
-          color: var(--forest);
-          font-family: Georgia, serif;
-          font-size: 19px;
-          font-weight: 400;
-        }
-        .maison-store .benefit p {
-          margin: 0;
-          color: #73746b;
-          font-size: 11px;
-          line-height: 1.8;
-        }
-        .maison-store .newsletter {
-          background: var(--forest);
-          color: white;
-          padding: 57px 5%;
-          text-align: center;
-        }
-        .maison-store .newsletter-inner { max-width: 620px; margin: auto; }
-        .maison-store .newsletter h2 {
-          margin: 14px 0;
-          font-family: Georgia, serif;
-          font-size: clamp(32px, 4vw, 47px);
-          font-weight: 400;
-        }
-        .maison-store .newsletter p {
-          color: #d6dfd8;
-          font-size: 12px;
-          line-height: 1.8;
-        }
-        .maison-store .newsletter-link {
-          display: inline-flex;
-          margin-top: 15px;
-          padding: 14px 21px;
-          background: var(--gold);
-          color: var(--forest-dark);
-          font-size: 11px;
-          font-weight: 700;
-        }
-        .maison-store .footer {
-          padding: 48px 5% 25px;
-          background: white;
-        }
-        .maison-store .footer-inner {
-          max-width: 1320px;
-          margin: auto;
-          display: grid;
-          grid-template-columns: 1.5fr 1fr 1fr;
-          gap: 40px;
-        }
-        .maison-store .footer-description {
-          max-width: 300px;
-          color: #77776e;
-          font-size: 12px;
-          line-height: 1.9;
-        }
-        .maison-store .footer h3 {
-          margin: 0 0 15px;
-          color: var(--forest);
-          font-size: 11px;
-          letter-spacing: 1.4px;
-          text-transform: uppercase;
-        }
-        .maison-store .footer-links {
-          display: grid;
-          gap: 12px;
-          color: #6b6d64;
-          font-size: 12px;
-        }
-        .maison-store .footer-bottom {
-          max-width: 1320px;
-          margin: 35px auto 0;
-          padding-top: 20px;
-          border-top: 1px solid #eeeae3;
-          display: flex;
-          justify-content: space-between;
-          gap: 15px;
-          color: #85857d;
-          font-size: 10px;
-        }
-        @media (max-width: 1000px) {
-          .maison-store .header-inner { flex-wrap: wrap; }
-          .maison-store .nav-links {
-            order: 3;
-            width: 100%;
-            gap: 20px;
-          }
-          .maison-store .hero-inner { gap: 30px; }
-          .maison-store .hero-art { min-height: 410px; }
-          .maison-store .hero-photo-main { min-height: 410px; }
-          .maison-store .hero-photo-top { min-height: 200px; }
-          .maison-store .hero-photo-bottom { min-height: 180px; }
-          .maison-store .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-          .maison-store .story { gap: 35px; }
-        }
-        @media (max-width: 650px) {
-          .maison-store .announcement { font-size: 8px; letter-spacing: 1px; }
-          .maison-store .header-inner { padding: 15px 5%; gap: 15px; }
-          .maison-store .brand { font-size: 19px; }
-          .maison-store .nav-links {
-            overflow-x: auto;
-            justify-content: flex-start;
-            padding-bottom: 4px;
-            font-size: 11px;
-          }
-          .maison-store .header-actions { gap: 10px; font-size: 10px; }
-          .maison-store .hero { padding: 40px 5% 45px; }
-          .maison-store .hero-inner { grid-template-columns: 1fr; gap: 30px; }
-          .maison-store .hero h1 { font-size: 49px; }
-          .maison-store .hero-art { min-height: 340px; gap: 8px; }
-          .maison-store .hero-photo-main { min-height: 340px; }
-          .maison-store .hero-photo-top,
-          .maison-store .hero-photo-bottom { min-height: 160px; }
-          .maison-store .floating-note {
-            left: -5px;
-            bottom: 15px;
-            padding: 12px;
-            font-size: 15px;
-          }
-          .maison-store .section { padding: 46px 5%; }
-          .maison-store .section-heading {
-            align-items: start;
-            flex-direction: column;
-          }
-          .maison-store .category-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 20px 12px;
-          }
-          .maison-store .category-info h3 { font-size: 17px; }
-          .maison-store .category-info p { font-size: 10px; }
-          .maison-store .product-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-          }
-          .maison-store .product-card { padding: 7px; }
-          .maison-store .promo { padding: 0 5% 45px; }
-          .maison-store .promo-inner { grid-template-columns: 1fr; }
-          .maison-store .promo-copy { padding: 32px 24px; }
-          .maison-store .promo-image { min-height: 230px; }
-          .maison-store .story { grid-template-columns: 1fr; gap: 25px; }
-          .maison-store .benefits-inner {
-            grid-template-columns: 1fr;
-            gap: 5px;
-          }
-          .maison-store .benefit { padding: 12px; }
-          .maison-store .footer-inner {
-            grid-template-columns: 1fr 1fr;
-            gap: 28px 18px;
-          }
-          .maison-store .footer-brand-column { grid-column: 1 / -1; }
-          .maison-store .footer-bottom { flex-direction: column; }
-        }
-      `}</style>
+  const benefits = [
+    {
+      icon: "✦",
+      title: t("benefit1Title"),
+      description: t("benefit1Description"),
+      number: "01",
+    },
+    {
+      icon: "◇",
+      title: t("benefit2Title"),
+      description: t("benefit2Description"),
+      number: "02",
+    },
+    {
+      icon: "♡",
+      title: t("benefit3Title"),
+      description: t("benefit3Description"),
+      number: "03",
+    },
+  ]
 
-      {/* Announcement */}
-      <div className="announcement">
-        NEW SEASON, NEW FINDS — DISCOVER YOUR NEXT FAVOURITE
+  // Theme customizer CSS variables
+  const pageStyle = {
+    backgroundColor: "var(--theme-background, #f7f3ea)",
+    color: "var(--theme-text, #211d17)",
+    fontFamily: "var(--theme-font-body, Inter, sans-serif)",
+    minHeight: "100vh",
+  } as const
+
+  const sectionStyle = {
+    backgroundColor: "var(--theme-background, #f7f3ea)",
+    color: "var(--theme-text, #211d17)",
+  } as const
+
+  const headingStyle = {
+    color: "var(--theme-text, #211d17)",
+    fontFamily: "var(--theme-font-heading, Playfair Display, serif)",
+  } as const
+
+  const accentStyle = {
+    color: "var(--theme-primary, #171717)",
+  } as const
+
+  const buttonStyle = {
+    backgroundColor: "var(--theme-primary, #171717)",
+    color: "var(--theme-button-text, #ffffff)",
+    borderRadius: "var(--theme-button-radius, 8px)",
+  } as const
+
+  const secondaryButtonStyle = {
+    borderColor: "var(--theme-primary, #171717)",
+    color: "var(--theme-primary, #171717)",
+    borderRadius: "var(--theme-button-radius, 8px)",
+  } as const
+
+  const cardStyle = {
+    backgroundColor:
+      "var(--theme-surface, var(--theme-background, #f7f3ea))",
+    color: "var(--theme-text, #211d17)",
+    borderColor:
+      "color-mix(in srgb, var(--theme-text, #211d17) 14%, transparent)",
+    borderRadius: "var(--theme-card-radius, 12px)",
+  } as const
+
+  const subtleBorderStyle = {
+    borderColor:
+      "color-mix(in srgb, var(--theme-text, #211d17) 18%, transparent)",
+  } as const
+
+  const secondaryAccentStyle = {
+    color: "var(--theme-secondary, #d4af37)",
+  } as const
+
+  const imageBorderStyle = {
+    borderColor: "var(--theme-background, #f7f3ea)",
+  } as const
+
+  return (
+    <main
+      className="storefront-home w-full min-w-0 overflow-x-clip"
+      style={pageStyle}
+    >
+      {/* ANNOUNCEMENT BAR */}
+
+      <div
+        className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-3 py-3 text-center text-[9px] font-bold uppercase tracking-[0.15em] sm:gap-x-4 sm:px-4 sm:text-[11px] sm:tracking-[0.22em]"
+        style={buttonStyle}
+      >
+        <span>{t("announcement1")}</span>
+        <span style={secondaryAccentStyle}>✦</span>
+        <span>{t("announcement2")}</span>
       </div>
 
-      {/* Navigation */}
-      <header className="border-b border-[#eeeae3] bg-white">
-        <div className="header-inner">
-          <LocalizedClientLink href="/" className="brand">
-            MAISON MEDUSA
-            <span>STYLE · WITH · SOUL</span>
-          </LocalizedClientLink>
+      {/* HERO SECTION */}
 
-          <nav className="nav-links" aria-label="Main navigation">
-            <LocalizedClientLink href="/store">New Arrivals</LocalizedClientLink>
-            <LocalizedClientLink href="/store">Shop All</LocalizedClientLink>
-            <LocalizedClientLink href="/collections">Collections</LocalizedClientLink>
-            <LocalizedClientLink href="/account">My Account</LocalizedClientLink>
-          </nav>
+      <section
+        className="relative isolate w-full min-w-0 overflow-hidden"
+        style={sectionStyle}
+      >
+        <div
+          className="pointer-events-none absolute -left-32 -top-32 h-[300px] w-[300px] rounded-full opacity-10 blur-[90px] sm:h-[420px] sm:w-[420px]"
+          style={{ backgroundColor: "var(--theme-primary, #171717)" }}
+        />
 
-          <div className="header-actions">
-            <LocalizedClientLink href="/store">Search ↗</LocalizedClientLink>
-            <LocalizedClientLink href="/account">Account</LocalizedClientLink>
-            <LocalizedClientLink href="/cart">Bag ↗</LocalizedClientLink>
-          </div>
-        </div>
-      </header>
+        <div
+          className="pointer-events-none absolute -right-20 bottom-0 h-[300px] w-[300px] rounded-full opacity-10 blur-[90px] sm:h-[420px] sm:w-[420px]"
+          style={{ backgroundColor: "var(--theme-secondary, #d4af37)" }}
+        />
 
-      {/* Hero */}
-      <section className="hero">
-        <div className="hero-inner">
-          <div>
-            <div className="eyebrow">A little more you</div>
+        <div className="relative mx-auto grid w-full max-w-[1440px] min-w-0 items-center gap-10 px-4 py-12 sm:gap-12 sm:px-8 sm:py-16 md:py-20 lg:grid-cols-2 lg:gap-16 lg:px-14 lg:py-24">
+          <div className="relative z-10 mx-auto w-full min-w-0 max-w-[650px] lg:mx-0">
+            <div
+              className="mb-6 inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-2 text-[8px] font-bold uppercase tracking-[0.15em] shadow-sm backdrop-blur-md sm:mb-7 sm:gap-3 sm:px-5 sm:py-3 sm:text-[10px] sm:tracking-[0.2em]"
+              style={{
+                backgroundColor:
+                  "var(--theme-surface, var(--theme-background, #f7f3ea))",
+                borderColor: "var(--theme-primary, #171717)",
+                color: "var(--theme-primary, #171717)",
+              }}
+            >
+              <span
+                className="h-2 w-2 shrink-0 rounded-full"
+                style={{ backgroundColor: "var(--theme-primary, #171717)" }}
+              />
+              {t("welcome")}
+            </div>
 
-            <h1 className="editorial">
-              Find your style.
+            <h1
+              className="text-[clamp(2.7rem,8.5vw,5.125rem)] font-medium leading-[1.06] tracking-[-0.045em] sm:text-6xl md:text-7xl lg:text-[82px]"
+              style={headingStyle}
+            >
+              {t("heroTitle1")}
               <br />
-              <em>Make it yours.</em>
+              {t("heroTitle2")}
+              <br />
+              <span className="italic" style={accentStyle}>
+                {t("heroTitle3")}
+              </span>
             </h1>
 
-            <p className="hero-copy">
-              Discover thoughtfully selected pieces for your everyday.
-              Explore our collections and find something that feels
-              unmistakably you.
+            <p className="mt-6 max-w-[480px] text-sm leading-7 opacity-75 sm:mt-9 sm:text-base sm:leading-8">
+              {t("heroDescription")}
             </p>
 
-            <div className="button-row">
-              <LocalizedClientLink href="/store" className="button">
-                EXPLORE THE STORE <span>↗</span>
+            <div className="mt-7 flex w-full flex-col gap-3 min-[480px]:flex-row min-[480px]:flex-wrap sm:mt-9 sm:gap-4">
+              <LocalizedClientLink
+                href="/store"
+                className="group inline-flex min-h-[52px] w-full items-center justify-center gap-5 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.14em] shadow-lg transition-all duration-300 hover:-translate-y-1 hover:opacity-90 min-[480px]:w-fit sm:min-h-[55px] sm:px-8"
+                style={buttonStyle}
+              >
+                {t("exploreStore")}
+                <span className="text-lg transition-transform group-hover:translate-x-2">
+                  →
+                </span>
               </LocalizedClientLink>
 
               <LocalizedClientLink
                 href="/collections"
-                className="button button-outline"
+                className="inline-flex min-h-[52px] w-full items-center justify-center border px-6 py-4 text-[10px] font-bold uppercase tracking-[0.14em] transition-all duration-300 hover:-translate-y-1 min-[480px]:w-fit sm:min-h-[55px] sm:px-8"
+                style={{
+                  ...secondaryButtonStyle,
+                  backgroundColor: "var(--theme-background, #f7f3ea)",
+                }}
               >
-                OUR COLLECTIONS
+                {t("exploreCollections")}
               </LocalizedClientLink>
             </div>
 
-            <div className="hero-notes">
-              <span>Discover new favourites</span>
-              <span>Explore the collection</span>
+            <div
+              className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-5 border-t pt-6 sm:mt-12 sm:gap-x-7 sm:pt-7"
+              style={subtleBorderStyle}
+            >
+              {[
+                ["01", t("findStyle")],
+                ["02", t("exploreLooks")],
+                ["03", t("makeYours")],
+              ].map(([number, label], index) => (
+                <div key={number} className="flex items-center gap-4 sm:gap-7">
+                  <div className="min-w-0">
+                    <p
+                      className="text-xl sm:text-2xl"
+                      style={{
+                        color:
+                          index === 1
+                            ? "var(--theme-secondary, #d4af37)"
+                            : "var(--theme-primary, #171717)",
+                        fontFamily:
+                          "var(--theme-font-heading, Playfair Display, serif)",
+                      }}
+                    >
+                      {number}
+                    </p>
+
+                    <p className="mt-1 text-[7px] font-bold uppercase tracking-[0.12em] opacity-65 sm:text-[8px] sm:tracking-[0.16em]">
+                      {label}
+                    </p>
+                  </div>
+
+                  {index !== 2 && (
+                    <div
+                      className="h-8 w-px sm:h-10"
+                      style={{
+                        backgroundColor:
+                          "color-mix(in srgb, var(--theme-text, #211d17) 18%, transparent)",
+                      }}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="hero-art">
-            <div className="hero-photo hero-photo-main">
+          {/* HERO IMAGES */}
+
+          <div className="relative mx-auto h-[350px] w-full min-w-0 max-w-[620px] sm:h-[500px] md:h-[540px] lg:h-[610px]">
+            <div
+              className="absolute left-[7%] top-[4%] h-[88%] w-[73%] overflow-hidden shadow-2xl"
+              style={{
+                backgroundColor: "var(--theme-secondary, #d4af37)",
+                borderRadius: "48% 48% 12px 12px",
+              }}
+            >
               <img
                 src={
                   heroProduct?.thumbnail ||
-                  "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=85"
+                  "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1100&q=85"
                 }
-                alt={heroProduct?.title ?? "Fashion collection inspiration"}
+                alt={heroProduct?.title ?? "Maison Medusa fashion"}
+                className="h-full w-full object-cover transition-transform duration-1000 hover:scale-110"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
             </div>
 
-            <div className="hero-photo hero-photo-top">
+            <div
+              className="absolute right-0 top-[9%] z-10 h-[34%] w-[35%] overflow-hidden border-[5px] shadow-2xl transition-transform duration-500 hover:-translate-y-2 sm:border-[7px]"
+              style={{
+                ...imageBorderStyle,
+                borderRadius: "45% 45% 10px 10px",
+              }}
+            >
               <img
                 src={
                   secondProduct?.thumbnail ||
                   "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=700&q=85"
                 }
-                alt={secondProduct?.title ?? "Everyday accessories"}
+                alt={secondProduct?.title ?? "Fashion accessories"}
+                className="h-full w-full object-cover"
               />
             </div>
 
-            <div className="hero-photo hero-photo-bottom">
+            <div
+              className="absolute bottom-[4%] right-0 z-10 h-[32%] w-[38%] overflow-hidden border-[5px] shadow-2xl transition-transform duration-500 hover:translate-y-2 sm:border-[7px]"
+              style={{
+                ...imageBorderStyle,
+                borderRadius: "10px 10px 45% 45%",
+              }}
+            >
               <img
                 src={
                   thirdProduct?.thumbnail ||
                   "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
                 }
-                alt={thirdProduct?.title ?? "Footwear inspiration"}
+                alt={thirdProduct?.title ?? "Fashion footwear"}
+                className="h-full w-full object-cover"
               />
             </div>
 
-            <div className="floating-note">
-              Your style,
-              <br />
-              your story.
-              <small>MAISON MEDUSA</small>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Collections */}
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <div className="eyebrow">Explore your favourites</div>
-            <h2 className="editorial">Find your kind of style.</h2>
-            <p>
-              Take a look around. Your next favourite piece might be just a
-              click away.
-            </p>
-          </div>
-
-          <LocalizedClientLink href="/collections" className="text-link">
-            VIEW COLLECTIONS ↗
-          </LocalizedClientLink>
-        </div>
-
-        <div className="category-grid">
-          {featuredCollections.length > 0 ? (
-            featuredCollections.map((collection, index) => {
-              const visual = categoryImages[index % categoryImages.length]
-
-              return (
-                <LocalizedClientLink
-                  key={collection.id}
-                  href={`/collections/${collection.handle}`}
-                  className="category-card"
-                >
-                  <div
-                    className="category-image"
-                    style={{ backgroundColor: visual.color }}
-                  >
-                    <img
-                      src={visual.image}
-                      alt={collection.title ?? "Explore collection"}
-                      loading="lazy"
-                    />
-                  </div>
-
-                  <div className="category-info">
-                    <div>
-                      <h3>{collection.title}</h3>
-                      <p>{visual.description}</p>
-                    </div>
-                    <span className="arrow">↗</span>
-                  </div>
-                </LocalizedClientLink>
-              )
-            })
-          ) : (
-            categoryImages.slice(0, 3).map((visual, index) => (
-              <LocalizedClientLink
-                key={visual.image}
-                href="/store"
-                className="category-card"
+            <div
+              className="absolute bottom-[16%] left-0 z-20 max-w-[65%] px-3 py-3 shadow-xl backdrop-blur-md transition-transform duration-500 hover:-translate-y-2 sm:max-w-none sm:px-7 sm:py-5"
+              style={{
+                ...cardStyle,
+                backgroundColor: "var(--theme-background, #f7f3ea)",
+              }}
+            >
+              <p className="text-base italic sm:text-2xl" style={headingStyle}>
+                {t("wearStory")}
+              </p>
+              <p
+                className="mt-1 text-[7px] font-bold uppercase tracking-[0.16em] sm:mt-2 sm:text-[8px] sm:tracking-[0.22em]"
+                style={accentStyle}
               >
-                <div
-                  className="category-image"
-                  style={{ backgroundColor: visual.color }}
-                >
-                  <img
-                    src={visual.image}
-                    alt="Explore our store"
-                    loading="lazy"
-                  />
-                </div>
+                Maison Medusa
+              </p>
+            </div>
 
-                <div className="category-info">
-                  <div>
-                    <h3>{["Clothing", "Accessories", "Everyday Style"][index]}</h3>
-                    <p>Explore the store and discover your favourites.</p>
-                  </div>
-                  <span className="arrow">↗</span>
-                </div>
-              </LocalizedClientLink>
-            ))
-          )}
+            <div
+              className="absolute right-[7%] top-[55%] z-20 flex h-[65px] w-[65px] rotate-12 flex-col items-center justify-center rounded-full text-center shadow-xl transition-transform duration-500 hover:rotate-0 sm:h-[92px] sm:w-[92px]"
+              style={{
+                backgroundColor: "var(--theme-secondary, #d4af37)",
+                color: "var(--theme-button-text, #ffffff)",
+              }}
+            >
+              <span className="text-xl sm:text-2xl">✦</span>
+              <span className="text-[7px] font-bold uppercase tracking-wider sm:text-[8px]">
+                {t("beYou")}
+              </span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Real Medusa products */}
-      <section className="products-section">
-        <div className="section">
-          <div className="section-heading">
-            <div>
-              <div className="eyebrow">Fresh from the store</div>
-              <h2 className="editorial">Discover your next favourite.</h2>
-              <p>Explore products currently available in our store.</p>
+      {/* COLLECTION SECTION */}
+
+      <section
+        className="w-full min-w-0 px-4 py-14 sm:px-8 sm:py-20 md:py-24 lg:px-12"
+        style={sectionStyle}
+      >
+        <div className="mx-auto max-w-[1440px]">
+          <div className="mb-9 flex min-w-0 flex-col justify-between gap-5 sm:mb-12 md:mb-14 md:flex-row md:items-end">
+            <div className="min-w-0">
+              <div
+                className="mb-4 flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.18em] sm:text-[10px] sm:tracking-[0.22em]"
+                style={accentStyle}
+              >
+                <span
+                  className="h-px w-9 shrink-0"
+                  style={{ backgroundColor: "var(--theme-primary, #171717)" }}
+                />
+                {t("collectionEyebrow")}
+              </div>
+
+              <h2
+                className="max-w-[700px] text-3xl font-medium leading-tight sm:text-5xl md:text-6xl"
+                style={headingStyle}
+              >
+                {t("collectionHeading")}
+              </h2>
+
+              <p className="mt-4 max-w-[560px] text-sm leading-7 opacity-70 sm:mt-5">
+                {t("collectionDescription")}
+              </p>
             </div>
 
-            <LocalizedClientLink href="/store" className="text-link">
-              VIEW ALL PRODUCTS ↗
+            <LocalizedClientLink
+              href="/collections"
+              className="group inline-flex w-fit max-w-full items-center gap-3 border-b pb-2 text-[9px] font-bold uppercase tracking-[0.12em] transition-opacity hover:opacity-70 sm:text-[10px] sm:tracking-[0.16em]"
+              style={secondaryButtonStyle}
+            >
+              {t("viewCollections")}
+              <span className="text-lg transition-transform group-hover:translate-x-2">
+                →
+              </span>
             </LocalizedClientLink>
           </div>
 
-          <div className="product-grid">
-            {products.length > 0 ? (
-              products.map((product) => (
-                <div className="product-card" key={product.id}>
-                  <ProductPreview product={product} region={region} />
-                </div>
-              ))
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+            {featuredCollections.length > 0 ? (
+              featuredCollections.map((collection, index) => {
+                const visual = categoryImages[index % categoryImages.length]
+
+                return (
+                  <LocalizedClientLink
+                    key={collection.id}
+                    href={`/collections/${collection.handle}`}
+                    className="group block min-w-0"
+                  >
+                    <div
+                      className="relative aspect-[4/4.7] overflow-hidden shadow-sm transition-shadow duration-500 group-hover:shadow-2xl"
+                      style={{
+                        borderRadius: "var(--theme-card-radius, 12px)",
+                      }}
+                    >
+                      <img
+                        src={visual.image}
+                        alt={collection.title ?? "Maison Medusa collection"}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100" />
+
+                      <div
+                        className="absolute left-4 top-4 rounded-full border border-white/50 px-3 py-2 text-[8px] font-bold tracking-[0.12em] text-white backdrop-blur-md sm:left-5 sm:top-5 sm:px-4 sm:text-[9px] sm:tracking-[0.16em]"
+                        style={{
+                          backgroundColor: "var(--theme-primary, #171717)",
+                        }}
+                      >
+                        {String(index + 1).padStart(2, "0")} /{" "}
+                        {t("collectionEyebrow")}
+                      </div>
+
+                      <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-3 p-4 text-white sm:p-7">
+                        <div className="min-w-0">
+                          <h3
+                            className="break-words text-xl font-medium sm:text-3xl"
+                            style={{
+                              fontFamily:
+                                "var(--theme-font-heading, Playfair Display, serif)",
+                            }}
+                          >
+                            {collection.title}
+                          </h3>
+                          <p className="mt-2 text-xs text-white/80">
+                            {t("collectionDescription")}
+                          </p>
+                        </div>
+
+                        <span
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/60 text-lg transition-all duration-300 group-hover:rotate-45 sm:h-11 sm:w-11 sm:text-xl"
+                          style={{
+                            backgroundColor: "var(--theme-primary, #171717)",
+                          }}
+                        >
+                          ↗
+                        </span>
+                      </div>
+                    </div>
+                  </LocalizedClientLink>
+                )
+              })
             ) : (
-              <div className="empty-products">
-                <h3 className="editorial">
-                  Your next favourite is waiting.
-                </h3>
-                <p>
-                  Products will appear here when they are available in your
-                  Medusa store.
-                </p>
-                <LocalizedClientLink href="/store" className="button">
-                  EXPLORE THE STORE ↗
+              categoryImages.slice(0, 3).map((visual, index) => (
+                <LocalizedClientLink
+                  key={visual.image}
+                  href="/store"
+                  className="group block min-w-0"
+                >
+                  <div
+                    className="relative aspect-[4/4.7] overflow-hidden"
+                    style={{
+                      borderRadius: "var(--theme-card-radius, 12px)",
+                    }}
+                  >
+                    <img
+                      src={visual.image}
+                      alt="Maison Medusa collection"
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    <div className="absolute bottom-0 p-5 text-white sm:p-7">
+                      <h3
+                        className="text-2xl sm:text-3xl"
+                        style={{
+                          fontFamily:
+                            "var(--theme-font-heading, Playfair Display, serif)",
+                        }}
+                      >
+                        {t("collectionHeading")}
+                      </h3>
+                      <p className="mt-2 text-xs text-white/80">
+                        {t("collectionDescription")}
+                      </p>
+                    </div>
+                  </div>
                 </LocalizedClientLink>
-              </div>
+              ))
             )}
           </div>
         </div>
       </section>
 
-      {/* Promotion */}
-      <section className="promo">
-        <div className="promo-inner">
-          <div className="promo-copy">
-            <div className="eyebrow">A fresh perspective</div>
+      {/* PRODUCT SECTION */}
 
-            <h2 className="editorial">
-              Everyday pieces.
-              <br />
-              Extraordinary feeling.
-            </h2>
+      <section
+        className="relative w-full min-w-0 overflow-hidden px-4 py-14 sm:px-8 sm:py-20 md:py-24 lg:px-12"
+        style={sectionStyle}
+      >
+        <div
+          className="pointer-events-none absolute -right-40 top-20 h-96 w-96 rounded-full opacity-10 blur-[100px]"
+          style={{ backgroundColor: "var(--theme-primary, #171717)" }}
+        />
 
-            <p>
-              Style is in the details. Explore our store and find pieces that
-              fit your own way of expressing yourself.
-            </p>
+        <div className="relative mx-auto max-w-[1440px]">
+          <div className="mb-9 flex min-w-0 flex-col justify-between gap-5 sm:mb-12 md:flex-row md:items-end">
+            <div className="min-w-0">
+              <div
+                className="mb-4 flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.18em] sm:text-[10px] sm:tracking-[0.22em]"
+                style={accentStyle}
+              >
+                <span
+                  className="h-px w-9 shrink-0"
+                  style={{ backgroundColor: "var(--theme-primary, #171717)" }}
+                />
+                {t("productsEyebrow")}
+              </div>
 
-            <LocalizedClientLink href="/store" className="button">
-              FIND YOUR FAVOURITES ↗
+              <h2
+                className="text-3xl font-medium leading-tight sm:text-5xl md:text-6xl"
+                style={headingStyle}
+              >
+                {t("productsHeading")}
+              </h2>
+
+              <p className="mt-4 max-w-[560px] text-sm leading-7 opacity-70 sm:mt-5">
+                {t("productsDescription")}
+              </p>
+            </div>
+
+            <LocalizedClientLink
+              href="/store"
+              className="group inline-flex w-fit max-w-full items-center gap-3 border-b pb-2 text-[9px] font-bold uppercase tracking-[0.12em] sm:text-[10px] sm:tracking-[0.16em]"
+              style={secondaryButtonStyle}
+            >
+              {t("shopProducts")}
+              <span className="text-lg transition-transform group-hover:translate-x-2">
+                →
+              </span>
             </LocalizedClientLink>
           </div>
 
-          <div className="promo-image">
+          {products.length > 0 ? (
+            <div className="grid min-w-0 grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+              {products.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="group relative min-w-0 overflow-hidden border p-2 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+                  style={cardStyle}
+                >
+                  {index === 0 && (
+                    <span
+                      className="absolute left-4 top-4 z-20 rounded-full px-3 py-2 text-[8px] font-bold uppercase tracking-[0.14em] shadow-md"
+                      style={buttonStyle}
+                    >
+                      {t("featured")}
+                    </span>
+                  )}
+
+                  <div
+                    className="relative min-w-0 overflow-hidden"
+                    style={{
+                      borderRadius: "var(--theme-card-radius, 12px)",
+                    }}
+                  >
+                    <ProductPreview
+                      product={product}
+                      region={region}
+                      locale={locale}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div
+              className="border px-5 py-14 text-center sm:px-6 sm:py-20"
+              style={cardStyle}
+            >
+              <div
+                className="mx-auto flex h-16 w-16 items-center justify-center rounded-full text-3xl"
+                style={{
+                  backgroundColor: "var(--theme-secondary, #d4af37)",
+                  color: "var(--theme-button-text, #ffffff)",
+                }}
+              >
+                ✦
+              </div>
+
+              <h3 className="mt-6 text-2xl sm:text-3xl" style={headingStyle}>
+                {t("noProducts")}
+              </h3>
+
+              <p className="mx-auto mt-4 max-w-[420px] text-sm leading-7 opacity-70">
+                {t("noProductsDescription")}
+              </p>
+
+              <LocalizedClientLink
+                href="/store"
+                className="mt-7 inline-flex px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] sm:px-7"
+                style={buttonStyle}
+              >
+                {t("exploreStore")} →
+              </LocalizedClientLink>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* EDITORIAL BANNER */}
+
+      <section
+        className="w-full min-w-0 px-4 py-14 sm:px-8 sm:py-20 md:py-24 lg:px-12"
+        style={sectionStyle}
+      >
+        <div
+          className="mx-auto grid max-w-[1440px] min-w-0 overflow-hidden shadow-xl md:grid-cols-2"
+          style={{
+            ...sectionStyle,
+            borderRadius: "var(--theme-card-radius, 12px)",
+          }}
+        >
+          <div className="relative flex min-h-[360px] min-w-0 flex-col items-start justify-center overflow-hidden px-6 py-12 sm:min-h-[400px] sm:px-12 sm:py-14 md:px-14 lg:px-20">
+            <div
+              className="absolute -right-20 -top-20 h-64 w-64 rounded-full opacity-10 blur-3xl"
+              style={{ backgroundColor: "var(--theme-primary, #171717)" }}
+            />
+
+            <div className="relative min-w-0">
+              <div
+                className="mb-5 text-[9px] font-bold uppercase tracking-[0.18em] sm:mb-6 sm:text-[10px] sm:tracking-[0.22em]"
+                style={accentStyle}
+              >
+                {t("editorialEyebrow")}
+              </div>
+
+              <h2
+                className="max-w-[530px] text-3xl font-medium leading-tight sm:text-5xl md:text-6xl"
+                style={headingStyle}
+              >
+                {t("editorialHeading1")}
+                <br />
+                <span className="italic" style={accentStyle}>
+                  {t("editorialHeading2")}
+                </span>
+              </h2>
+
+              <p className="mt-6 max-w-[430px] text-sm leading-7 opacity-75 sm:mt-7 sm:leading-8">
+                {t("editorialDescription")}
+              </p>
+
+              <LocalizedClientLink
+                href="/collections"
+                className="group mt-8 inline-flex min-h-[50px] items-center gap-4 px-6 py-4 text-[9px] font-bold uppercase tracking-[0.13em] shadow-lg transition-all duration-300 hover:-translate-y-1 hover:opacity-90 sm:mt-9 sm:gap-5 sm:px-8 sm:text-[10px] sm:tracking-[0.16em]"
+                style={buttonStyle}
+              >
+                {t("discoverEdit")}
+                <span className="text-lg transition-transform group-hover:translate-x-2">
+                  →
+                </span>
+              </LocalizedClientLink>
+            </div>
+          </div>
+
+          <div className="relative min-h-[300px] min-w-0 overflow-hidden sm:min-h-[420px] md:min-h-[580px]">
             <img
               src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=85"
-              alt="A carefully styled fashion collection"
+              alt="Maison Medusa seasonal fashion inspiration"
               loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 hover:scale-110"
             />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+
+            <div
+              className="absolute bottom-5 right-5 max-w-[80%] border px-4 py-4 shadow-xl backdrop-blur-md sm:bottom-7 sm:right-7 sm:px-6 sm:py-5"
+              style={{
+                ...cardStyle,
+                backgroundColor: "var(--theme-background, #f7f3ea)",
+              }}
+            >
+              <p className="text-lg italic sm:text-xl" style={headingStyle}>
+                {t("styleWithSoul")}
+              </p>
+              <p
+                className="mt-1 text-[7px] font-bold uppercase tracking-[0.16em] sm:text-[8px] sm:tracking-[0.2em]"
+                style={accentStyle}
+              >
+                Maison Medusa
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Brand story */}
-      <section className="section">
-        <div className="story">
-          <div className="story-image">
-            <img
-              src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=85"
-              alt="Fashion inspiration for everyday style"
-              loading="lazy"
+      {/* BRAND STORY */}
+
+      <section
+        className="w-full min-w-0 px-4 py-14 sm:px-8 sm:py-20 md:py-24 lg:px-12"
+        style={sectionStyle}
+      >
+        <div className="mx-auto grid max-w-[1250px] min-w-0 items-center gap-12 md:grid-cols-2 md:gap-20">
+          <div className="relative mx-auto w-full min-w-0 max-w-[540px] px-2 pb-4">
+            <div
+              className="absolute -left-1 -top-3 h-20 w-20 rounded-tl-[35px] border-l-2 border-t-2 sm:-left-5 sm:-top-5 sm:h-28 sm:w-28 sm:rounded-tl-[50px]"
+              style={{
+                borderColor: "var(--theme-primary, #171717)",
+              }}
             />
+
+            <div
+              className="absolute -bottom-1 -right-1 h-20 w-20 rounded-br-[35px] border-b-2 border-r-2 sm:-bottom-5 sm:-right-5 sm:h-28 sm:w-28 sm:rounded-br-[50px]"
+              style={{
+                borderColor: "var(--theme-secondary, #d4af37)",
+              }}
+            />
+
+            <div
+              className="relative aspect-[4/5] overflow-hidden shadow-xl"
+              style={{
+                borderRadius: "var(--theme-card-radius, 12px)",
+              }}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=85"
+                alt="Fashion inspiration at Maison Medusa"
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+              />
+            </div>
+
+            <div
+              className="absolute -bottom-1 right-0 max-w-[85%] px-4 py-4 shadow-xl sm:-bottom-2 sm:-right-7 sm:px-6 sm:py-5"
+              style={buttonStyle}
+            >
+              <p
+                className="text-xl italic sm:text-2xl"
+                style={{
+                  fontFamily:
+                    "var(--theme-font-heading, Playfair Display, serif)",
+                }}
+              >
+                {t("beOriginal")}
+              </p>
+              <p className="mt-1 text-[7px] font-semibold uppercase tracking-[0.16em] opacity-80 sm:text-[8px] sm:tracking-[0.2em]">
+                {t("beUnmistakablyYou")}
+              </p>
+            </div>
           </div>
 
-          <div className="story-copy">
-            <div className="eyebrow">The Maison Medusa edit</div>
+          <div className="min-w-0 pt-4 md:pt-0">
+            <div
+              className="mb-5 flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.18em] sm:text-[10px] sm:tracking-[0.22em]"
+              style={accentStyle}
+            >
+              <span
+                className="h-px w-8 shrink-0"
+                style={{ backgroundColor: "var(--theme-primary, #171717)" }}
+              />
+              {t("brandEyebrow")}
+            </div>
 
-            <h2 className="editorial">
-              The art of everyday style.
+            <h2
+              className="text-3xl font-medium leading-tight sm:text-5xl md:text-6xl"
+              style={headingStyle}
+            >
+              {t("brandHeading1")}
+              <br />
+              <span className="italic" style={accentStyle}>
+                {t("brandHeading2")}
+              </span>
             </h2>
 
-            <p>
-              Personal style is more than what you wear. It is the little
-              details, the pieces you reach for, and the confidence to make
-              them your own.
+            <p className="mt-6 text-sm leading-7 opacity-75 sm:mt-7 sm:leading-8">
+              {t("brandDescription1")}
             </p>
 
-            <p>
-              Explore our collections and discover something that fits your
-              everyday.
+            <p className="mt-4 text-sm leading-7 opacity-75 sm:mt-5 sm:leading-8">
+              {t("brandDescription2")}
             </p>
 
-            <div className="button-row">
-              <LocalizedClientLink href="/collections" className="button">
-                EXPLORE COLLECTIONS ↗
-              </LocalizedClientLink>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="benefits">
-        <div className="benefits-inner">
-          <div className="benefit">
-            <div className="benefit-icon">✳</div>
-            <h3>Find your favourites</h3>
-            <p>
-              Browse the products and collections available in our store.
-            </p>
-          </div>
-
-          <div className="benefit">
-            <div className="benefit-icon">◇</div>
-            <h3>Made for your style</h3>
-            <p>
-              Discover different looks and choose pieces that feel like you.
-            </p>
-          </div>
-
-          <div className="benefit">
-            <div className="benefit-icon">♡</div>
-            <h3>A little inspiration</h3>
-            <p>
-              Find fresh ideas for everyday outfits and special moments.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Store call to action */}
-      <section className="newsletter">
-        <div className="newsletter-inner">
-          <div className="eyebrow" style={{ color: "#e8bd68" }}>
-            A note from Maison Medusa
-          </div>
-
-          <h2>Something lovely is just around the corner.</h2>
-
-          <p>
-            Visit our store to explore the latest products and collections.
-            Discover your next favourite whenever you are ready.
-          </p>
-
-          <LocalizedClientLink href="/store" className="newsletter-link">
-            EXPLORE THE STORE ↗
-          </LocalizedClientLink>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-inner">
-          <div className="footer-brand-column">
-            <LocalizedClientLink href="/" className="brand">
-              MAISON MEDUSA
-              <span>STYLE · WITH · SOUL</span>
+            <LocalizedClientLink
+              href="/collections"
+              className="group mt-8 inline-flex items-center gap-4 border-b pb-2 text-[9px] font-bold uppercase tracking-[0.13em] sm:mt-9 sm:text-[10px] sm:tracking-[0.16em]"
+              style={secondaryButtonStyle}
+            >
+              {t("exploreOurCollections")}
+              <span className="text-lg transition-transform group-hover:translate-x-2">
+                →
+              </span>
             </LocalizedClientLink>
+          </div>
+        </div>
+      </section>
 
-            <p className="footer-description">
-              Discover your style, explore our collections and find your next
-              favourite in the Maison Medusa store.
+      {/* BENEFITS */}
+
+      <section
+        className="w-full min-w-0 px-4 py-14 sm:px-8 sm:py-20 md:py-24 lg:px-12"
+        style={sectionStyle}
+      >
+        <div className="mx-auto max-w-[1300px]">
+          <div className="mb-10 text-center sm:mb-14">
+            <div
+              className="mb-4 text-[9px] font-bold uppercase tracking-[0.18em] sm:text-[10px] sm:tracking-[0.22em]"
+              style={accentStyle}
+            >
+              {t("benefitsEyebrow")}
+            </div>
+
+            <h2
+              className="text-3xl font-medium sm:text-5xl"
+              style={headingStyle}
+            >
+              {t("benefitsHeading")}
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-[550px] text-sm leading-7 opacity-70 sm:mt-5">
+              {t("benefitsDescription")}
             </p>
           </div>
 
-          <div>
-            <h3>Explore</h3>
-            <div className="footer-links">
-              <LocalizedClientLink href="/store">Shop All</LocalizedClientLink>
-              <LocalizedClientLink href="/collections">
-                Collections
-              </LocalizedClientLink>
-              <LocalizedClientLink href="/account">My Account</LocalizedClientLink>
-            </div>
-          </div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 md:grid-cols-3">
+            {benefits.map((benefit) => (
+              <div
+                key={benefit.number}
+                className="group relative min-w-0 overflow-hidden border px-5 py-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl sm:px-7 sm:py-10"
+                style={cardStyle}
+              >
+                <span
+                  className="absolute right-5 top-4 text-4xl opacity-20 sm:right-6 sm:top-5"
+                  style={accentStyle}
+                >
+                  {benefit.number}
+                </span>
 
-          <div>
-            <h3>Your Store</h3>
-            <div className="footer-links">
-              <LocalizedClientLink href="/cart">Shopping Bag</LocalizedClientLink>
-              <LocalizedClientLink href="/account">
-                Account Details
-              </LocalizedClientLink>
-              <LocalizedClientLink href="/store">
-                Continue Shopping
-              </LocalizedClientLink>
-            </div>
+                <div
+                  className="mx-auto flex h-[65px] w-[65px] items-center justify-center rounded-2xl text-3xl transition-all duration-300 group-hover:rotate-6 group-hover:scale-110 sm:h-[70px] sm:w-[70px]"
+                  style={{
+                    backgroundColor: "var(--theme-secondary, #d4af37)",
+                    color: "var(--theme-button-text, #ffffff)",
+                  }}
+                >
+                  {benefit.icon}
+                </div>
+
+                <h3
+                  className="mt-6 text-xl font-medium sm:mt-7 sm:text-2xl"
+                  style={headingStyle}
+                >
+                  {benefit.title}
+                </h3>
+
+                <p className="mx-auto mt-4 max-w-[300px] text-sm leading-7 opacity-70">
+                  {benefit.description}
+                </p>
+
+                <div
+                  className="mx-auto mt-7 h-[2px] w-10 rounded-full transition-all duration-300 group-hover:w-20"
+                  style={{
+                    backgroundColor: "var(--theme-primary, #171717)",
+                  }}
+                />
+              </div>
+            ))}
           </div>
         </div>
-
-        <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Maison Medusa.</span>
-          <span>Made for your everyday style.</span>
-        </div>
-      </footer>
+      </section>
     </main>
   )
 }

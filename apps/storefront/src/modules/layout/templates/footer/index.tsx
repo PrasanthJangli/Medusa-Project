@@ -1,15 +1,17 @@
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { getTranslations } from "next-intl/server"
 
 export default async function Footer() {
+  const t = await getTranslations("Footer")
+
   const [{ collections }, productCategories] = await Promise.all([
     listCollections({
       fields: "*products",
     }),
     listCategories().catch((error) => {
       console.error("Unable to load footer categories:", error)
-      
       return []
     }),
   ])
@@ -18,91 +20,81 @@ export default async function Footer() {
     .filter((category) => !category.parent_category)
     .slice(0, 6)
 
+  const categoryTranslations: Record<string, string> = {
+    shirts: t("shirts"),
+    shirt: t("shirts"),
+    pants: t("pants"),
+    trousers: t("pants"),
+    shoes: t("shoes"),
+    "t-shirts": t("tshirts"),
+    tshirts: t("tshirts"),
+    shorts: t("shorts"),
+  }
+
+  const collectionTranslations: Record<string, string> = {
+    "best-price": t("bestPrice"),
+    "new-arrival": t("newArrival"),
+    "best-sellers-now": t("bestSellers"),
+  }
+
   return (
-    <footer className="mt-16 w-full border-t border-violet-100 bg-white text-sm text-slate-700">
+    <footer className="theme-footer mt-0 w-full overflow-hidden text-sm">
       {/* Back to top */}
       <a
         href="#top"
-        className="flex items-center justify-center gap-2 border-b border-violet-100 bg-violet-50 px-4 py-4 font-semibold text-violet-700 transition-colors hover:bg-violet-100"
+        className="theme-footer-top flex min-h-12 items-center justify-center gap-2 px-3 py-4 text-center text-xs font-bold uppercase tracking-[.16em] transition sm:px-4 sm:py-5 sm:text-sm"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          className="h-4 w-4"
-          aria-hidden="true"
-        >
-          <path
-            d="m6 14 6-6 6 6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        Back to top
+        <span aria-hidden="true">↑</span>
+        {t("backToTop")}
       </a>
 
-      {/* Main footer */}
-      <div className="bg-white">
-        <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-10 px-5 py-12 sm:grid-cols-2 sm:px-8 md:grid-cols-4 md:gap-8 lg:px-12 lg:py-16">
-          {/* Brand */}
-          <div className="sm:col-span-2 md:col-span-1">
+      <div className="theme-footer-main">
+        <div className="mx-auto grid w-full max-w-[1500px] grid-cols-1 gap-9 px-4 py-10 min-[480px]:grid-cols-2 min-[480px]:gap-x-8 min-[480px]:gap-y-10 sm:px-6 sm:py-14 md:grid-cols-4 md:gap-8 lg:px-12 lg:py-20">
+          {/* BRAND */}
+          <div className="min-w-0 min-[480px]:col-span-2 md:col-span-1">
             <LocalizedClientLink
               href="/"
-              className="inline-flex items-center gap-3"
+              className="inline-flex max-w-full items-center gap-3"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-xl font-black text-white shadow-md shadow-violet-200">
+              <span className="theme-footer-brand-mark flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl font-black shadow-lg sm:h-14 sm:w-14 sm:text-2xl">
                 M
               </span>
 
-              <span className="text-2xl font-extrabold tracking-tight text-slate-900">
-                MEDUSA<span className="text-violet-600">.</span>
+              <span className="theme-footer-brand-name break-words text-xl font-extrabold tracking-[.12em] sm:text-2xl">
+                MEDUSA<span className="theme-nav-accent">.</span>
               </span>
             </LocalizedClientLink>
 
-            <p className="mt-5 max-w-xs text-sm leading-7 text-slate-600">
-              Discover products you love with a simple and enjoyable
-              online shopping experience.
+            <p className="theme-footer-muted mt-5 max-w-xs text-sm leading-7 sm:mt-6 sm:leading-8">
+              {t("description")}
             </p>
 
             <LocalizedClientLink
               href="/store"
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-violet-700 hover:shadow-md"
+              className="theme-footer-button mt-6 inline-flex min-h-11 max-w-full items-center justify-center gap-3 px-5 py-3 text-sm font-bold transition hover:-translate-y-1 sm:mt-7 sm:px-6 sm:py-3.5"
             >
-              Explore Store
-              <span aria-hidden="true">→</span>
+              {t("exploreStore")} <span>→</span>
             </LocalizedClientLink>
           </div>
 
-          {/* Explore */}
-          <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
-              Explore
+          {/* EXPLORE */}
+          <div className="min-w-0">
+            <h3 className="theme-footer-heading mb-4 text-xs font-bold uppercase tracking-[.18em] sm:mb-6 sm:text-sm">
+              {t("explore")}
             </h3>
 
-            <ul className="space-y-4 text-slate-600">
+            <ul className="theme-footer-links space-y-4 sm:space-y-5">
               <li>
-                <LocalizedClientLink
-                  href="/"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  Home
+                <LocalizedClientLink href="/">{t("home")}</LocalizedClientLink>
+              </li>
+              <li>
+                <LocalizedClientLink href="/store">
+                  {t("allProducts")}
                 </LocalizedClientLink>
               </li>
               <li>
-                <LocalizedClientLink
-                  href="/store"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  All Products
-                </LocalizedClientLink>
-              </li>
-              <li>
-                <LocalizedClientLink
-                  href="/collections"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  Collections
+                <LocalizedClientLink href="/collections">
+                  {t("collections")}
                 </LocalizedClientLink>
               </li>
               <li>
@@ -110,117 +102,115 @@ export default async function Footer() {
                   href="https://github.com/medusajs"
                   target="_blank"
                   rel="noreferrer"
-                  className="transition-colors hover:text-violet-700"
                 >
-                  Medusa on GitHub
+                  {t("github")}
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Categories */}
-          <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
-              Shop Categories
+          {/* CATEGORIES */}
+          <div className="min-w-0">
+            <h3 className="theme-footer-heading mb-4 text-xs font-bold uppercase tracking-[.18em] sm:mb-6 sm:text-sm">
+              {t("shopCategories")}
             </h3>
 
             {rootCategories.length > 0 ? (
-              <ul className="space-y-4 text-slate-600">
-                {rootCategories.map((category) => (
-                  <li key={category.id}>
-                    <LocalizedClientLink
-                      href={`/categories/${category.handle}`}
-                      className="transition-colors hover:text-violet-700"
-                    >
-                      {category.name}
-                    </LocalizedClientLink>
-                  </li>
-                ))}
+              <ul className="theme-footer-links space-y-4 sm:space-y-5">
+                {rootCategories.map((category) => {
+                  const handle = category.handle.toLowerCase()
+                  const translatedName =
+                    categoryTranslations[handle] ?? category.name
+
+                  return (
+                    <li key={category.id} className="break-words">
+                      <LocalizedClientLink
+                        href={`/categories/${category.handle}`}
+                      >
+                        {translatedName}
+                      </LocalizedClientLink>
+                    </li>
+                  )
+                })}
               </ul>
             ) : (
-              <p className="text-slate-500">
-                No categories available.
-              </p>
+              <p className="theme-footer-muted">{t("noCategories")}</p>
             )}
           </div>
 
-          {/* Help and collections */}
-          <div>
-            <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-slate-900">
-              Help &amp; Discover
+          {/* HELP */}
+          <div className="min-w-0">
+            <h3 className="theme-footer-heading mb-4 text-xs font-bold uppercase tracking-[.18em] sm:mb-6 sm:text-sm">
+              {t("helpDiscover")}
             </h3>
 
-            <ul className="space-y-4 text-slate-600">
+            <ul className="theme-footer-links space-y-4 sm:space-y-5">
               <li>
-                <LocalizedClientLink
-                  href="/account"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  My Account
+                <LocalizedClientLink href="/account">
+                  {t("myAccount")}
                 </LocalizedClientLink>
               </li>
               <li>
-                <LocalizedClientLink
-                  href="/account/orders"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  My Orders
+                <LocalizedClientLink href="/account/orders">
+                  {t("myOrders")}
                 </LocalizedClientLink>
               </li>
               <li>
-                <LocalizedClientLink
-                  href="/cart"
-                  className="transition-colors hover:text-violet-700"
-                >
-                  Shopping Cart
+                <LocalizedClientLink href="/cart">
+                  {t("shoppingCart")}
                 </LocalizedClientLink>
               </li>
 
-              {collections?.slice(0, 3).map((collection) => (
-                <li key={collection.id}>
-                  <LocalizedClientLink
-                    href={`/collections/${collection.handle}`}
-                    className="transition-colors hover:text-violet-700"
-                  >
-                    {collection.title}
-                  </LocalizedClientLink>
-                </li>
-              ))}
+              {collections?.slice(0, 3).map((collection) => {
+                const handle = collection.handle.toLowerCase()
+                const translatedTitle =
+                  collectionTranslations[handle] ?? collection.title
+
+                return (
+                  <li key={collection.id} className="break-words">
+                    <LocalizedClientLink
+                      href={`/collections/${collection.handle}`}
+                    >
+                      {translatedTitle}
+                    </LocalizedClientLink>
+                  </li>
+                )
+              })}
 
               <li>
                 <a
                   href="https://docs.medusajs.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="transition-colors hover:text-violet-700"
                 >
-                  Documentation
+                  {t("documentation")}
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom information */}
-        <div className="border-t border-violet-100 bg-violet-50/60">
-          <div className="mx-auto flex max-w-[1500px] flex-col gap-3 px-5 py-6 text-center sm:px-8 md:flex-row md:items-center md:justify-between md:text-left lg:px-12">
-            <p className="text-sm font-semibold text-slate-900">
-              MEDUSA<span className="text-violet-600">.</span>
-              <span className="ml-2 font-normal text-slate-500">
-                Your destination for online shopping
+        {/* BOTTOM */}
+        <div className="theme-footer-bottom">
+          <div className="mx-auto flex w-full max-w-[1500px] flex-col items-center gap-3 px-4 py-6 text-center sm:px-6 sm:py-7 md:flex-row md:justify-between md:gap-4 md:text-left lg:px-12">
+            <p className="theme-footer-heading flex flex-wrap items-center justify-center gap-1 text-sm font-semibold tracking-wider md:justify-start">
+              MEDUSA<span className="theme-nav-accent">.</span>
+              <span className="theme-footer-muted ml-1 font-normal tracking-normal">
+                {t("tagline")}
               </span>
             </p>
 
-            <p className="text-xs text-slate-500">
-              © {new Date().getFullYear()} Medusa Store. All rights reserved.
+            <p className="theme-footer-muted text-xs leading-5">
+              © {new Date().getFullYear()} Medusa Store. {t("copyright")}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Powered by */}
-      <div className="border-t border-violet-100 bg-white px-4 py-4 text-center text-xs text-slate-500">
-        Powered by <span className="font-semibold text-violet-700">Medusa</span>
+      {/* POWERED BY */}
+      <div className="theme-footer-powered px-3 py-4 text-center text-[11px] tracking-wider sm:px-4 sm:py-5 sm:text-xs">
+        {t("poweredBy")}{" "}
+        <span className="theme-footer-brand-name font-bold">Medusa</span>
       </div>
     </footer>
   )

@@ -6,7 +6,7 @@ import { OptionValueIds } from "@lib/util/product-option-filters"
 import { sortProducts } from "@lib/util/sort-products"
 import { HttpTypes } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import { getAuthHeaders, getCacheOptions } from "./cookies"
+import { getAuthHeaders } from "./cookies"
 import { getRegion, retrieveRegion } from "./regions"
 
 type ProductListQueryParams = (
@@ -16,6 +16,9 @@ type ProductListQueryParams = (
   options?: string[]
   option_value_id?: string | string[]
 }
+
+const REQUIRED_PRODUCT_FIELDS =
+  "*variants.calculated_price,*variants.images,*variants.options,+variants.inventory_quantity,+metadata,+tags"
 
 export const listProducts = async ({
   pageParam = 1,
@@ -66,26 +69,20 @@ export const listProducts = async ({
     ...(await getAuthHeaders()),
   }
 
-  const next = {
-    ...(await getCacheOptions("products")),
-  }
-
   const { products, count } = await sdk.client.fetch<{
     products: HttpTypes.StoreProduct[]
     count: number
   }>("/store/products", {
     method: "GET",
     query: {
+      ...queryParams,
       limit,
       offset,
       region_id: region.id,
-      fields:
-        "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags",
-      ...queryParams,
+      fields: REQUIRED_PRODUCT_FIELDS,
     },
     headers,
-    next,
-    cache: "force-cache",
+    cache: "no-store",
   })
 
   return {

@@ -1,3 +1,4 @@
+
 {
   "compilerOptions": {
     "target": "ES2021",
@@ -32,5 +33,6 @@
     ".medusa/admin",
     ".cache",
     "eslint.config.*",
+    "src/admin"
   ]
 }

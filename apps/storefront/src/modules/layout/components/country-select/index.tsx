@@ -1,3 +1,4 @@
+
 "use client"
 
 import {
@@ -30,7 +31,8 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   const [current, setCurrent] = useState<CountryOption | undefined>(undefined)
 
   const { countryCode } = useParams()
-  const currentPath = usePathname().split(`/${countryCode}`)[1]
+  const pathname = usePathname()
+  const currentPath = pathname.split(`/${countryCode}`)[1] || ""
 
   const { state, close } = toggleState
 
@@ -61,7 +63,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   }
 
   return (
-    <div>
+    <div className="relative w-full min-w-0">
       <Listbox
         as="span"
         onChange={handleChange}
@@ -71,25 +73,28 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
             : undefined
         }
       >
-        <ListboxButton className="py-1 w-full">
-          <div className="txt-compact-small flex items-start gap-x-2">
-            <span>Shipping to:</span>
+        <ListboxButton className="w-full min-w-0 py-2 text-left">
+          <div className="txt-compact-small flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="shrink-0">Shipping to:</span>
+
             {current && (
-              <span className="txt-compact-small flex items-center gap-x-2">
+              <span className="txt-compact-small flex min-w-0 items-center gap-x-2">
                 <ReactCountryFlag
                   svg
                   style={{
                     width: "16px",
                     height: "16px",
                   }}
-                  countryCode={current.country ?? ""}
+                  countryCode={current.country}
                 />
-                {current.label}
+
+                <span className="truncate">{current.label}</span>
               </span>
             )}
           </div>
         </ListboxButton>
-        <div className="flex relative w-full min-w-[320px]">
+
+        <div className="relative w-full min-w-0">
           <Transition
             show={state}
             as={Fragment}
@@ -98,28 +103,28 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
             leaveTo="opacity-0"
           >
             <ListboxOptions
-              className="absolute -bottom-[calc(100%-36px)] left-0 xsmall:left-auto xsmall:right-0 max-h-[442px] overflow-y-scroll z-[900] bg-white drop-shadow-md text-small-regular uppercase text-black no-scrollbar rounded-rounded w-full"
+              className="absolute left-0 right-0 z-[900] mt-2 max-h-[min(442px,70vh)] w-full min-w-0 overflow-y-auto overflow-x-hidden rounded-rounded bg-white text-small-regular uppercase text-black shadow-lg drop-shadow-md no-scrollbar sm:left-auto sm:right-0 sm:w-[280px]"
               static
             >
-              {options?.map((o, index) => {
-                return (
-                  <ListboxOption
-                    key={index}
-                    value={o}
-                    className="py-2 hover:bg-gray-200 px-3 cursor-pointer flex items-center gap-x-2"
-                  >
-                    <ReactCountryFlag
-                      svg
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                      }}
-                      countryCode={o?.country ?? ""}
-                    />{" "}
-                    {o?.label}
-                  </ListboxOption>
-                )
-              })}
+              {options?.map((o, index) => (
+                <ListboxOption
+                  key={`${o.country}-${index}`}
+                  value={o}
+                  className="flex cursor-pointer items-center gap-x-2 px-3 py-3 hover:bg-gray-200"
+                >
+                  <ReactCountryFlag
+                    svg
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      flexShrink: 0,
+                    }}
+                    countryCode={o.country}
+                  />
+
+                  <span className="min-w-0 break-words">{o.label}</span>
+                </ListboxOption>
+              ))}
             </ListboxOptions>
           </Transition>
         </div>
