@@ -1,3 +1,4 @@
+
 import { Suspense } from "react"
 
 import { getUiLocale } from "@lib/data/ui-locale-actions"
@@ -44,6 +45,27 @@ const translations = {
   },
 }
 
+const collectionTitleTranslations: Record<
+  string,
+  Record<string, string>
+> = {
+  en: {
+    "best-price": "Best Price",
+    "new-arrival": "New Arrival",
+    "best-sellers-now": "Best Sellers Now",
+  },
+  te: {
+    "best-price": "ఉత్తమ ధర",
+    "new-arrival": "కొత్త రాక",
+    "best-sellers-now": "అత్యధికంగా అమ్ముడవుతున్నవి",
+  },
+  hi: {
+    "best-price": "सबसे अच्छी कीमत",
+    "new-arrival": "नए आगमन",
+    "best-sellers-now": "सबसे ज्यादा बिकने वाले",
+  },
+}
+
 export default async function CollectionTemplate({
   sortBy,
   collection,
@@ -58,11 +80,18 @@ export default async function CollectionTemplate({
   optionValueIds?: OptionValueIds
 }) {
   const locale = await getUiLocale()
+
   const t =
     translations[locale as keyof typeof translations] || translations.en
 
   const pageNumber = page ? parseInt(page, 10) : 1
   const sort = sortBy || "created_at"
+
+  const collectionHandle = collection.handle.toLowerCase()
+
+  const collectionTitle =
+    collectionTitleTranslations[locale]?.[collectionHandle] ??
+    collection.title
 
   const products = collection.products ?? []
   const productCount = products.length
@@ -78,9 +107,11 @@ export default async function CollectionTemplate({
           <a href="/" className="transition-colors hover:text-violet-700">
             {t.home}
           </a>
+
           <span>/</span>
+
           <span className="font-medium text-gray-900">
-            {collection.title}
+            {collectionTitle}
           </span>
         </nav>
 
@@ -93,7 +124,7 @@ export default async function CollectionTemplate({
               </p>
 
               <h1 className="text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl lg:text-5xl">
-                {collection.title}
+                {collectionTitle}
               </h1>
             </div>
 
@@ -118,6 +149,7 @@ export default async function CollectionTemplate({
                 <p className="text-2xl font-bold text-gray-950">
                   {productCount}
                 </p>
+
                 <p className="text-xs text-gray-500">
                   {productCount === 1
                     ? t.productLoaded
@@ -135,6 +167,7 @@ export default async function CollectionTemplate({
               <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900">
                 {t.filters}
               </h2>
+
               <span className="text-xs text-gray-400">
                 {t.refineProducts}
               </span>
@@ -149,8 +182,9 @@ export default async function CollectionTemplate({
                 <h2 className="text-lg font-semibold text-gray-950">
                   {t.allProducts}
                 </h2>
+
                 <p className="mt-1 text-sm text-gray-500">
-                  {t.browseProducts} {collection.title}
+                  {t.browseProducts} {collectionTitle}
                 </p>
               </div>
 

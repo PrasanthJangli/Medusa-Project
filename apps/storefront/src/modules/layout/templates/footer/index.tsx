@@ -1,3 +1,4 @@
+
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -34,6 +35,7 @@ export default async function Footer() {
   const collectionTranslations: Record<string, string> = {
     "best-price": t("bestPrice"),
     "new-arrival": t("newArrival"),
+    "best-sellers": t("bestSellers"),
     "best-sellers-now": t("bestSellers"),
   }
 
@@ -85,18 +87,23 @@ export default async function Footer() {
 
             <ul className="theme-footer-links space-y-4 sm:space-y-5">
               <li>
-                <LocalizedClientLink href="/">{t("home")}</LocalizedClientLink>
+                <LocalizedClientLink href="/">
+                  {t("home")}
+                </LocalizedClientLink>
               </li>
+
               <li>
                 <LocalizedClientLink href="/store">
                   {t("allProducts")}
                 </LocalizedClientLink>
               </li>
+
               <li>
                 <LocalizedClientLink href="/collections">
                   {t("collections")}
                 </LocalizedClientLink>
               </li>
+
               <li>
                 <a
                   href="https://github.com/medusajs"
@@ -134,7 +141,9 @@ export default async function Footer() {
                 })}
               </ul>
             ) : (
-              <p className="theme-footer-muted">{t("noCategories")}</p>
+              <p className="theme-footer-muted">
+                {t("noCategories")}
+              </p>
             )}
           </div>
 
@@ -150,11 +159,13 @@ export default async function Footer() {
                   {t("myAccount")}
                 </LocalizedClientLink>
               </li>
+
               <li>
                 <LocalizedClientLink href="/account/orders">
                   {t("myOrders")}
                 </LocalizedClientLink>
               </li>
+
               <li>
                 <LocalizedClientLink href="/cart">
                   {t("shoppingCart")}
@@ -195,13 +206,15 @@ export default async function Footer() {
           <div className="mx-auto flex w-full max-w-[1500px] flex-col items-center gap-3 px-4 py-6 text-center sm:px-6 sm:py-7 md:flex-row md:justify-between md:gap-4 md:text-left lg:px-12">
             <p className="theme-footer-heading flex flex-wrap items-center justify-center gap-1 text-sm font-semibold tracking-wider md:justify-start">
               MEDUSA<span className="theme-nav-accent">.</span>
+
               <span className="theme-footer-muted ml-1 font-normal tracking-normal">
                 {t("tagline")}
               </span>
             </p>
 
             <p className="theme-footer-muted text-xs leading-5">
-              © {new Date().getFullYear()} Medusa Store. {t("copyright")}
+              © {new Date().getFullYear()} {t("storeName")}.{" "}
+              {t("copyright")}
             </p>
           </div>
         </div>
@@ -210,7 +223,9 @@ export default async function Footer() {
       {/* POWERED BY */}
       <div className="theme-footer-powered px-3 py-4 text-center text-[11px] tracking-wider sm:px-4 sm:py-5 sm:text-xs">
         {t("poweredBy")}{" "}
-        <span className="theme-footer-brand-name font-bold">Medusa</span>
+        <span className="theme-footer-brand-name font-bold">
+          {t("storeBrand")}
+        </span>
       </div>
     </footer>
   )

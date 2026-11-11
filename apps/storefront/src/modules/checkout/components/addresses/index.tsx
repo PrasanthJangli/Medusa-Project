@@ -72,12 +72,16 @@ const translations: Record<string, Record<string, string>> = {
   },
 }
 
-// Offline address transliteration mapping
+// Offline address and name transliteration mapping
 const addressTranslations: Record<string, Record<string, string>> = {
   te: {
     "prasanthkumar": "ప్రశాంత్ కుమార్",
     "prasanth kumar": "ప్రశాంత్ కుమార్",
     "prasanth": "ప్రశాంత్",
+    "kumar": "కుమార్",
+    "jangli": "జంగ్లీ",
+    "prasanth kumar jangli": "ప్రశాంత్ కుమార్ జంగ్లీ",
+    "kumar jangli": "కుమార్ జంగ్లీ",
     "kavyasree": "కావ్యశ్రీ",
     "pothukunta dharmavaram": "పోతుకుంట ధర్మవరం",
     "pothukunta": "పోతుకుంట",
@@ -91,6 +95,10 @@ const addressTranslations: Record<string, Record<string, string>> = {
     "prasanthkumar": "प्रशांत कुमार",
     "prasanth kumar": "प्रशांत कुमार",
     "prasanth": "प्रशांत",
+    "kumar": "कुमार",
+    "jangli": "जंगली",
+    "prasanth kumar jangli": "प्रशांत कुमार जंगली",
+    "kumar jangli": "कुमार जंगली",
     "kavyasree": "काव्यश्री",
     "pothukunta dharmavaram": "पोथुकुंटा धर्मवरम",
     "pothukunta": "पोथुकुंटा",
@@ -118,6 +126,27 @@ const translateAddressValue = (
   return (
     addressTranslations[normalizedLocale]?.[normalizedValue] ?? value
   )
+}
+
+// Country code translation
+const translateCountryCode = (
+  countryCode: string | null | undefined,
+  locale: string
+): string => {
+  if (!countryCode) return ""
+
+  const code = countryCode.toUpperCase()
+  const normalizedLocale = locale.split("-")[0].toLowerCase()
+
+  const countries: Record<string, Record<string, string>> = {
+    IN: {
+      en: "India",
+      te: "భారతదేశం",
+      hi: "भारत",
+    },
+  }
+
+  return countries[code]?.[normalizedLocale] ?? code
 }
 
 const Addresses = ({ cart, customer }: AddressesProps) => {
@@ -268,11 +297,7 @@ const Addresses = ({ cart, customer }: AddressesProps) => {
 
             <p className="break-words font-bold text-slate-900">
               {translateAddressValue(
-                cart.shipping_address.first_name,
-                locale
-              )}{" "}
-              {translateAddressValue(
-                cart.shipping_address.last_name,
+                `${cart.shipping_address.first_name || ""} ${cart.shipping_address.last_name || ""}`.trim(),
                 locale
               )}
             </p>
@@ -301,7 +326,10 @@ const Addresses = ({ cart, customer }: AddressesProps) => {
                   )}`
                 : ""}
               <br />
-              {cart.shipping_address.country_code?.toUpperCase()}
+              {translateCountryCode(
+                cart.shipping_address.country_code,
+                locale
+              )}
             </p>
           </div>
 
@@ -356,11 +384,7 @@ const Addresses = ({ cart, customer }: AddressesProps) => {
               <>
                 <p className="break-words font-bold text-slate-900">
                   {translateAddressValue(
-                    cart.billing_address?.first_name,
-                    locale
-                  )}{" "}
-                  {translateAddressValue(
-                    cart.billing_address?.last_name,
+                    `${cart.billing_address?.first_name || ""} ${cart.billing_address?.last_name || ""}`.trim(),
                     locale
                   )}
                 </p>
@@ -389,7 +413,10 @@ const Addresses = ({ cart, customer }: AddressesProps) => {
                       )}`
                     : ""}
                   <br />
-                  {cart.billing_address?.country_code?.toUpperCase()}
+                  {translateCountryCode(
+                    cart.billing_address?.country_code,
+                    locale
+                  )}
                 </p>
               </>
             )}

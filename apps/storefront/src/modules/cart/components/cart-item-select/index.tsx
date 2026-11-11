@@ -1,3 +1,4 @@
+
 "use client"
 
 import { IconBadge, clx } from "@modules/common/components/ui"
@@ -9,6 +10,7 @@ import {
   useRef,
   useState,
 } from "react"
+import { useLocale } from "next-intl"
 
 import ChevronDown from "@modules/common/icons/chevron-down"
 
@@ -22,6 +24,17 @@ const CartItemSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
   ({ placeholder = "Select...", className, children, ...props }, ref) => {
     const innerRef = useRef<HTMLSelectElement>(null)
     const [isPlaceholder, setIsPlaceholder] = useState(false)
+    const locale = useLocale()
+
+    const placeholders = {
+      en: "Select...",
+      te: "ఎంచుకోండి...",
+      hi: "चुनें...",
+    }
+
+    const selectPlaceholder =
+      placeholders[locale as keyof typeof placeholders] ??
+      placeholders.en
 
     useImperativeHandle<HTMLSelectElement | null, HTMLSelectElement | null>(
       ref,
@@ -55,10 +68,13 @@ const CartItemSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
             className="appearance-none bg-transparent border-none px-4 transition-colors duration-150 focus:border-gray-700 outline-none w-16 h-16 items-center justify-center"
           >
             <option disabled value="">
-              {placeholder}
+              {placeholder === "Select..."
+                ? selectPlaceholder
+                : placeholder}
             </option>
             {children}
           </select>
+
           <span className="absolute flex pointer-events-none justify-end w-8 group-hover:animate-pulse">
             <ChevronDown />
           </span>

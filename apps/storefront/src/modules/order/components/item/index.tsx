@@ -1,3 +1,4 @@
+
 import { HttpTypes } from "@medusajs/types"
 import { Table, Text } from "@modules/common/components/ui"
 
@@ -27,15 +28,23 @@ const Item = ({ item, currencyCode }: ItemProps) => {
         >
           {item.product_title}
         </Text>
-        <LineItemOptions variant={item.variant} data-testid="product-variant" />
+
+        <LineItemOptions
+          variant={item.variant}
+          data-testid="product-variant"
+        />
       </Table.Cell>
 
       <Table.Cell className="!pr-0">
         <span className="!pr-0 flex flex-col items-end h-full justify-center">
-          <span className="flex gap-x-1 ">
+          <span className="flex gap-x-1">
             <Text className="text-ui-fg-muted">
-              <span data-testid="product-quantity">{item.quantity}</span>x{" "}
+              <span data-testid="product-quantity">
+                {item.quantity}
+              </span>
+              x{" "}
             </Text>
+
             <LineItemUnitPrice
               item={item}
               style="tight"

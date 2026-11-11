@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Radio as RadioGroupOption } from "@headlessui/react"
@@ -6,7 +7,6 @@ import React, { useContext, type JSX } from "react"
 import { useLocale } from "next-intl"
 
 import Radio from "@modules/common/components/radio"
-
 import { isManual } from "@lib/constants"
 import SkeletonCardDetails from "@modules/skeletons/components/skeleton-card-details"
 import { PaymentElement } from "@stripe/react-stripe-js"
@@ -21,6 +21,18 @@ type PaymentContainerProps = {
   children?: React.ReactNode
 }
 
+const paymentTranslations: Record<string, Record<string, string>> = {
+  en: {
+    cashfree: "Pay with Cashfree",
+  },
+  te: {
+    cashfree: "క్యాష్‌ఫ్రీ ద్వారా చెల్లించండి",
+  },
+  hi: {
+    cashfree: "कैशफ्री से भुगतान करें",
+  },
+}
+
 const PaymentContainer: React.FC<PaymentContainerProps> = ({
   paymentProviderId,
   selectedPaymentOptionId,
@@ -29,10 +41,24 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
   children,
 }) => {
   const isDevelopment = process.env.NODE_ENV === "development"
+  const locale = useLocale()
+
+  const getPaymentTitle = () => {
+    const providerId = paymentProviderId.toLowerCase()
+
+    if (providerId.includes("cashfree")) {
+      return (
+        paymentTranslations[locale]?.cashfree ??
+        paymentTranslations.en.cashfree
+      )
+    }
+
+    return paymentInfoMap[paymentProviderId]?.title || paymentProviderId
+  }
 
   return (
     <RadioGroupOption
-      key={paymentProviderId}
+      id={`payment-option-${paymentProviderId}`}
       value={paymentProviderId}
       disabled={disabled}
       className={clx(
@@ -43,23 +69,28 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
         }
       )}
     >
-      <div className="flex items-center justify-between ">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-4">
           <Radio checked={selectedPaymentOptionId === paymentProviderId} />
+
           <Text className="text-base-regular">
-            {paymentInfoMap[paymentProviderId]?.title || paymentProviderId}
+            {getPaymentTitle()}
           </Text>
+
           {isManual(paymentProviderId) && isDevelopment && (
             <PaymentTest className="hidden small:block" />
           )}
         </div>
+
         <span className="justify-self-end text-ui-fg-base">
           {paymentInfoMap[paymentProviderId]?.icon}
         </span>
       </div>
+
       {isManual(paymentProviderId) && isDevelopment && (
         <PaymentTest className="small:hidden text-[10px]" />
       )}
+
       {children}
     </RadioGroupOption>
   )
@@ -96,7 +127,8 @@ export const StripePaymentContainer = ({
     },
   }
 
-  const t = translations[locale as keyof typeof translations] || translations.en
+  const t =
+    translations[locale as keyof typeof translations] || translations.en
 
   return (
     <PaymentContainer
@@ -111,6 +143,7 @@ export const StripePaymentContainer = ({
             <Text className="txt-medium-plus text-ui-fg-base mb-1">
               {t.paymentDetails}
             </Text>
+
             <PaymentElement
               options={{ layout: "accordion" }}
               onChange={(e) => {

@@ -11,9 +11,64 @@ import ShippingDetails from "@modules/order/components/shipping-details"
 import PaymentDetails from "@modules/order/components/payment-details"
 import OrderCelebration from "@modules/order/components/order-celebration"
 import { HttpTypes } from "@medusajs/types"
+import { getUiLocale } from "@lib/data/ui-locale-actions"
 
 type OrderCompletedTemplateProps = {
   order: HttpTypes.StoreOrder
+}
+
+const translations = {
+  en: {
+    confirmed: "Order confirmed",
+    thankYou: "Thank you for your order!",
+    success:
+      "Your order was placed successfully. We appreciate your purchase and look forward to serving you again.",
+    order: "Order",
+    confirmationFor: "Confirmation details for",
+    orderDetails: "Order details",
+    confirmation: "Your order confirmation",
+    orderSummary: "Order summary",
+    productsPayment: "Your products and payment total",
+    delivery: "Delivery information",
+    shipping: "Your shipping details",
+    payment: "Payment information",
+    paymentDetails: "Your payment details",
+    thankYouStore: "Thank you for choosing our store",
+  },
+  te: {
+    confirmed: "ఆర్డర్ నిర్ధారించబడింది",
+    thankYou: "మీ ఆర్డర్‌కు ధన్యవాదాలు!",
+    success:
+      "మీ ఆర్డర్ విజయవంతంగా నమోదు చేయబడింది. మా స్టోర్‌ను ఎంచుకున్నందుకు ధన్యవాదాలు. మళ్లీ మీకు సేవ చేయడానికి ఎదురుచూస్తున్నాము.",
+    order: "ఆర్డర్",
+    confirmationFor: "నిర్ధారణ వివరాలు:",
+    orderDetails: "ఆర్డర్ వివరాలు",
+    confirmation: "మీ ఆర్డర్ నిర్ధారణ",
+    orderSummary: "ఆర్డర్ సారాంశం",
+    productsPayment: "మీ ఉత్పత్తులు మరియు చెల్లింపు మొత్తం",
+    delivery: "డెలివరీ సమాచారం",
+    shipping: "మీ షిప్పింగ్ వివరాలు",
+    payment: "చెల్లింపు సమాచారం",
+    paymentDetails: "మీ చెల్లింపు వివరాలు",
+    thankYouStore: "మా స్టోర్‌ను ఎంచుకున్నందుకు ధన్యవాదాలు",
+  },
+  hi: {
+    confirmed: "ऑर्डर की पुष्टि हो गई",
+    thankYou: "आपके ऑर्डर के लिए धन्यवाद!",
+    success:
+      "आपका ऑर्डर सफलतापूर्वक दर्ज हो गया है। हमारी दुकान चुनने के लिए धन्यवाद। हम फिर से आपकी सेवा करने के लिए उत्सुक हैं।",
+    order: "ऑर्डर",
+    confirmationFor: "पुष्टि विवरण:",
+    orderDetails: "ऑर्डर का विवरण",
+    confirmation: "आपके ऑर्डर की पुष्टि",
+    orderSummary: "ऑर्डर का सारांश",
+    productsPayment: "आपके उत्पाद और भुगतान की कुल राशि",
+    delivery: "डिलीवरी की जानकारी",
+    shipping: "आपकी शिपिंग जानकारी",
+    payment: "भुगतान की जानकारी",
+    paymentDetails: "आपके भुगतान का विवरण",
+    thankYouStore: "हमारी दुकान चुनने के लिए धन्यवाद",
+  },
 }
 
 export default async function OrderCompletedTemplate({
@@ -24,12 +79,17 @@ export default async function OrderCompletedTemplate({
   const isOnboarding =
     cookies.get("_medusa_onboarding")?.value === "true"
 
+  const locale = await getUiLocale()
+
+  const normalizedLocale: "en" | "te" | "hi" =
+    locale === "te" || locale === "hi" ? locale : "en"
+
+  const t = translations[normalizedLocale]
+
   return (
     <div className="relative min-h-[calc(100vh-64px)] w-full min-w-0 overflow-x-clip bg-gradient-to-br from-violet-50 via-white to-indigo-100/70 py-5 sm:py-8 md:py-12">
-      {/* Confetti celebration */}
       <OrderCelebration />
 
-      {/* Background glow */}
       <div className="pointer-events-none absolute -left-24 top-20 h-72 w-72 rounded-full bg-violet-300/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 top-64 h-80 w-80 rounded-full bg-blue-300/30 blur-3xl" />
 
@@ -45,7 +105,6 @@ export default async function OrderCompletedTemplate({
             <div className="pointer-events-none absolute -right-10 -top-12 h-48 w-48 rounded-full border border-white/20" />
             <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full border border-white/20" />
 
-            {/* Animated success icon */}
             <div className="relative mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-200/60 bg-emerald-400/20 shadow-[0_0_45px_rgba(52,211,153,0.45)] sm:mb-6 sm:h-24 sm:w-24">
               <div className="absolute inset-0 animate-ping rounded-full border border-emerald-200/60" />
               <div className="absolute inset-2 rounded-full bg-emerald-300/10" />
@@ -68,22 +127,20 @@ export default async function OrderCompletedTemplate({
             </div>
 
             <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-100 sm:text-xs sm:tracking-[0.3em]">
-              🎉 Order confirmed 🎉
+              🎉 {t.confirmed} 🎉
             </p>
 
             <Heading
               level="h1"
               className="mb-3 text-2xl font-extrabold leading-tight tracking-tight text-white sm:mb-4 sm:text-4xl md:text-5xl"
             >
-              Thank you for your order!
+              {t.thankYou}
             </Heading>
 
             <p className="mx-auto max-w-xl text-xs leading-6 text-indigo-100 sm:text-sm sm:leading-7 md:text-base">
-              Your order was placed successfully. We appreciate your
-              purchase and look forward to serving you again.
+              {t.success}
             </p>
 
-            {/* Order ID */}
             <div className="mt-6 inline-flex max-w-full items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 py-2.5 shadow-lg backdrop-blur-md sm:mt-7 sm:gap-3 sm:px-5 sm:py-3">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-400/25 sm:h-8 sm:w-8">
                 <svg
@@ -104,13 +161,13 @@ export default async function OrderCompletedTemplate({
               </span>
 
               <span className="min-w-0 break-all text-xs font-bold text-white sm:text-sm">
-                Order #{order.display_id ?? order.id}
+                {t.order} #{order.display_id ?? order.id}
               </span>
             </div>
 
             {order.email && (
               <p className="mt-4 break-all px-2 text-[11px] text-indigo-100 sm:mt-5 sm:text-sm">
-                Confirmation details for {order.email}
+                {t.confirmationFor} {order.email}
               </p>
             )}
           </header>
@@ -125,10 +182,10 @@ export default async function OrderCompletedTemplate({
                 </div>
                 <div className="min-w-0">
                   <h2 className="text-base font-bold text-slate-900 sm:text-lg">
-                    Order details
+                    {t.orderDetails}
                   </h2>
                   <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-                    Your order confirmation
+                    {t.confirmation}
                   </p>
                 </div>
               </div>
@@ -149,10 +206,10 @@ export default async function OrderCompletedTemplate({
                     level="h2"
                     className="text-xl font-bold text-slate-900 sm:text-2xl"
                   >
-                    Order summary
+                    {t.orderSummary}
                   </Heading>
                   <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-                    Your products and payment total
+                    {t.productsPayment}
                   </p>
                 </div>
               </div>
@@ -176,10 +233,10 @@ export default async function OrderCompletedTemplate({
                 </div>
                 <div className="min-w-0">
                   <h2 className="text-base font-bold text-slate-900 sm:text-lg">
-                    Delivery information
+                    {t.delivery}
                   </h2>
                   <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-                    Your shipping details
+                    {t.shipping}
                   </p>
                 </div>
               </div>
@@ -197,10 +254,10 @@ export default async function OrderCompletedTemplate({
                 </div>
                 <div className="min-w-0">
                   <h2 className="text-base font-bold text-slate-900 sm:text-lg">
-                    Payment information
+                    {t.payment}
                   </h2>
                   <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-                    Your payment details
+                    {t.paymentDetails}
                   </p>
                 </div>
               </div>
@@ -218,7 +275,7 @@ export default async function OrderCompletedTemplate({
         </main>
 
         <p className="px-2 text-center text-xs font-medium text-slate-500 sm:text-sm">
-          Thank you for choosing our store 💜
+          {t.thankYouStore} 💜
         </p>
       </div>
     </div>

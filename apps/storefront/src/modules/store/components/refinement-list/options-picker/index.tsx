@@ -1,7 +1,9 @@
+
 "use client"
 
 import * as Accordion from "@radix-ui/react-accordion"
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 
 import { ChevronDownMini } from "@medusajs/icons"
 import { sdk } from "@lib/config"
@@ -13,14 +15,74 @@ type OptionsPickerProps = {
   setOptionValueIds: (valueIds: string[]) => void
 }
 
+const normalizeKey = (value: string) =>
+  value.trim().toLowerCase().replace(/[^a-z0-9]/g, "")
+
+const optionTranslationKeys: Record<string, string> = {
+  color: "color",
+  colors: "color",
+  colour: "color",
+  colours: "color",
+  size: "size",
+  sizes: "size",
+  option: "options",
+  options: "options",
+}
+
+const valueTranslationKeys: Record<string, string> = {
+  black: "black",
+  white: "white",
+  red: "red",
+  blue: "blue",
+  green: "green",
+  yellow: "yellow",
+  pink: "pink",
+  orange: "orange",
+  purple: "purple",
+  grey: "grey",
+  gray: "grey",
+  brown: "brown",
+
+  shirts: "shirts",
+  shirt: "shirts",
+  pants: "pants",
+  shorts: "shorts",
+  tshirts: "tshirts",
+  tshirt: "tshirts",
+  shoes: "shoes",
+  shoe: "shoes",
+}
+
 const OptionsPicker = ({
   selectedValueIds,
   setOptionValueIds,
 }: OptionsPickerProps) => {
+  const t = useTranslations("Store")
+
   const [options, setOptions] = useState<HttpTypes.StoreProductOption[]>([])
   const [openItems, setOpenItems] = useState<string[]>([])
 
+  const translateOption = (
+    value: string,
+    type: "option" | "value"
+  ): string => {
+    const key = normalizeKey(value)
+
+    const translationKey =
+      type === "option"
+        ? optionTranslationKeys[key]
+        : valueTranslationKeys[key]
+
+    if (!translationKey) {
+      return value
+    }
+
+    return t(translationKey as any)
+  }
+
   useEffect(() => {
+    let isMounted = true
+
     const fetchOptions = async () => {
       try {
         const response = await sdk.client.fetch<{
@@ -33,22 +95,37 @@ const OptionsPicker = ({
           },
         })
 
-        if (response?.product_options) {
-          setOptions(response.product_options)
+        const productOptions = response?.product_options || []
+
+        console.log(
+          "PRODUCT OPTION DETAILS:",
+          productOptions.map((option) => ({
+            id: option.id,
+            title: option.title,
+            normalizedTitle: normalizeKey(option.title || ""),
+            values: option.values?.map((value) => ({
+              id: value.id,
+              value: value.value,
+              normalizedValue: normalizeKey(value.value || ""),
+            })),
+          }))
+        )
+
+        if (isMounted) {
+          setOptions(productOptions)
+          setOpenItems(productOptions.map((option) => option.id))
         }
       } catch (error) {
-        console.error("Failed to fetch product options", error)
+        console.error("OPTIONS API ERROR:", error)
       }
     }
 
     fetchOptions()
-  }, [])
 
-  useEffect(() => {
-    if (options.length) {
-      setOpenItems(options.map((option) => option.id))
+    return () => {
+      isMounted = false
     }
-  }, [options])
+  }, [])
 
   if (!options.length) {
     return null
@@ -58,9 +135,10 @@ const OptionsPicker = ({
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between px-1">
         <span className="txt-compact-small-plus text-ui-fg-subtle">
-          Options
+          {t("options")}
         </span>
       </div>
+
       <Accordion.Root
         type="multiple"
         value={openItems}
@@ -85,6 +163,7 @@ const OptionsPicker = ({
 
           const toggleValue = (valueId: string) => {
             const isSelected = selectedValueIds.includes(valueId)
+
             const nextSelections = isSelected
               ? selectedValueIds.filter((id) => id !== valueId)
               : [...selectedValueIds, valueId]
@@ -93,6 +172,7 @@ const OptionsPicker = ({
           }
 
           const isOpen = openItems.includes(option.id)
+
           const selectedCount = values.filter((value) =>
             selectedValueIds.includes(value.id)
           ).length
@@ -107,12 +187,14 @@ const OptionsPicker = ({
                 <Accordion.Trigger className="flex w-full items-center justify-between py-3 text-left">
                   <div className="flex items-center gap-2">
                     <span className="txt-compact-small-plus text-ui-fg-base">
-                      {option.title || "Option"}
+                      {translateOption(option.title || "Option", "option")}
                     </span>
+
                     <span className="txt-compact-small-plus text-ui-fg-muted">
                       ({selectedCount})
                     </span>
                   </div>
+
                   <span
                     className={clsx(
                       "flex h-7 w-7 items-center justify-center text-ui-fg-muted transition-transform duration-150",
@@ -125,6 +207,7 @@ const OptionsPicker = ({
                   </span>
                 </Accordion.Trigger>
               </Accordion.Header>
+
               <Accordion.Content className="pb-4 pt-1">
                 <div className="flex flex-wrap gap-2">
                   {values.map((value) => {
@@ -133,6 +216,7 @@ const OptionsPicker = ({
                     return (
                       <button
                         key={value.id}
+                        type="button"
                         onClick={() => toggleValue(value.id)}
                         className={clsx(
                           "border-ui-border-base border text-small-regular h-10 rounded-rounded px-3 flex items-center transition-colors duration-150",
@@ -145,7 +229,7 @@ const OptionsPicker = ({
                         )}
                         aria-pressed={isSelected}
                       >
-                        {value.label}
+                        {translateOption(value.label, "value")}
                       </button>
                     )
                   })}

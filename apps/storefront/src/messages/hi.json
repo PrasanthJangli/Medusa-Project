@@ -41,6 +41,18 @@
     "backToCart": "शॉपिंग कार्ट पर वापस जाएँ",
     "thankYou": "हमारे साथ खरीदारी करने के लिए धन्यवाद"
   },
+  "Login": {
+    "welcomeBack": "फिर से स्वागत है",
+    "signInDescription": "बेहतर खरीदारी अनुभव के लिए साइन इन करें।",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "signIn": "साइन इन करें",
+    "notMember": "अभी तक सदस्य नहीं हैं?",
+    "joinUs": "हमसे जुड़ें",
+    "gotQuestions": "क्या आपके कोई सवाल हैं?",
+    "faqDescription": "अक्सर पूछे जाने वाले सवालों और उनके जवाबों के लिए हमारा ग्राहक सेवा पेज देखें।",
+    "customerService": "ग्राहक सेवा"
+  },
   "Product": {
     "addToCart": "कार्ट में जोड़ें",
     "description": "विवरण",
@@ -66,14 +78,16 @@
     "github": "गिटहब",
     "shopCategories": "श्रेणियों के अनुसार खरीदारी",
     "noCategories": "कोई श्रेणी उपलब्ध नहीं है",
-    "helpDiscover": "सहायता और खोज",
+    "helpDiscover": "सहायता और जानकारी",
     "myAccount": "मेरा खाता",
     "myOrders": "मेरे ऑर्डर",
     "shoppingCart": "शॉपिंग कार्ट",
     "documentation": "दस्तावेज़",
     "tagline": "अपनी शैली खोजें।",
     "copyright": "सर्वाधिकार सुरक्षित।",
-    "poweredBy": "द्वारा संचालित"
+    "poweredBy": "द्वारा संचालित",
+    "storeName": "मेडूसा स्टोर",
+    "storeBrand": "मेडूसा"
   },
   "Home": {
     "announcement1": "₹999 से अधिक की खरीदारी पर मुफ़्त डिलीवरी",
@@ -127,9 +141,9 @@
   },
   "Store": {
     "announcement": "रोज़मर्रा की ज़रूरतों के लिए खास कलेक्शन",
-    "curated": "खास तौर पर चुना गया",
+    "curated": "आपके लिए खास तौर पर चुना गया",
     "collections": "कलेक्शन",
-    "shop": "शॉप",
+    "shop": "खरीदारी",
     "search": "खोजें",
     "account": "खाता",
     "bag": "बैग",
@@ -157,7 +171,7 @@
     "exploreBelow": "नीचे देखें",
     "consideredStyle": "हर दिन खास स्टाइल",
     "curatedEdit": "खास कलेक्शन",
-    "exploreCategory": "कैटेगरी के अनुसार देखें",
+    "exploreCategory": "श्रेणी के अनुसार देखें",
     "categoryDescription": "रोज़मर्रा के कपड़ों को खास बनाने वाले उत्पाद देखें।",
     "findFavourite": "अपना पसंदीदा उत्पाद खोजें",
     "collection": "हमारा कलेक्शन",
@@ -168,12 +182,25 @@
     "findPerfectPiece": "अपना पसंदीदा उत्पाद खोजें",
     "footerDescription": "रोज़मर्रा के लिए खास उत्पाद",
     "backToTop": "ऊपर जाएँ",
+    "categories": {
+      "shirts": "शर्ट",
+      "pants": "पैंट",
+      "shoes": "जूते",
+      "tshirts": "टी-शर्ट",
+      "shorts": "शॉर्ट्स"
+    },
+    "categoryDescriptions": {
+      "shirts": "रोज़मर्रा के स्टाइल",
+      "pants": "आराम और स्टाइल",
+      "shoes": "स्टाइल के साथ आगे बढ़ें",
+      "tshirts": "कैज़ुअल कपड़े"
+    },
     "sortProducts": "उत्पादों को क्रमबद्ध करें",
     "sortBy": "इसके अनुसार क्रमबद्ध करें",
     "productFilters": "उत्पाद फ़िल्टर",
     "filters": "फ़िल्टर",
     "findProducts": "अपनी पसंद के उत्पाद खोजें",
-    "category": "कैटेगरी",
+    "category": "श्रेणी",
     "labels": "लेबल",
     "searchProducts": "उत्पाद खोजें",
     "clearSearch": "खोज हटाएँ",
@@ -202,17 +229,53 @@
     "upTo": "तक",
     "from": "से",
     "options": "विकल्प",
-    "categories": {
-      "shirts": "शर्ट",
-      "pants": "पैंट",
-      "shoes": "जूते",
-      "tshirts": "टी-शर्ट"
-    },
-    "categoryDescriptions": {
-      "shirts": "रोज़मर्रा के स्टाइल",
-      "pants": "आराम और स्टाइल",
-      "shoes": "स्टाइल के साथ आगे बढ़ें",
-      "tshirts": "कैज़ुअल कपड़े"
-    }
+    "color": "रंग",
+    "size": "आकार",
+    "black": "काला",
+    "white": "सफेद",
+    "red": "लाल",
+    "blue": "नीला",
+    "green": "हरा",
+    "yellow": "पीला",
+    "pink": "गुलाबी",
+    "orange": "नारंगी",
+    "purple": "बैंगनी",
+    "grey": "धूसर",
+    "brown": "भूरा",
+    "shirts": "शर्ट",
+    "pants": "पैंट",
+    "shorts": "शॉर्ट्स",
+    "tshirts": "टी-शर्ट",
+    "shoes": "जूते"
+  },
+  "Collections": {
+    "metaTitle": "कलेक्शन | मेडूसा स्टोर",
+    "metaDescription": "हमारे उत्पाद कलेक्शन देखें।",
+    "title": "हमारे कलेक्शन",
+    "description": "हमारे कलेक्शन देखें और अपने पसंदीदा उत्पाद खोजें।",
+    "noCollections": "अभी कोई कलेक्शन उपलब्ध नहीं है",
+    "checkBackLater": "कृपया बाद में फिर से देखें।",
+    "productCollection": "उत्पाद कलेक्शन",
+    "product": "उत्पाद",
+    "products": "उत्पाद",
+    "exploreOneProduct": "इस कलेक्शन में 1 उत्पाद देखें।",
+    "exploreProducts": "इस कलेक्शन में {count} उत्पाद देखें।",
+    "exploreCollection": "इस कलेक्शन को देखें और इसके उत्पाद खोजें।",
+    "exploreCollectionButton": "कलेक्शन देखें",
+    "bestPrice": "सबसे अच्छी कीमत",
+    "newArrival": "नए आगमन",
+    "bestSellers": "सबसे ज्यादा बिकने वाले"
+  },
+  "SortProducts": {
+    "title": "उत्पाद क्रमबद्ध करें",
+    "subtitle": "अपनी पसंद का उत्पाद खोजें",
+    "chooseOrder": "क्रम चुनें",
+    "latestArrivals": "नए उत्पाद",
+    "newestFirst": "नए उत्पाद पहले दिखाएँ",
+    "priceLowToHigh": "कम कीमत से अधिक कीमत",
+    "lowerPrices": "कम कीमतों से शुरू करें",
+    "priceHighToLow": "अधिक कीमत से कम कीमत",
+    "higherPrices": "अधिक कीमतों से शुरू करें",
+    "footer": "उत्पादों को देखने का तरीका चुनें।"
   }
 }

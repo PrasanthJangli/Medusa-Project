@@ -6,9 +6,79 @@ import CheckoutForm from "@modules/checkout/templates/checkout-form"
 import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { getUiLocale } from "@lib/data/ui-locale-actions"
 
 export const metadata: Metadata = {
   title: "Checkout",
+}
+
+const translations = {
+  en: {
+    home: "Home",
+    cart: "Cart",
+    checkout: "Checkout",
+    almostThere: "Almost there",
+    description:
+      "Enter your delivery details, choose your payment method, and review your order before completing your purchase.",
+    secureCheckout: "Secure checkout",
+    orderDetails: "Your order details",
+    deliveryPayment: "Delivery and payment",
+    completeOrder: "Complete your order",
+    requiredInfo: "Fill in the required information below to continue.",
+    yourPurchase: "Your purchase",
+    orderSummary: "Order Summary",
+    reviewItems: "Review the items and totals in your order.",
+    securePayment: "Secure payment process",
+    protectedFlow: "Protected checkout flow",
+    orderReview: "Order review",
+    reviewDetails: "Review details before placing an order",
+    simpleExperience: "Simple experience",
+    deliveryInOnePlace: "Delivery and payment in one place",
+  },
+  te: {
+    home: "హోమ్",
+    cart: "కార్ట్",
+    checkout: "చెక్‌అవుట్",
+    almostThere: "దాదాపు పూర్తయింది",
+    description:
+      "మీ డెలివరీ వివరాలను నమోదు చేసి, చెల్లింపు పద్ధతిని ఎంచుకుని, కొనుగోలును పూర్తి చేయడానికి ముందు మీ ఆర్డర్‌ను సమీక్షించండి.",
+    secureCheckout: "సురక్షిత చెక్‌అవుట్",
+    orderDetails: "మీ ఆర్డర్ వివరాలు",
+    deliveryPayment: "డెలివరీ మరియు చెల్లింపు",
+    completeOrder: "మీ ఆర్డర్‌ను పూర్తి చేయండి",
+    requiredInfo: "కొనసాగించడానికి అవసరమైన వివరాలను క్రింద నమోదు చేయండి.",
+    yourPurchase: "మీ కొనుగోలు",
+    orderSummary: "ఆర్డర్ సారాంశం",
+    reviewItems: "మీ ఆర్డర్‌లోని వస్తువులు మరియు మొత్తం ధరలను సమీక్షించండి.",
+    securePayment: "సురక్షిత చెల్లింపు ప్రక్రియ",
+    protectedFlow: "రక్షిత చెక్‌అవుట్ విధానం",
+    orderReview: "ఆర్డర్ సమీక్ష",
+    reviewDetails: "ఆర్డర్ చేసే ముందు వివరాలను సమీక్షించండి",
+    simpleExperience: "సులభమైన అనుభవం",
+    deliveryInOnePlace: "డెలివరీ మరియు చెల్లింపు ఒకే చోట",
+  },
+  hi: {
+    home: "होम",
+    cart: "कार्ट",
+    checkout: "चेकआउट",
+    almostThere: "बस पूरा होने वाला है",
+    description:
+      "अपनी डिलीवरी जानकारी दर्ज करें, भुगतान विधि चुनें और खरीदारी पूरी करने से पहले अपने ऑर्डर की समीक्षा करें।",
+    secureCheckout: "सुरक्षित चेकआउट",
+    orderDetails: "आपके ऑर्डर का विवरण",
+    deliveryPayment: "डिलीवरी और भुगतान",
+    completeOrder: "अपना ऑर्डर पूरा करें",
+    requiredInfo: "जारी रखने के लिए नीचे आवश्यक जानकारी भरें।",
+    yourPurchase: "आपकी खरीदारी",
+    orderSummary: "ऑर्डर सारांश",
+    reviewItems: "अपने ऑर्डर के आइटम और कुल राशि की समीक्षा करें।",
+    securePayment: "सुरक्षित भुगतान प्रक्रिया",
+    protectedFlow: "सुरक्षित चेकआउट प्रक्रिया",
+    orderReview: "ऑर्डर की समीक्षा",
+    reviewDetails: "ऑर्डर देने से पहले विवरण की समीक्षा करें",
+    simpleExperience: "आसान अनुभव",
+    deliveryInOnePlace: "डिलीवरी और भुगतान एक ही जगह",
+  },
 }
 
 export default async function Checkout() {
@@ -19,6 +89,10 @@ export default async function Checkout() {
   }
 
   const customer = await retrieveCustomer()
+  const locale = await getUiLocale()
+
+  const t =
+    translations[locale as keyof typeof translations] ?? translations.en
 
   return (
     <main className="min-h-screen bg-[#f8f7ff] text-gray-900">
@@ -26,12 +100,12 @@ export default async function Checkout() {
         {/* Header */}
         <header className="mb-8 border-b border-violet-100 pb-7 sm:mb-10 sm:pb-9">
           <div className="mb-5 flex flex-wrap items-center gap-2 text-sm text-gray-500">
-            <span>Home</span>
+            <span>{t.home}</span>
             <span>/</span>
-            <span>Cart</span>
+            <span>{t.cart}</span>
             <span>/</span>
             <span className="font-semibold text-violet-700">
-              Checkout
+              {t.checkout}
             </span>
           </div>
 
@@ -39,17 +113,15 @@ export default async function Checkout() {
             <div>
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-violet-100 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-violet-700">
                 <span className="h-2 w-2 rounded-full bg-violet-500" />
-                Almost there
+                {t.almostThere}
               </div>
 
               <h1 className="text-3xl font-extrabold tracking-tight text-gray-950 sm:text-4xl lg:text-5xl">
-                Checkout
+                {t.checkout}
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-500 sm:text-base">
-                Enter your delivery details, choose your payment
-                method, and review your order before completing
-                your purchase.
+                {t.description}
               </p>
             </div>
 
@@ -75,12 +147,13 @@ export default async function Checkout() {
                   />
                 </svg>
               </span>
+
               <span>
                 <span className="block text-sm font-bold text-gray-900">
-                  Secure checkout
+                  {t.secureCheckout}
                 </span>
                 <span className="mt-0.5 block text-xs text-gray-500">
-                  Your order details
+                  {t.orderDetails}
                 </span>
               </span>
             </div>
@@ -93,13 +166,15 @@ export default async function Checkout() {
           <section className="min-w-0 overflow-hidden rounded-3xl border border-violet-100/80 bg-white p-4 shadow-[0_8px_35px_rgba(76,29,149,0.05)] sm:p-6 lg:p-8">
             <div className="mb-6 border-b border-gray-100 pb-5 sm:mb-8 sm:pb-6">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700">
-                Delivery and payment
+                {t.deliveryPayment}
               </p>
+
               <h2 className="mt-2 text-xl font-extrabold text-gray-950 sm:text-2xl">
-                Complete your order
+                {t.completeOrder}
               </h2>
+
               <p className="mt-2 text-sm leading-6 text-gray-500">
-                Fill in the required information below to continue.
+                {t.requiredInfo}
               </p>
             </div>
 
@@ -116,15 +191,18 @@ export default async function Checkout() {
                   aria-hidden="true"
                   className="absolute -right-8 -top-12 h-36 w-36 rounded-full bg-white/10"
                 />
+
                 <div className="relative">
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-violet-200">
-                    Your purchase
+                    {t.yourPurchase}
                   </p>
+
                   <h2 className="mt-2 text-2xl font-extrabold">
-                    Order Summary
+                    {t.orderSummary}
                   </h2>
+
                   <p className="mt-2 text-sm leading-6 text-violet-100">
-                    Review the items and totals in your order.
+                    {t.reviewItems}
                   </p>
                 </div>
               </div>
@@ -149,7 +227,8 @@ export default async function Checkout() {
                       strokeLinecap="round"
                     />
                   </svg>
-                  Secure payment process
+
+                  {t.securePayment}
                 </div>
               </div>
             </div>
@@ -172,12 +251,13 @@ export default async function Checkout() {
                 <path d="M7 10V7a5 5 0 0 1 10 0v3" />
               </svg>
             </span>
+
             <div>
               <p className="text-sm font-bold text-gray-900">
-                Secure checkout
+                {t.secureCheckout}
               </p>
               <p className="mt-1 text-xs text-gray-500">
-                Protected checkout flow
+                {t.protectedFlow}
               </p>
             </div>
           </div>
@@ -196,12 +276,13 @@ export default async function Checkout() {
                 <circle cx="12" cy="12" r="9" />
               </svg>
             </span>
+
             <div>
               <p className="text-sm font-bold text-gray-900">
-                Order review
+                {t.orderReview}
               </p>
               <p className="mt-1 text-xs text-gray-500">
-                Review details before placing an order
+                {t.reviewDetails}
               </p>
             </div>
           </div>
@@ -219,12 +300,13 @@ export default async function Checkout() {
                 <path d="M12 3 14.8 8.7 21 9.6 16.5 14l1.1 6.2L12 17.3 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3Z" />
               </svg>
             </span>
+
             <div>
               <p className="text-sm font-bold text-gray-900">
-                Simple experience
+                {t.simpleExperience}
               </p>
               <p className="mt-1 text-xs text-gray-500">
-                Delivery and payment in one place
+                {t.deliveryInOnePlace}
               </p>
             </div>
           </div>

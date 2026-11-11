@@ -41,6 +41,18 @@
     "backToCart": "Back to shopping cart",
     "thankYou": "Thank you for shopping with us"
   },
+  "Login": {
+    "welcomeBack": "Welcome back",
+    "signInDescription": "Sign in for a better shopping experience.",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "notMember": "Not a member yet?",
+    "joinUs": "Join us",
+    "gotQuestions": "Got questions?",
+    "faqDescription": "You can find frequently asked questions and answers on our customer service page.",
+    "customerService": "Customer Service"
+  },
   "Product": {
     "addToCart": "Add to cart",
     "description": "Description",
@@ -73,7 +85,9 @@
     "documentation": "Documentation",
     "tagline": "Discover your style.",
     "copyright": "All rights reserved.",
-    "poweredBy": "Powered by"
+    "poweredBy": "Powered by",
+    "storeName": "Medusa Store",
+    "storeBrand": "Medusa"
   },
   "Home": {
     "announcement1": "Free shipping on orders above ₹999",
@@ -172,13 +186,15 @@
       "shirts": "Shirts",
       "pants": "Pants",
       "shoes": "Shoes",
-      "tshirts": "T-Shirts"
+      "tshirts": "T-Shirts",
+      "shorts": "Shorts"
     },
     "categoryDescriptions": {
       "shirts": "Everyday styles",
       "pants": "Comfort meets style",
       "shoes": "Step out in style",
-      "tshirts": "Casual essentials"
+      "tshirts": "Casual essentials",
+      "shorts": "Relaxed everyday comfort"
     },
     "sortProducts": "Sort products",
     "sortBy": "Sort by",
@@ -213,6 +229,54 @@
     "label": "Label",
     "upTo": "Up to",
     "from": "From",
-    "options": "options"
+    "options": "Options",
+    "color": "Color",
+    "size": "Size",
+    "black": "Black",
+    "white": "White",
+    "red": "Red",
+    "blue": "Blue",
+    "green": "Green",
+    "yellow": "Yellow",
+    "pink": "Pink",
+    "orange": "Orange",
+    "purple": "Purple",
+    "grey": "Grey",
+    "brown": "Brown",
+    "shirts": "Shirts",
+    "pants": "Pants",
+    "shorts": "Shorts",
+    "tshirts": "T-Shirts",
+    "shoes": "Shoes"
+  },
+  "Collections": {
+    "metaTitle": "Collections | Medusa Store",
+    "metaDescription": "Explore our product collections.",
+    "title": "Our Collections",
+    "description": "Explore our collections and find your favorite products.",
+    "noCollections": "No collections available",
+    "checkBackLater": "Please check back later.",
+    "productCollection": "Product Collection",
+    "product": "Product",
+    "products": "Products",
+    "exploreOneProduct": "Explore 1 product in this collection.",
+    "exploreProducts": "Explore {count} products in this collection.",
+    "exploreCollection": "Explore this collection and discover its products.",
+    "exploreCollectionButton": "Explore Collection",
+    "bestPrice": "Best Price",
+    "newArrival": "New Arrival",
+    "bestSellers": "Best Sellers Now"
+  },
+  "SortProducts": {
+    "title": "Sort Products",
+    "subtitle": "Find your perfect pick",
+    "chooseOrder": "Choose order",
+    "latestArrivals": "Latest Arrivals",
+    "newestFirst": "Show newest products first",
+    "priceLowToHigh": "Price: Low to High",
+    "lowerPrices": "Start with lower prices",
+    "priceHighToLow": "Price: High to Low",
+    "higherPrices": "Start with higher prices",
+    "footer": "Choose how you want to explore the products."
   }
 }

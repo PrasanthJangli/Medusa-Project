@@ -43,6 +43,61 @@ const categoryImages = [
   },
 ]
 
+// Collection title translations
+const collectionTitleTranslations: Record<
+  string,
+  Record<string, string>
+> = {
+  en: {
+    "best-price": "Best Price",
+    "new-arrival": "New Arrival",
+    "best-sellers-now": "Best Sellers Now",
+    "best-sellers": "Best Sellers Now",
+    "best-seller": "Best Sellers Now",
+    "best-seller-now": "Best Sellers Now",
+  },
+  te: {
+    "best-price": "ఉత్తమ ధర",
+    "new-arrival": "కొత్త రాక",
+    "best-sellers-now": "అత్యధికంగా అమ్ముడవుతున్నవి",
+    "best-sellers": "అత్యధికంగా అమ్ముడవుతున్నవి",
+    "best-seller": "అత్యధికంగా అమ్ముడవుతున్నవి",
+    "best-seller-now": "అత్యధికంగా అమ్ముడవుతున్నవి",
+  },
+  hi: {
+    "best-price": "सबसे अच्छी कीमत",
+    "new-arrival": "नए आगमन",
+    "best-sellers-now": "सबसे ज्यादा बिकने वाले",
+    "best-sellers": "सबसे ज्यादा बिकने वाले",
+    "best-seller": "सबसे ज्यादा बिकने वाले",
+    "best-seller-now": "सबसे ज्यादा बिकने वाले",
+  },
+}
+
+const normalizeCollectionHandle = (value: string) =>
+  value.toLowerCase().trim().replace(/[\s_]+/g, "-")
+
+const getCollectionTitle = (
+  title: string,
+  handle: string,
+  locale: string
+) => {
+  const normalizedLocale = locale.split("-")[0]
+
+  const translations =
+    collectionTitleTranslations[normalizedLocale] ??
+    collectionTitleTranslations.en
+
+  const normalizedHandle = normalizeCollectionHandle(handle)
+  const normalizedTitle = normalizeCollectionHandle(title)
+
+  return (
+    translations[normalizedHandle] ??
+    translations[normalizedTitle] ??
+    title
+  )
+}
+
 export default async function Home(props: {
   params: Promise<{ countryCode: string }>
 }) {
@@ -428,6 +483,12 @@ export default async function Home(props: {
               featuredCollections.map((collection, index) => {
                 const visual = categoryImages[index % categoryImages.length]
 
+                const translatedCollectionTitle = getCollectionTitle(
+                  collection.title,
+                  collection.handle,
+                  locale
+                )
+
                 return (
                   <LocalizedClientLink
                     key={collection.id}
@@ -442,7 +503,7 @@ export default async function Home(props: {
                     >
                       <img
                         src={visual.image}
-                        alt={collection.title ?? "Maison Medusa collection"}
+                        alt={translatedCollectionTitle}
                         loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                       />
@@ -468,7 +529,7 @@ export default async function Home(props: {
                                 "var(--theme-font-heading, Playfair Display, serif)",
                             }}
                           >
-                            {collection.title}
+                            {translatedCollectionTitle}
                           </h3>
                           <p className="mt-2 text-xs text-white/80">
                             {t("collectionDescription")}

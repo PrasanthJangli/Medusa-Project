@@ -102,8 +102,11 @@ const CartTemplate = async ({
   customer: HttpTypes.StoreCustomer | null
 }) => {
   const locale = await getUiLocale()
-  const t =
-    translations[locale as keyof typeof translations] ?? translations.en
+
+  const normalizedLocale: "en" | "te" | "hi" =
+    locale === "te" || locale === "hi" ? locale : "en"
+
+  const t = translations[normalizedLocale]
 
   const itemCount =
     cart?.items?.reduce(
@@ -211,7 +214,10 @@ const CartTemplate = async ({
                   )}
 
                   <div className="min-w-0">
-                    <ItemsTemplate cart={cart} />
+                    <ItemsTemplate
+                      cart={cart}
+                      locale={normalizedLocale}
+                    />
                   </div>
                 </div>
 

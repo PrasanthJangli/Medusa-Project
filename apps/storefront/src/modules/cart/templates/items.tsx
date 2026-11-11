@@ -1,3 +1,4 @@
+
 import repeat from "@lib/util/repeat"
 import { HttpTypes } from "@medusajs/types"
 import { Heading, Table } from "@modules/common/components/ui"
@@ -7,34 +8,72 @@ import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
 
 type ItemsTemplateProps = {
   cart?: HttpTypes.StoreCart
+  locale?: "en" | "te" | "hi"
 }
 
-const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
+const translations = {
+  en: {
+    cart: "Cart",
+    item: "Item",
+    quantity: "Quantity",
+    price: "Price",
+    total: "Total",
+  },
+  te: {
+    cart: "షాపింగ్ కార్ట్",
+    item: "ఉత్పత్తి",
+    quantity: "పరిమాణం",
+    price: "ధర",
+    total: "మొత్తం",
+  },
+  hi: {
+    cart: "शॉपिंग कार्ट",
+    item: "उत्पाद",
+    quantity: "मात्रा",
+    price: "कीमत",
+    total: "कुल",
+  },
+}
+
+const ItemsTemplate = ({
+  cart,
+  locale = "en",
+}: ItemsTemplateProps) => {
   const items = cart?.items
+  const t = translations[locale]
+
   return (
     <div>
       <div className="pb-3 flex items-center">
-        <Heading className="text-[2rem] leading-[2.75rem]">Cart</Heading>
+        <Heading className="text-[2rem] leading-[2.75rem]">
+          {t.cart}
+        </Heading>
       </div>
+
       <Table>
         <Table.Header className="border-t-0">
           <Table.Row className="text-ui-fg-subtle txt-medium-plus">
-            <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
+            <Table.HeaderCell className="!pl-0">
+              {t.item}
+            </Table.HeaderCell>
             <Table.HeaderCell></Table.HeaderCell>
-            <Table.HeaderCell>Quantity</Table.HeaderCell>
+            <Table.HeaderCell>{t.quantity}</Table.HeaderCell>
             <Table.HeaderCell className="hidden small:table-cell">
-              Price
+              {t.price}
             </Table.HeaderCell>
             <Table.HeaderCell className="!pr-0 text-right">
-              Total
+              {t.total}
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
+
         <Table.Body>
           {items
             ? items
                 .sort((a, b) => {
-                  return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+                  return (a.created_at ?? "") > (b.created_at ?? "")
+                    ? -1
+                    : 1
                 })
                 .map((item) => {
                   return (

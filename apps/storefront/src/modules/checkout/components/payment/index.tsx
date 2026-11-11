@@ -1,3 +1,4 @@
+
 "use client"
 
 import { RadioGroup } from "@headlessui/react"
@@ -242,6 +243,7 @@ const Payment = ({
                 </div>
 
                 <RadioGroup
+                  id="checkout-payment-methods"
                   value={selectedPaymentMethod}
                   onChange={(value: string) => setPaymentMethod(value)}
                   className="w-full min-w-0 space-y-3"

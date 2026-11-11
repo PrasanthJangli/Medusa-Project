@@ -7,6 +7,21 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Thumbnail from "../thumbnail"
 import PreviewPrice from "./price"
 
+const productTranslations = {
+  en: {
+    viewProduct: "View Product",
+    priceUnavailable: "Price unavailable",
+  },
+  te: {
+    viewProduct: "ఉత్పత్తిని చూడండి",
+    priceUnavailable: "ధర అందుబాటులో లేదు",
+  },
+  hi: {
+    viewProduct: "उत्पाद देखें",
+    priceUnavailable: "कीमत उपलब्ध नहीं है",
+  },
+}
+
 export default function ProductPreview({
   product,
   isFeatured,
@@ -21,12 +36,9 @@ export default function ProductPreview({
   const productName = translateProductName(product.title, locale)
   const { cheapestPrice } = getProductPrice({ product })
 
-  const viewProductText =
-    locale === "te"
-      ? "ఉత్పత్తిని చూడండి"
-      : locale === "hi"
-        ? "उत्पाद देखें"
-        : "View Product"
+  const t =
+    productTranslations[locale as keyof typeof productTranslations] ??
+    productTranslations.en
 
   return (
     <div className="product-card">
@@ -62,14 +74,14 @@ export default function ProductPreview({
                 </div>
               ) : (
                 <span className="text-sm theme-muted">
-                  Price unavailable
+                  {t.priceUnavailable}
                 </span>
               )}
             </div>
 
             <div className="mt-2">
               <span className="inline-flex items-center text-xs font-semibold theme-primary-text transition-all duration-300 group-hover:translate-x-1">
-                {viewProductText} →
+                {t.viewProduct} →
               </span>
             </div>
           </div>

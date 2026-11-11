@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Radio, RadioGroup } from "@headlessui/react"
@@ -40,6 +41,7 @@ const translations = {
     reviewOrder: "You can review your order before completing your purchase.",
     deliverySelected: "Delivery method selected",
     selectMethod: "Select a delivery method to continue.",
+    standardShipping: "Standard Shipping",
   },
   te: {
     delivery: "డెలివరీ",
@@ -58,6 +60,7 @@ const translations = {
     reviewOrder: "కొనుగోలును పూర్తి చేయడానికి ముందు మీ ఆర్డర్‌ను సమీక్షించవచ్చు.",
     deliverySelected: "డెలివరీ విధానం ఎంచుకోబడింది",
     selectMethod: "కొనసాగడానికి డెలివరీ విధానాన్ని ఎంచుకోండి.",
+    standardShipping: "ప్రామాణిక డెలివరీ",
   },
   hi: {
     delivery: "डिलीवरी",
@@ -76,7 +79,19 @@ const translations = {
     reviewOrder: "खरीदारी पूरी करने से पहले आप अपने ऑर्डर की समीक्षा कर सकते हैं।",
     deliverySelected: "डिलीवरी का तरीका चुना गया",
     selectMethod: "आगे बढ़ने के लिए डिलीवरी का तरीका चुनें।",
+    standardShipping: "मानक डिलीवरी",
   },
+}
+
+function formatShippingName(name: string, locale: string) {
+  if (name.trim().toLowerCase() === "standard shipping") {
+    return (
+      translations[locale as keyof typeof translations]?.standardShipping ||
+      translations.en.standardShipping
+    )
+  }
+
+  return name
 }
 
 function formatAddress(address: HttpTypes.StoreCartAddress) {
@@ -391,7 +406,7 @@ const Shipping: React.FC<ShippingProps> = ({
                         <MedusaRadio checked={selected} />
                         <div className="min-w-0">
                           <Text className="break-words font-semibold text-slate-800">
-                            {option.name}
+                            {formatShippingName(option.name, locale)}
                           </Text>
                           <Text className="mt-1 text-xs leading-5 text-slate-500">
                             {selected ? t.selectedDelivery : t.chooseDelivery}
@@ -531,7 +546,10 @@ const Shipping: React.FC<ShippingProps> = ({
                     {t.deliverySelected}
                   </Text>
                   <Text className="mt-1 break-words text-sm text-emerald-800">
-                    {cart.shipping_methods.at(-1)!.name}
+                    {formatShippingName(
+                      cart.shipping_methods.at(-1)!.name,
+                      locale
+                    )}
                   </Text>
                   <Text className="mt-1 font-bold text-emerald-700">
                     {convertToLocale({

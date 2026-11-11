@@ -1,13 +1,56 @@
 
+"use client"
+
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ChevronDown from "@modules/common/icons/chevron-down"
 import MedusaCTA from "@modules/layout/components/medusa-cta"
+import { useLocale } from "next-intl"
+
+const layoutTranslations: Record<
+  string,
+  Record<string, string>
+> = {
+  en: {
+    backToCart: "Back to shopping cart",
+    back: "Back",
+    tagline: "Your shopping experience",
+    secureCheckout: "Secure checkout",
+    secure: "Secure",
+    thankYou: "Thank you for shopping with us",
+  },
+
+  te: {
+    backToCart: "షాపింగ్ కార్ట్‌కు తిరిగి వెళ్లండి",
+    back: "వెనక్కి",
+    tagline: "మీ షాపింగ్ అనుభవం",
+    secureCheckout: "సురక్షిత చెక్‌అవుట్",
+    secure: "సురక్షితం",
+    thankYou: "మాతో షాపింగ్ చేసినందుకు ధన్యవాదాలు",
+  },
+
+  hi: {
+    backToCart: "शॉपिंग कार्ट पर वापस जाएं",
+    back: "वापस",
+    tagline: "आपका शॉपिंग अनुभव",
+    secureCheckout: "सुरक्षित चेकआउट",
+    secure: "सुरक्षित",
+    thankYou: "हमारे साथ खरीदारी करने के लिए धन्यवाद",
+  },
+}
 
 export default function CheckoutLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const currentLocale = useLocale()
+  const locale = currentLocale.split("-")[0].toLowerCase()
+
+  const t = (key: string) =>
+    layoutTranslations[locale]?.[key] ??
+    layoutTranslations.en[key] ??
+    key
+
   return (
     <div className="relative min-h-screen w-full overflow-x-clip bg-gradient-to-br from-slate-50 via-white to-indigo-50/60">
       {/* Modern Checkout Navbar */}
@@ -27,9 +70,12 @@ export default function CheckoutLayout({
             </span>
 
             <span className="hidden small:block">
-              Back to shopping cart
+              {t("backToCart")}
             </span>
-            <span className="small:hidden">Back</span>
+
+            <span className="small:hidden">
+              {t("back")}
+            </span>
           </LocalizedClientLink>
 
           {/* Store branding */}
@@ -46,8 +92,9 @@ export default function CheckoutLayout({
               <span className="text-sm font-extrabold uppercase tracking-[0.16em] text-slate-900 small:text-base">
                 Medusa Store
               </span>
+
               <span className="hidden text-[10px] font-medium uppercase tracking-[0.2em] text-indigo-500 small:block">
-                Your shopping experience
+                {t("tagline")}
               </span>
             </span>
           </LocalizedClientLink>
@@ -75,8 +122,14 @@ export default function CheckoutLayout({
                   d="m9 12 2 2 4-4"
                 />
               </svg>
-              <span className="hidden small:inline">Secure checkout</span>
-              <span className="small:hidden">Secure</span>
+
+              <span className="hidden small:inline">
+                {t("secureCheckout")}
+              </span>
+
+              <span className="small:hidden">
+                {t("secure")}
+              </span>
             </div>
           </div>
         </nav>
@@ -106,7 +159,8 @@ export default function CheckoutLayout({
 
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            Thank you for shopping with us
+
+            {t("thankYou")}
           </div>
 
           <div className="text-xs text-slate-400">
