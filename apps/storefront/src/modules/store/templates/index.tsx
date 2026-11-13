@@ -182,13 +182,18 @@ const StoreTemplate = ({
               <div className="relative min-h-[370px] min-[375px]:min-h-[420px] sm:min-h-[610px] lg:min-h-[650px] xl:min-h-[720px]">
                 {/* MAIN FASHION IMAGE */}
                 <div className="absolute left-[10%] top-[5%] z-10 w-[72%] border border-[#E5DFD7] bg-white p-1.5 shadow-[0_20px_45px_-15px_rgba(26,24,22,0.16)] transition-transform duration-700 hover:scale-[1.015] min-[375px]:left-[12%] sm:left-[16%] sm:w-[62%] sm:p-2.5 lg:left-[14%] lg:w-[62%]">
-                  <div className="aspect-[4/5] overflow-hidden bg-[#F4EFEB]">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1100&q=85"
                       alt={t("mainFashionImageAlt")}
                       loading="eager"
                       fetchPriority="high"
-                      className="h-full w-full object-cover object-center transition-transform duration-1000 hover:scale-[1.04]"
+                      className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-1000 hover:scale-[1.04]"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
                     />
                   </div>
 
@@ -200,12 +205,17 @@ const StoreTemplate = ({
 
                 {/* UPPER DETAIL IMAGE */}
                 <div className="absolute right-0 top-[1%] z-20 w-[34%] border border-[#E5DFD7] bg-white p-1 shadow-[0_18px_40px_-16px_rgba(26,24,22,0.2)] transition-transform duration-500 hover:-translate-y-2 sm:right-[1%] sm:w-[34%] sm:p-2 lg:-right-1">
-                  <div className="aspect-[3/4] overflow-hidden bg-[#F4EFEB]">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=700&q=85"
                       alt={t("handbagImageAlt")}
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                      className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
                     />
                   </div>
 
@@ -216,12 +226,17 @@ const StoreTemplate = ({
 
                 {/* LOWER DETAIL IMAGE */}
                 <div className="absolute bottom-[1%] left-0 z-30 w-[36%] border border-[#E5DFD7] bg-[#FAF8F5] p-1 shadow-[0_18px_40px_-16px_rgba(26,24,22,0.18)] transition-transform duration-500 hover:translate-y-[-5px] sm:bottom-[2%] sm:left-[1%] sm:w-[34%] sm:p-2 lg:-left-1">
-                  <div className="aspect-[3/4] overflow-hidden bg-[#F4EFEB]">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-[#F4EFEB]">
                     <img
                       src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
                       alt={t("footwearImageAlt")}
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                      className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
                     />
                   </div>
 

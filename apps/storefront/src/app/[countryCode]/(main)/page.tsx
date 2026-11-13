@@ -43,7 +43,6 @@ const categoryImages = [
   },
 ]
 
-// Collection title translations
 const collectionTitleTranslations: Record<
   string,
   Record<string, string>
@@ -96,6 +95,14 @@ const getCollectionTitle = (
     translations[normalizedTitle] ??
     title
   )
+}
+
+const fullCoverImageStyle = {
+  display: "block",
+  width: "100%",
+  height: "100%",
+  objectFit: "cover" as const,
+  objectPosition: "center" as const,
 }
 
 export default async function Home(props: {
@@ -154,7 +161,6 @@ export default async function Home(props: {
     },
   ]
 
-  // Theme customizer CSS variables
   const pageStyle = {
     backgroundColor: "var(--theme-background, #f7f3ea)",
     color: "var(--theme-text, #211d17)",
@@ -348,10 +354,12 @@ export default async function Home(props: {
           {/* HERO IMAGES */}
 
           <div className="relative mx-auto h-[350px] w-full min-w-0 max-w-[620px] sm:h-[500px] md:h-[540px] lg:h-[610px]">
+            {/* MAIN HERO IMAGE */}
+
             <div
               className="absolute left-[7%] top-[4%] h-[88%] w-[73%] overflow-hidden shadow-2xl"
               style={{
-                backgroundColor: "var(--theme-secondary, #d4af37)",
+                backgroundColor: "#ffffff",
                 borderRadius: "48% 48% 12px 12px",
               }}
             >
@@ -361,15 +369,22 @@ export default async function Home(props: {
                   "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1100&q=85"
                 }
                 alt={heroProduct?.title ?? "Maison Medusa fashion"}
-                className="h-full w-full object-cover transition-transform duration-1000 hover:scale-110"
+                loading="eager"
+                draggable={false}
+                className="absolute inset-0 block h-full w-full"
+                style={fullCoverImageStyle}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
             </div>
+
+            {/* HANDBAG IMAGE */}
 
             <div
               className="absolute right-0 top-[9%] z-10 h-[34%] w-[35%] overflow-hidden border-[5px] shadow-2xl transition-transform duration-500 hover:-translate-y-2 sm:border-[7px]"
               style={{
                 ...imageBorderStyle,
+                backgroundColor: "#ffffff",
                 borderRadius: "45% 45% 10px 10px",
               }}
             >
@@ -379,14 +394,20 @@ export default async function Home(props: {
                   "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=700&q=85"
                 }
                 alt={secondProduct?.title ?? "Fashion accessories"}
-                className="h-full w-full object-cover"
+                loading="eager"
+                draggable={false}
+                className="absolute inset-0 block h-full w-full"
+                style={fullCoverImageStyle}
               />
             </div>
+
+            {/* SHOES IMAGE */}
 
             <div
               className="absolute bottom-[4%] right-0 z-10 h-[32%] w-[38%] overflow-hidden border-[5px] shadow-2xl transition-transform duration-500 hover:translate-y-2 sm:border-[7px]"
               style={{
                 ...imageBorderStyle,
+                backgroundColor: "#ffffff",
                 borderRadius: "10px 10px 45% 45%",
               }}
             >
@@ -396,7 +417,10 @@ export default async function Home(props: {
                   "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=85"
                 }
                 alt={thirdProduct?.title ?? "Fashion footwear"}
-                className="h-full w-full object-cover"
+                loading="eager"
+                draggable={false}
+                className="absolute inset-0 block h-full w-full"
+                style={fullCoverImageStyle}
               />
             </div>
 
@@ -506,6 +530,7 @@ export default async function Home(props: {
                         alt={translatedCollectionTitle}
                         loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                        style={fullCoverImageStyle}
                       />
 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100" />
@@ -567,6 +592,7 @@ export default async function Home(props: {
                       alt="Maison Medusa collection"
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      style={fullCoverImageStyle}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <div className="absolute bottom-0 p-5 text-white sm:p-7">
@@ -768,6 +794,7 @@ export default async function Home(props: {
               alt="Maison Medusa seasonal fashion inspiration"
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 hover:scale-110"
+              style={fullCoverImageStyle}
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
@@ -826,6 +853,7 @@ export default async function Home(props: {
                 alt="Fashion inspiration at Maison Medusa"
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                style={fullCoverImageStyle}
               />
             </div>
 

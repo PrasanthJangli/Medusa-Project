@@ -130,14 +130,15 @@ export default async function CollectionsPage() {
                 href={`/collections/${collection.handle}`}
                 className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
               >
-                <div className="relative flex h-56 items-center justify-center overflow-hidden bg-gray-100">
+                {/* Collection image */}
+                <div className="relative flex h-56 items-center justify-center overflow-hidden bg-gray-100 p-3 sm:h-64 md:h-72">
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
                       alt={translatedTitle}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
+                      className="object-contain object-center p-3 transition duration-500 group-hover:scale-[1.03]"
                     />
                   ) : (
                     <div className="flex flex-col items-center gap-2 text-gray-400">
@@ -149,6 +150,7 @@ export default async function CollectionsPage() {
                   )}
                 </div>
 
+                {/* Collection details */}
                 <div className="p-5">
                   <h2 className="text-xl font-semibold text-gray-900 transition group-hover:text-violet-700">
                     {translatedTitle}

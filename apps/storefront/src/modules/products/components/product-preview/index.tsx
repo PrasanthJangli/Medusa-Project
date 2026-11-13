@@ -56,6 +56,7 @@ export default function ProductPreview({
               images={product.images}
               size="full"
               isFeatured={isFeatured}
+              className="!max-w-none !rounded-none !shadow-none"
             />
           </div>
 

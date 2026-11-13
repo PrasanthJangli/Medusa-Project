@@ -58,16 +58,19 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* RIGHT: Editorial fashion photograph */}
+          {/* RIGHT: Full fashion photograph */}
           <div className="order-2 min-w-0 p-2 pt-0 sm:p-5 sm:pt-0 lg:min-h-[620px]">
-            <div className="group relative h-[280px] min-h-[280px] overflow-hidden rounded-lg bg-neutral-100 min-[375px]:h-[320px] sm:h-[420px] sm:rounded-xl lg:h-full lg:min-h-[580px]">
+            <div className="group relative flex h-[280px] min-h-[280px] items-center justify-center overflow-hidden rounded-lg bg-neutral-100 min-[375px]:h-[320px] sm:h-[420px] sm:rounded-xl lg:h-full lg:min-h-[580px]">
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqScwP7H4fa8Xpzj-XyclwHIh2PWbsthFbDaHXW6Cup4XO-DyiqMv3zg9pOndGrBADW6SoTOlLKSLTgWGEZeYoNu2f1BvB9LlouA6Ti1WvQZAzCbxTiMAXzrLsOsxsU35vIz4MICnXQHmiwNzCy1Xoab50-iUnErjrUcqCgkzwjOWXczC85FtOOsgtv1fjuoteOBNr8KVeRkU2rpJ2JnPxFfxBT63GruiITe_56ijg6_cQoIPj0jHBYQ"
                 alt="Premium fashion essentials including a black handbag, white sneakers, knitwear, sunglasses and accessories"
-                className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.02]"
+                loading="eager"
+                fetchPriority="high"
+                draggable={false}
+                className="absolute inset-0 h-full w-full object-contain object-center"
               />
 
-              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/25 to-transparent" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/25 to-transparent" />
 
               <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2 sm:bottom-6 sm:left-6 sm:right-6 sm:gap-3">
                 <div className="min-w-0 max-w-full rounded-lg border border-white/70 bg-white/95 px-3 py-2.5 sm:px-4 sm:py-3">

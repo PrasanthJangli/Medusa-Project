@@ -61,9 +61,10 @@ const ImageOrPlaceholder = ({
     <Image
       src={image}
       alt="Product image"
-      className="absolute inset-0 h-full w-full object-contain object-center p-2 sm:p-3 md:p-4"
+      fill
+      className="absolute inset-0 h-full w-full object-contain object-center"
       draggable={false}
-      quality={80}
+      quality={90}
       sizes={
         size === "small"
           ? "(max-width: 576px) 180px, 200px"
@@ -73,7 +74,6 @@ const ImageOrPlaceholder = ({
               ? "(max-width: 576px) 100vw, 440px"
               : "100vw"
       }
-      fill
       priority={isFeatured}
     />
   ) : (
