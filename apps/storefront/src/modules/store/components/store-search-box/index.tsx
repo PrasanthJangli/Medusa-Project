@@ -8,11 +8,6 @@ import { useSearchBox } from "react-instantsearch"
 
 const DEBOUNCE_MS = 250
 
-/**
- * Free-text search over the listing, refining the same InstantSearch state the
- * sidebar filters do. The input is held locally so typing stays responsive
- * while the query itself is debounced.
- */
 const StoreSearchBox = () => {
   const t = useTranslations("Store")
   const timer = useRef<number | undefined>(undefined)
@@ -20,7 +15,9 @@ const StoreSearchBox = () => {
   const queryHook = useCallback(
     (nextQuery: string, search: (value: string) => void) => {
       window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => search(nextQuery), DEBOUNCE_MS)
+      timer.current = window.setTimeout(() => {
+        search(nextQuery)
+      }, DEBOUNCE_MS)
     },
     []
   )
@@ -28,9 +25,10 @@ const StoreSearchBox = () => {
   const { query, refine } = useSearchBox({ queryHook })
   const [inputValue, setInputValue] = useState(query)
 
-  useEffect(() => () => window.clearTimeout(timer.current), [])
+  useEffect(() => {
+    return () => window.clearTimeout(timer.current)
+  }, [])
 
-  // Follow the query when it changes elsewhere.
   useEffect(() => {
     setInputValue(query)
   }, [query])
@@ -58,17 +56,17 @@ const StoreSearchBox = () => {
         data-testid="store-search-input"
       />
 
-      {inputValue && (
-        <button
-          type="button"
-          onClick={clear}
-          aria-label={t("clearSearch")}
-          className="shrink-0 text-ui-fg-muted hover:text-ui-fg-base"
-          data-testid="store-search-clear"
-        >
-          <XMarkMini />
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={clear}
+        disabled={!inputValue}
+        aria-label={t("clearSearch")}
+        title="Clear search"
+        className="shrink-0 p-1 text-ui-fg-muted hover:text-ui-fg-base disabled:invisible"
+        data-testid="store-search-clear"
+      >
+        <XMarkMini />
+      </button>
     </div>
   )
 }

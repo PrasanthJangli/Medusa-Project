@@ -147,8 +147,8 @@ export default async function Nav() {
           </div>
 
           {/* SEARCH */}
-          <div className="theme-nav-search order-4 w-full min-w-0 basis-full xl:order-3 xl:flex-1 xl:basis-auto">
-            <div className="mx-auto w-full max-w-4xl min-w-0 overflow-hidden rounded-lg bg-white [&_input]:min-w-0 [&_input]:text-gray-900">
+          <div className="theme-nav-search relative z-[100] order-4 w-full min-w-0 basis-full xl:order-3 xl:flex-1 xl:basis-auto">
+            <div className="relative mx-auto w-full max-w-4xl min-w-0 rounded-lg bg-white [&_input]:min-w-0 [&_input]:text-gray-900">
               <Search locale={uiLocale} />
             </div>
           </div>
