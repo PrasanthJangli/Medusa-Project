@@ -3,15 +3,13 @@ import type { SearchTypes } from "@medusajs/framework/types"
 import { QueryContext, search } from "@medusajs/framework/utils"
 
 /**
- * The currencies the index holds prices in.
+ * Supported currencies.
  * Keep in sync with storefront SEARCH_PRICE_CURRENCIES.
  */
 export const PRICE_CURRENCIES = ["inr", "eur", "usd"] as const
 
 export type PriceCurrency = (typeof PRICE_CURRENCIES)[number]
 
-// Read once per currency because Pricing Module calculates
-// for a single currency per query.
 const PRICE_GRAPH_FIELDS = [
   "id",
   "variants.calculated_price.calculated_amount",
@@ -20,7 +18,9 @@ const PRICE_GRAPH_FIELDS = [
 
 const pricingContext = (currency: PriceCurrency) => ({
   variants: {
-    calculated_price: QueryContext({ currency_code: currency }),
+    calculated_price: QueryContext({
+      currency_code: currency,
+    }),
   },
 })
 
@@ -32,7 +32,6 @@ type PricedVariant = {
   [key: string]: unknown
 } | null
 
-/** A product's priced variants per currency. */
 export type ProductPricingRows = Partial<
   Record<PriceCurrency, PricedVariant[] | null>
 >
@@ -48,16 +47,30 @@ type PriceFields = {
   [K in PriceFieldName]: ReturnType<typeof search.float>
 }
 
-/** Per-currency price fields for the search index. */
+/**
+ * Price fields for each currency.
+ *
+ * Stats facets are required by InstantSearch RangeInput.
+ */
 export const priceFields = Object.fromEntries(
   PRICE_CURRENCIES.flatMap((currency) => [
     [
       `min_price_${currency}`,
-      search.float().filterable().sortable().retrievable(),
+      search
+        .float()
+        .filterable()
+        .sortable()
+        .facetable({ types: ["stats"] })
+        .retrievable(),
     ],
     [
       `max_price_${currency}`,
-      search.float().filterable().sortable().retrievable(),
+      search
+        .float()
+        .filterable()
+        .sortable()
+        .facetable({ types: ["stats"] })
+        .retrievable(),
     ],
     [
       `original_price_${currency}`,
@@ -67,14 +80,18 @@ export const priceFields = Object.fromEntries(
 ) as PriceFields
 
 /**
- * Calculate the cheapest and maximum variant prices
- * for one currency.
+ * Calculate minimum and maximum variant prices
+ * for a particular currency.
  */
 function toPricing(
   currency: PriceCurrency,
   variants: PricedVariant[] | null | undefined,
 ): ProductPricing {
-  let cheapest: { calculated: number; original: number } | undefined
+  let cheapest: {
+    calculated: number
+    original: number
+  } | undefined
+
   let maxPrice: number | undefined
 
   for (const variant of variants ?? []) {
@@ -95,7 +112,10 @@ function toPricing(
     }
 
     if (!cheapest || calculated < cheapest.calculated) {
-      cheapest = { calculated, original }
+      cheapest = {
+        calculated,
+        original,
+      }
     }
   }
 
@@ -110,7 +130,9 @@ function toPricing(
   } as ProductPricing
 }
 
-/** Every currency's price fields for one product. */
+/**
+ * Generate pricing fields for all supported currencies.
+ */
 export function toProductPricing(
   pricingRows: ProductPricingRows | undefined,
 ): ProductPricing {
@@ -123,7 +145,8 @@ export function toProductPricing(
 }
 
 /**
- * Fetch the priced variants of products once per currency.
+ * Fetch calculated variant prices for all products
+ * in INR, EUR and USD.
  */
 export async function loadPricing(
   ids: string[],
@@ -140,11 +163,12 @@ export async function loadPricing(
       const { data } = await container.query.graph({
         entity: "product",
         fields: PRICE_GRAPH_FIELDS,
-        filters: { id: ids },
+        filters: {
+          id: ids,
+        },
         context: pricingContext(currency),
       })
 
-      // DEBUG: Check calculated prices returned for each currency.
       console.log(
         `PRICING DEBUG - ${currency.toUpperCase()}:`,
         JSON.stringify(
@@ -153,13 +177,16 @@ export async function loadPricing(
             variants: product.variants,
           })),
           null,
-          2
-        )
+          2,
+        ),
       )
 
       for (const product of data) {
         const rows = pricing.get(product.id) ?? {}
-        rows[currency] = product.variants as PricedVariant[] | null
+
+        rows[currency] =
+          product.variants as PricedVariant[] | null
+
         pricing.set(product.id, rows)
       }
     }),

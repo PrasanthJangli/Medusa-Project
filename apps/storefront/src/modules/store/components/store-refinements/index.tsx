@@ -7,6 +7,7 @@ import { useSortBy } from "react-instantsearch"
 import FilterRadioGroup from "@modules/common/components/filter-radio-group"
 import {
   CATEGORY_ATTRIBUTE,
+  COLLECTION_ATTRIBUTE,
   LABELS_ATTRIBUTE,
   getSortOptions,
 } from "./attributes"
@@ -68,6 +69,7 @@ const StoreRefinements = ({
           <h2 className="text-lg font-bold tracking-tight">
             {t("filters")}
           </h2>
+
           <p className="mt-1 text-xs text-gray-500">
             {t("findProducts")}
           </p>
@@ -103,6 +105,13 @@ const StoreRefinements = ({
         <RefinementGroup
           attribute={CATEGORY_ATTRIBUTE}
           title={t("category")}
+        />
+      </section>
+
+      <section className="border-b border-gray-200 py-5">
+        <RefinementGroup
+          attribute={COLLECTION_ATTRIBUTE}
+          title="Collection"
         />
       </section>
 

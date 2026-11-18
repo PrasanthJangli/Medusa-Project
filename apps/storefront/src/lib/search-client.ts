@@ -8,21 +8,17 @@ import { sdk } from "@lib/config"
 
 export const PRODUCT_INDEX_NAME = "product"
 
-/**
- * Keep these currencies in sync with PRICE_CURRENCIES
- * in the backend's src/search/helpers/pricing.ts.
- */
-export const SEARCH_PRICE_CURRENCIES = ["inr", "eur", "usd"] as const
+export const SEARCH_PRICE_CURRENCIES = [
+  "inr",
+  "eur",
+  "usd",
+] as const
 
 export type PriceField =
   | "min_price"
   | "max_price"
   | "original_price"
 
-/**
- * Get the indexed currency for the selected region.
- * If the region currency is not indexed, use INR.
- */
 export const indexedCurrency = (currencyCode: string): string => {
   const code = currencyCode.toLowerCase()
 
@@ -33,9 +29,6 @@ export const indexedCurrency = (currencyCode: string): string => {
     : "inr"
 }
 
-/**
- * Build the price field name for the selected currency.
- */
 export const priceAttribute = (
   field: PriceField,
   currencyCode: string
@@ -43,14 +36,15 @@ export const priceAttribute = (
   return `${field}_${indexedCurrency(currencyCode)}`
 }
 
-/**
- * Shared search client for navbar search and product listing.
- *
- * Do not configure unsupported numeric or value facets here.
- */
 export const { searchClient } = createInstantSearchAdapter({
   sdk: sdk as unknown as MedusaSdkLike,
   path: "/store/search",
+
+  // Numeric fields used by InstantSearch range widgets.
+  numericAttributes: SEARCH_PRICE_CURRENCIES.map(
+    (currency) => `min_price_${currency}`
+  ),
+
   additionalSearchParameters: {
     search_options: {
       match_strategy: "last",

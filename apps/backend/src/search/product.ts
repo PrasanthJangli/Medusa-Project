@@ -25,6 +25,7 @@ const PRODUCT_GRAPH_FIELDS = [
   "created_at",
   "sales_channels.id",
   "categories.name",
+  "collection.title",
   "tags.value",
   "options.title",
   "options.values.value",
@@ -41,6 +42,7 @@ type ProductRow = {
   deleted_at?: string | Date | null
   sales_channels?: ({ id?: string | null } | null)[] | null
   categories?: ({ name?: string | null } | null)[] | null
+  collection?: { title?: string | null } | null
   tags?: ({ value?: string | null } | null)[] | null
   options?: ProductOptionRow[] | null
 }
@@ -48,7 +50,6 @@ type ProductRow = {
 const productFields = search.define({
   id: search.keyword().filterable().retrievable(),
 
-  // Used by /store/search to scope the index.
   status: search.keyword().filterable().retrievable(false),
   sales_channel_ids: search.keyword().array().filterable().retrievable(false),
 
@@ -60,6 +61,12 @@ const productFields = search.define({
   created_at: search.date().sortable().retrievable(),
 
   category: search.keyword().array().filterable().facetable().retrievable(),
+
+  collection_title: search.keyword()
+    .filterable()
+    .facetable()
+    .retrievable(),
+
   labels: search.keyword().array().filterable().facetable().retrievable(),
 
   option_values: search
@@ -70,6 +77,7 @@ const productFields = search.define({
     .facetable()
     .retrievable(),
 
+  // Price fields with stats facets for price-range filtering.
   ...priceFields,
 })
 
@@ -93,6 +101,8 @@ function toDocument(
     .map((salesChannel) => salesChannel?.id?.trim())
     .filter((id): id is string => Boolean(id))
 
+  const collectionTitle = product.collection?.title?.trim() || null
+
   const productPricing = toProductPricing(pricing)
 
   console.log("PRODUCT DOCUMENT PRICE DEBUG:", {
@@ -110,6 +120,7 @@ function toDocument(
     thumbnail: product.thumbnail ?? null,
     created_at: product.created_at ?? null,
     category,
+    collection_title: collectionTitle,
     labels,
     option_values: toOptionValues(product.options),
     ...productPricing,
