@@ -1,7 +1,12 @@
+
 "use client"
 
 import { XMarkMini } from "@medusajs/icons"
-import { useClearRefinements, useCurrentRefinements } from "react-instantsearch"
+import { useTranslations } from "next-intl"
+import {
+  useClearRefinements,
+  useCurrentRefinements,
+} from "react-instantsearch"
 
 import { indexedCurrency, priceAttribute } from "@lib/search-client"
 import { convertToLocale } from "@lib/util/money"
@@ -15,12 +20,18 @@ type Refinement = ReturnType<
   typeof useCurrentRefinements
 >["items"][number]["refinements"][number]
 
-/**
- * What a single refinement reads as on its chip. The raw label is the facet
- * value, which is the option's `Size:M` form for options and a bare `true` for
- * the on-sale toggle — neither says what it filters on out of context.
- */
-function refinementLabel(refinement: Refinement, currencyCode: string) {
+type RefinementLabels = {
+  category: string
+  label: string
+  upTo: string
+  from: string
+}
+
+function refinementLabel(
+  refinement: Refinement,
+  currencyCode: string,
+  translations: RefinementLabels
+) {
   const { attribute, label, value, operator } = refinement
 
   if (attribute === OPTION_VALUES_ATTRIBUTE) {
@@ -28,13 +39,9 @@ function refinementLabel(refinement: Refinement, currencyCode: string) {
 
     return separator < 1
       ? label
-      : `${String(value).slice(0, separator)}: ${String(value).slice(
-          separator + 1
-        )}`
-  }
-
-  if (attribute === priceAttribute("on_sale", currencyCode)) {
-    return "On sale"
+      : `${String(value).slice(0, separator)}: ${String(
+          value
+        ).slice(separator + 1)}`
   }
 
   if (attribute === priceAttribute("min_price", currencyCode)) {
@@ -45,78 +52,106 @@ function refinementLabel(refinement: Refinement, currencyCode: string) {
     })
 
     return operator === "<=" || operator === "<"
-      ? `Up to ${amount}`
-      : `From ${amount}`
+      ? `${translations.upTo} ${amount}`
+      : `${translations.from} ${amount}`
   }
 
   if (attribute === CATEGORY_ATTRIBUTE) {
-    return `Category: ${label}`
+    return `${translations.category}: ${label}`
   }
 
   if (attribute === LABELS_ATTRIBUTE) {
-    return `Label: ${label}`
+    return `${translations.label}: ${label}`
   }
 
   return label
 }
 
-/**
- * Every active refinement as a chip that drops it, above the filters that set
- * them. The free-text query is excluded by the connector's own defaults, so
- * only what the sidebar controls shows up here.
- */
-const CurrentRefinements = ({ currencyCode }: { currencyCode: string }) => {
-  const { items, refine } = useCurrentRefinements()
-  const { canRefine: canClearAll, refine: clearAll } = useClearRefinements()
+const CurrentRefinements = ({
+  currencyCode,
+}: {
+  currencyCode: string
+}) => {
+  const t = useTranslations("Store")
 
-  const refinements = items.flatMap((item) => item.refinements)
+  const { items, refine } = useCurrentRefinements()
+
+  const {
+    canRefine: canClearAll,
+    refine: clearAll,
+  } = useClearRefinements()
+
+  const refinements = items.flatMap(
+    (item) => item.refinements
+  )
 
   if (!refinements.length) {
     return null
   }
 
+  const translations: RefinementLabels = {
+    category: t("category"),
+    label: t("label"),
+    upTo: t("upTo"),
+    from: t("from"),
+  }
+
   return (
-    <div className="flex flex-col gap-y-3" data-testid="current-refinements">
-      <div className="flex items-center justify-between gap-x-2 pr-6">
-        <span className="txt-compact-small-plus text-ui-fg-subtle">
-          Applied filters
+    <section
+      className="flex min-w-0 flex-col gap-y-3"
+      data-testid="current-refinements"
+      aria-label={t("appliedFilters")}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-sm font-semibold text-gray-700">
+          {t("appliedFilters")}
+          <span className="ml-1 text-xs text-gray-500">
+            ({refinements.length})
+          </span>
         </span>
+
         {canClearAll && (
           <button
+            type="button"
             onClick={clearAll}
-            className="txt-compact-small-plus text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+            className="text-sm font-semibold text-blue-600 transition-colors hover:text-blue-800 hover:underline"
             data-testid="clear-refinements"
           >
-            Clear all
+            {t("clearAll")}
           </button>
         )}
       </div>
 
-      <ul className="flex flex-wrap gap-2 pr-6">
+      <ul className="flex flex-wrap gap-2">
         {refinements.map((refinement) => {
-          const label = refinementLabel(refinement, currencyCode)
+          const label = refinementLabel(
+            refinement,
+            currencyCode,
+            translations
+          )
 
           return (
             <li
-              key={`${refinement.attribute}:${refinement.operator ?? ""}:${
-                refinement.value
-              }`}
+              key={`${refinement.attribute}:${refinement.operator ?? ""}:${refinement.value}`}
+              className="max-w-full"
             >
               <button
+                type="button"
                 onClick={() => refine(refinement)}
-                aria-label={`Remove filter ${label}`}
-                className="border-ui-border-interactive text-ui-fg-base border text-small-regular h-8 rounded-rounded px-3 flex items-center gap-x-1.5 transition-colors duration-150 hover:bg-ui-bg-base-hover"
+                aria-label={`${t("removeFilter")} ${label}`}
+                className="inline-flex max-w-full items-center gap-1.5 break-words rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-800 transition-colors hover:border-blue-400 hover:bg-blue-100"
                 data-testid="remove-refinement"
               >
-                {label}
-                <XMarkMini className="text-ui-fg-muted" />
+                <span className="break-words">{label}</span>
+                <XMarkMini className="h-4 w-4 shrink-0" />
               </button>
             </li>
           )
         })}
       </ul>
-    </div>
+    </section>
   )
 }
 
 export default CurrentRefinements
+

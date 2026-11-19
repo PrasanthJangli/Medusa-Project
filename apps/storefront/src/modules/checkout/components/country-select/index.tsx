@@ -1,4 +1,7 @@
+"use client"
+
 import { forwardRef, useImperativeHandle, useMemo, useRef } from "react"
+import { useLocale } from "next-intl"
 
 import NativeSelect, {
   NativeSelectProps,
@@ -11,12 +14,22 @@ const CountrySelect = forwardRef<
     region?: HttpTypes.StoreRegion
   }
 >(({ placeholder = "Country", region, defaultValue, ...props }, ref) => {
+  const locale = useLocale()
   const innerRef = useRef<HTMLSelectElement>(null)
 
   useImperativeHandle<HTMLSelectElement | null, HTMLSelectElement | null>(
     ref,
     () => innerRef.current
   )
+
+  const translatedPlaceholder =
+    placeholder === "Country"
+      ? {
+          en: "Country",
+          te: "దేశం",
+          hi: "देश",
+        }[locale] || "Country"
+      : placeholder
 
   const countryOptions = useMemo(() => {
     if (!region) {
@@ -32,7 +45,7 @@ const CountrySelect = forwardRef<
   return (
     <NativeSelect
       ref={innerRef}
-      placeholder={placeholder}
+      placeholder={translatedPlaceholder}
       defaultValue={defaultValue}
       {...props}
     >

@@ -1,3 +1,4 @@
+
 import repeat from "@lib/util/repeat"
 import { HttpTypes } from "@medusajs/types"
 import { Table } from "@modules/common/components/ui"
@@ -16,12 +17,15 @@ const Items = ({ order }: ItemsProps) => {
   return (
     <div className="flex flex-col">
       <Divider className="!mb-0" />
+
       <Table>
         <Table.Body data-testid="products-table">
           {items?.length
-            ? items
+            ? [...items]
                 .sort((a, b) => {
-                  return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+                  return (a.created_at ?? "") > (b.created_at ?? "")
+                    ? -1
+                    : 1
                 })
                 .map((item) => {
                   return (

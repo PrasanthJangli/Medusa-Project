@@ -7,8 +7,56 @@ import CartTotals from "@modules/common/components/cart-totals"
 import Divider from "@modules/common/components/divider"
 import { HttpTypes } from "@medusajs/types"
 import { ShoppingBag, ShieldCheck, Sparkles } from "@medusajs/icons"
+import { getUiLocale } from "@lib/data/ui-locale-actions"
 
-const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
+const translations = {
+  en: {
+    orderSummary: "Order Summary",
+    reviewBag: "Review your shopping bag",
+    checkout: "Checkout",
+    priceDetails: "Price Details",
+    cartItems: "Items in Your Cart",
+    promoCode: "Have a promo code?",
+    applyDiscount: "Apply an eligible discount to your order",
+    secureCheckout: "Secure Checkout",
+    secureMessage:
+      "Review your order details before completing your purchase.",
+  },
+  te: {
+    orderSummary: "ఆర్డర్ సారాంశం",
+    reviewBag: "మీ షాపింగ్ బ్యాగ్‌ను సమీక్షించండి",
+    checkout: "చెకౌట్",
+    priceDetails: "ధర వివరాలు",
+    cartItems: "మీ కార్ట్‌లోని వస్తువులు",
+    promoCode: "మీ దగ్గర ప్రమో కోడ్ ఉందా?",
+    applyDiscount: "మీ ఆర్డర్‌కు వర్తించే డిస్కౌంట్‌ను ఉపయోగించండి",
+    secureCheckout: "సురక్షితమైన చెకౌట్",
+    secureMessage:
+      "మీ కొనుగోలును పూర్తి చేయడానికి ముందు ఆర్డర్ వివరాలను సమీక్షించండి.",
+  },
+  hi: {
+    orderSummary: "ऑर्डर सारांश",
+    reviewBag: "अपने शॉपिंग बैग की समीक्षा करें",
+    checkout: "चेकआउट",
+    priceDetails: "मूल्य विवरण",
+    cartItems: "आपके कार्ट में आइटम",
+    promoCode: "क्या आपके पास प्रोमो कोड है?",
+    applyDiscount: "अपने ऑर्डर पर लागू छूट का उपयोग करें",
+    secureCheckout: "सुरक्षित चेकआउट",
+    secureMessage:
+      "अपनी खरीदारी पूरी करने से पहले ऑर्डर विवरण की समीक्षा करें।",
+  },
+}
+
+const CheckoutSummary = async ({
+  cart,
+}: {
+  cart: HttpTypes.StoreCart
+}) => {
+  const locale = await getUiLocale()
+  const t =
+    translations[locale as keyof typeof translations] ?? translations.en
+
   return (
     <div className="sticky top-6 flex flex-col gap-y-6 py-6 small:py-0">
       <div className="relative overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-br from-white via-indigo-50/70 to-sky-50 shadow-lg shadow-indigo-100/50">
@@ -28,16 +76,16 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
                   level="h2"
                   className="text-xl font-bold text-white"
                 >
-                  Order Summary
+                  {t.orderSummary}
                 </Heading>
                 <Text className="mt-1 text-sm text-indigo-100">
-                  Review your shopping bag
+                  {t.reviewBag}
                 </Text>
               </div>
             </div>
 
             <div className="rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold text-white">
-              Checkout
+              {t.checkout}
             </div>
           </div>
         </div>
@@ -48,7 +96,7 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
             <div className="mb-4 flex items-center gap-2">
               <span className="h-5 w-1 rounded-full bg-gradient-to-b from-violet-600 to-blue-500" />
               <Text className="font-semibold text-slate-800">
-                Price Details
+                {t.priceDetails}
               </Text>
             </div>
 
@@ -62,7 +110,7 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
                 <ShoppingBag className="h-4 w-4" />
               </span>
               <Text className="font-semibold text-slate-800">
-                Items in Your Cart
+                {t.cartItems}
               </Text>
             </div>
 
@@ -77,10 +125,10 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
               </span>
               <div>
                 <Text className="font-semibold text-violet-950">
-                  Have a promo code?
+                  {t.promoCode}
                 </Text>
                 <Text className="text-xs text-violet-700">
-                  Apply an eligible discount to your order
+                  {t.applyDiscount}
                 </Text>
               </div>
             </div>
@@ -95,10 +143,10 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
             </span>
             <div>
               <Text className="font-semibold text-emerald-900">
-                Secure Checkout
+                {t.secureCheckout}
               </Text>
               <Text className="mt-1 text-xs leading-5 text-emerald-800">
-                Review your order details before completing your purchase.
+                {t.secureMessage}
               </Text>
             </div>
           </div>

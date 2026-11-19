@@ -1,4 +1,7 @@
+
 "use client"
+
+import { useTranslations } from "next-intl"
 
 export type SortOptions = "price_asc" | "price_desc" | "created_at"
 
@@ -8,37 +11,39 @@ type SortProductsProps = {
   "data-testid"?: string
 }
 
-const sortOptions: {
-  value: SortOptions
-  label: string
-  description: string
-  icon: string
-}[] = [
-  {
-    value: "created_at",
-    label: "Latest Arrivals",
-    description: "Show newest products first",
-    icon: "◷",
-  },
-  {
-    value: "price_asc",
-    label: "Price: Low to High",
-    description: "Start with lower prices",
-    icon: "↑",
-  },
-  {
-    value: "price_desc",
-    label: "Price: High to Low",
-    description: "Start with higher prices",
-    icon: "↓",
-  },
-]
-
 const SortProducts = ({
   sortBy,
   setQueryParams,
   "data-testid": dataTestId,
 }: SortProductsProps) => {
+  const t = useTranslations("SortProducts")
+
+  const sortOptions: {
+    value: SortOptions
+    label: string
+    description: string
+    icon: string
+  }[] = [
+    {
+      value: "created_at",
+      label: t("latestArrivals"),
+      description: t("newestFirst"),
+      icon: "◷",
+    },
+    {
+      value: "price_asc",
+      label: t("priceLowToHigh"),
+      description: t("lowerPrices"),
+      icon: "↑",
+    },
+    {
+      value: "price_desc",
+      label: t("priceHighToLow"),
+      description: t("higherPrices"),
+      icon: "↓",
+    },
+  ]
+
   return (
     <aside
       className="w-full min-w-0 max-w-none shrink-0 self-start lg:max-w-[280px]"
@@ -52,17 +57,17 @@ const SortProducts = ({
 
           <div className="min-w-0 flex-1">
             <h3 className="text-base font-bold text-gray-900">
-              Sort Products
+              {t("title")}
             </h3>
             <p className="mt-1 text-xs text-gray-500">
-              Find your perfect pick
+              {t("subtitle")}
             </p>
           </div>
         </div>
 
         <div className="p-3 sm:p-4">
           <p className="mb-3 px-1 text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400">
-            Choose order
+            {t("chooseOrder")}
           </p>
 
           <div className="flex flex-col gap-2">
@@ -136,7 +141,7 @@ const SortProducts = ({
 
           <div className="mt-4 border-t border-gray-100 pt-4">
             <p className="text-xs leading-5 text-gray-500">
-              Choose how you want to explore the products.
+              {t("footer")}
             </p>
           </div>
         </div>

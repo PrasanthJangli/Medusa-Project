@@ -1,3 +1,4 @@
+
 "use client"
 
 import repeat from "@lib/util/repeat"
@@ -17,33 +18,40 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
 
   return (
     <div
-      className={clx({
-        "pl-[1px] overflow-y-scroll overflow-x-hidden no-scrollbar max-h-[420px]":
-          hasOverflow,
-      })}
+      className={clx(
+        "w-full min-w-0 overflow-x-hidden",
+        {
+          "pl-[1px] overflow-y-auto no-scrollbar max-h-[420px]":
+            hasOverflow,
+        }
+      )}
     >
-      <Table>
-        <Table.Body data-testid="items-table">
-          {items
-            ? items
-                .sort((a, b) => {
-                  return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
-                })
-                .map((item) => {
-                  return (
-                    <Item
-                      key={item.id}
-                      item={item}
-                      type="preview"
-                      currencyCode={cart.currency_code}
-                    />
-                  )
-                })
-            : repeat(5).map((i) => {
-                return <SkeletonLineItem key={i} />
-              })}
-        </Table.Body>
-      </Table>
+      <div className="w-full min-w-0">
+        <Table>
+          <Table.Body data-testid="items-table">
+            {items
+              ? [...items]
+                  .sort((a, b) => {
+                    return (a.created_at ?? "") > (b.created_at ?? "")
+                      ? -1
+                      : 1
+                  })
+                  .map((item) => {
+                    return (
+                      <Item
+                        key={item.id}
+                        item={item}
+                        type="preview"
+                        currencyCode={cart.currency_code}
+                      />
+                    )
+                  })
+              : repeat(5).map((i) => {
+                  return <SkeletonLineItem key={i} />
+                })}
+          </Table.Body>
+        </Table>
+      </div>
     </div>
   )
 }
