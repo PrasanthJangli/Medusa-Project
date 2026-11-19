@@ -21,28 +21,20 @@ export const getSortOptions = (
 
   return [
     {
-      value: PRODUCT_INDEX_NAME,
-      label: translations?.relevance ?? "Relevance",
+      value: `${PRODUCT_INDEX_NAME}/sort/title:asc`,
+      label: "Product Name",
     },
     {
       value: `${PRODUCT_INDEX_NAME}/sort/created_at:desc`,
-      label: translations?.latestArrivals ?? "Latest Arrivals",
-    },
-    {
-      value: `${PRODUCT_INDEX_NAME}/sort/${minPrice}:asc`,
-      label: translations?.priceLowToHigh ?? "Price: Low -> High",
+      label: "Newest",
     },
     {
       value: `${PRODUCT_INDEX_NAME}/sort/${minPrice}:desc`,
-      label: translations?.priceHighToLow ?? "Price: High -> Low",
+      label: translations?.priceHighToLow ?? "Price: High to Low",
     },
     {
-      value: `${PRODUCT_INDEX_NAME}/sort/title:asc`,
-      label: translations?.titleAToZ ?? "Title: A -> Z",
-    },
-    {
-      value: `${PRODUCT_INDEX_NAME}/sort/title:desc`,
-      label: translations?.titleZToA ?? "Title: Z -> A",
+      value: `${PRODUCT_INDEX_NAME}/sort/${minPrice}:asc`,
+      label: translations?.priceLowToHigh ?? "Price: Low to High",
     },
   ]
 }

@@ -2,7 +2,7 @@
 "use client"
 
 import type { Hit } from "instantsearch.js"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useHits, useInstantSearch } from "react-instantsearch"
 import { useLocale, useTranslations } from "next-intl"
 
@@ -40,34 +40,14 @@ const StoreHits = ({
   const locale = useLocale()
 
   const { items } = useHits<ProductHit>()
-  const { status, error, indexUiState } = useInstantSearch()
+  const { status, error } = useInstantSearch()
+
   const { isSearching, hasNoResultsYet } = useSearchSettled()
-
-  // Temporary price debugging
-  useEffect(() => {
-    if (items.length > 0) {
-      const firstProduct = items[0]
-
-      console.log("FIRST PRODUCT SEARCH HIT:", firstProduct)
-
-      console.log("PRICE FIELDS:", {
-        currencyCode,
-        min_price_inr: firstProduct.min_price_inr,
-        max_price_inr: firstProduct.max_price_inr,
-        original_price_inr: firstProduct.original_price_inr,
-        min_price_eur: firstProduct.min_price_eur,
-        max_price_eur: firstProduct.max_price_eur,
-        original_price_eur: firstProduct.original_price_eur,
-        min_price_usd: firstProduct.min_price_usd,
-        max_price_usd: firstProduct.max_price_usd,
-        original_price_usd: firstProduct.original_price_usd,
-      })
-    }
-  }, [items, currencyCode])
 
   const [selectedTemplate, setSelectedTemplate] =
     useState<ProductDisplayTemplate>("classic-grid")
 
+  // Load the selected product display template.
   useEffect(() => {
     let active = true
 
@@ -90,30 +70,9 @@ const StoreHits = ({
     }
   }, [])
 
-  const { page, ...refinements } = indexUiState
-  const currentPage = page ?? 1
-  const refinementKey = JSON.stringify(refinements)
-
-  const settled = useRef({
-    page: currentPage,
-    refinementKey,
-  })
-
-  useEffect(() => {
-    if (!isSearching) {
-      settled.current = {
-        page: currentPage,
-        refinementKey,
-      }
-    }
-  }, [isSearching, currentPage, refinementKey])
-
-  const isPagingOnly =
-    refinementKey === settled.current.refinementKey &&
-    currentPage !== settled.current.page
-
-  const showSkeleton =
-    hasNoResultsYet || (isSearching && isPagingOnly)
+  // Show skeleton while search results are loading.
+  // This prevents previously loaded products from flashing.
+  const showSkeleton = hasNoResultsYet || isSearching
 
   if (status === "error") {
     return (
@@ -131,11 +90,12 @@ const StoreHits = ({
   const isPremium = selectedTemplate === "premium-card"
   const isImageFocused = selectedTemplate === "image-focused"
 
+  // Responsive product grid.
   const gridClass = isListView
     ? "flex w-full min-w-0 flex-col gap-4"
     : isImageFocused
-      ? "grid w-full min-w-0 grid-cols-2 gap-3 sm:gap-5 lg:gap-6"
-      : "grid w-full min-w-0 grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4"
+      ? "grid w-full min-w-0 grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:gap-5 xl:grid-cols-4"
+      : "grid w-full min-w-0 grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:gap-5 xl:grid-cols-4"
 
   const cardClass =
     "group relative flex h-full w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-xl"
@@ -143,10 +103,17 @@ const StoreHits = ({
   return (
     <>
       {showSkeleton ? (
-        <SkeletonProductGrid numberOfProducts={hitsPerPage} />
-      ) : items.length === 0 ? (
         <div
-          className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-16 text-center"
+          aria-live="polite"
+          aria-busy="true"
+          data-testid="products-loading"
+        >
+          <SkeletonProductGrid numberOfProducts={hitsPerPage} />
+        </div>
+      ) : items.length === 0 ? (
+        // Empty state.
+        <div
+          className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-16 text-center"
           data-testid="no-products"
         >
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-50 text-3xl">
@@ -157,11 +124,12 @@ const StoreHits = ({
             {t("noProductsFound")}
           </Text>
 
-          <Text className="mt-2 text-sm text-slate-500">
+          <Text className="mt-2 max-w-sm text-sm text-slate-500">
             {t("changeSearchOrFilters")}
           </Text>
         </div>
       ) : (
+        // Product results.
         <ul className={gridClass} data-testid="products-list">
           {items.map((hit) =>
             hit.handle ? (
@@ -188,15 +156,18 @@ const StoreHits = ({
                         aria-hidden="true"
                         className="pointer-events-none absolute -right-5 -top-8 h-20 w-20 rounded-full bg-fuchsia-400/20 blur-2xl"
                       />
+
                       <p className="relative text-[9px] font-bold uppercase tracking-[0.18em] text-violet-200">
                         {t("premiumCollection")}
                       </p>
+
                       <p className="relative mt-1 text-xs font-semibold">
                         {t("closerLook")}
                       </p>
                     </div>
                   )}
 
+                  {/* Product image */}
                   <div
                     className={[
                       "relative min-w-0 overflow-hidden",
@@ -240,6 +211,7 @@ const StoreHits = ({
                     </div>
                   </div>
 
+                  {/* Product information */}
                   <div
                     className={[
                       "flex min-w-0 flex-1 flex-col",
@@ -251,6 +223,7 @@ const StoreHits = ({
                     <div className="min-w-0 flex-1">
                       <div className="mb-2 flex items-center gap-1.5">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+
                         <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-500">
                           {t("availableProduct")}
                         </span>
@@ -282,6 +255,7 @@ const StoreHits = ({
                       )}
                     </div>
 
+                    {/* Product price */}
                     <div className="mt-auto border-t border-slate-100 pt-3">
                       <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                         {t("price")}
@@ -298,8 +272,10 @@ const StoreHits = ({
                       </div>
                     </div>
 
+                    {/* View product */}
                     <div className="flex min-h-10 items-center justify-center gap-2 rounded-xl bg-violet-600 px-3 py-2.5 text-[11px] font-bold text-white transition-all duration-200 group-hover:bg-violet-700 group-hover:shadow-md sm:text-xs">
                       <span>{t("viewProduct")}</span>
+
                       <span
                         aria-hidden="true"
                         className="transition-transform duration-200 group-hover:translate-x-1"
@@ -315,6 +291,7 @@ const StoreHits = ({
         </ul>
       )}
 
+      {/* Pagination */}
       <div className="mt-8 border-t border-slate-200 pt-6">
         <SearchPagination />
       </div>

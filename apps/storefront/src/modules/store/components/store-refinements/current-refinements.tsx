@@ -3,7 +3,10 @@
 
 import { XMarkMini } from "@medusajs/icons"
 import { useTranslations } from "next-intl"
-import { useClearRefinements, useCurrentRefinements } from "react-instantsearch"
+import {
+  useClearRefinements,
+  useCurrentRefinements,
+} from "react-instantsearch"
 
 import { indexedCurrency, priceAttribute } from "@lib/search-client"
 import { convertToLocale } from "@lib/util/money"
@@ -36,9 +39,9 @@ function refinementLabel(
 
     return separator < 1
       ? label
-      : `${String(value).slice(0, separator)}: ${String(value).slice(
-          separator + 1
-        )}`
+      : `${String(value).slice(0, separator)}: ${String(
+          value
+        ).slice(separator + 1)}`
   }
 
   if (attribute === priceAttribute("min_price", currencyCode)) {
@@ -72,10 +75,15 @@ const CurrentRefinements = ({
   const t = useTranslations("Store")
 
   const { items, refine } = useCurrentRefinements()
-  const { canRefine: canClearAll, refine: clearAll } =
-    useClearRefinements()
 
-  const refinements = items.flatMap((item) => item.refinements)
+  const {
+    canRefine: canClearAll,
+    refine: clearAll,
+  } = useClearRefinements()
+
+  const refinements = items.flatMap(
+    (item) => item.refinements
+  )
 
   if (!refinements.length) {
     return null
@@ -89,16 +97,24 @@ const CurrentRefinements = ({
   }
 
   return (
-    <div className="flex flex-col gap-y-3" data-testid="current-refinements">
-      <div className="flex items-center justify-between gap-x-2 pr-6">
-        <span className="txt-compact-small-plus text-ui-fg-subtle">
+    <section
+      className="flex min-w-0 flex-col gap-y-3"
+      data-testid="current-refinements"
+      aria-label={t("appliedFilters")}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-sm font-semibold text-gray-700">
           {t("appliedFilters")}
+          <span className="ml-1 text-xs text-gray-500">
+            ({refinements.length})
+          </span>
         </span>
 
         {canClearAll && (
           <button
+            type="button"
             onClick={clearAll}
-            className="txt-compact-small-plus text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+            className="text-sm font-semibold text-blue-600 transition-colors hover:text-blue-800 hover:underline"
             data-testid="clear-refinements"
           >
             {t("clearAll")}
@@ -106,7 +122,7 @@ const CurrentRefinements = ({
         )}
       </div>
 
-      <ul className="flex flex-wrap gap-2 pr-6">
+      <ul className="flex flex-wrap gap-2">
         {refinements.map((refinement) => {
           const label = refinementLabel(
             refinement,
@@ -116,25 +132,26 @@ const CurrentRefinements = ({
 
           return (
             <li
-              key={`${refinement.attribute}:${refinement.operator ?? ""}:${
-                refinement.value
-              }`}
+              key={`${refinement.attribute}:${refinement.operator ?? ""}:${refinement.value}`}
+              className="max-w-full"
             >
               <button
+                type="button"
                 onClick={() => refine(refinement)}
                 aria-label={`${t("removeFilter")} ${label}`}
-                className="border-ui-border-interactive text-ui-fg-base border text-small-regular h-8 rounded-rounded px-3 flex items-center gap-x-1.5 transition-colors duration-150 hover:bg-ui-bg-base-hover"
+                className="inline-flex max-w-full items-center gap-1.5 break-words rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-800 transition-colors hover:border-blue-400 hover:bg-blue-100"
                 data-testid="remove-refinement"
               >
-                {label}
-                <XMarkMini className="text-ui-fg-muted" />
+                <span className="break-words">{label}</span>
+                <XMarkMini className="h-4 w-4 shrink-0" />
               </button>
             </li>
           )
         })}
       </ul>
-    </div>
+    </section>
   )
 }
 
 export default CurrentRefinements
+
